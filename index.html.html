@@ -8,53 +8,58 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
     body { font-family: 'Inter', sans-serif; }
-    .gradient-bg { background: linear-gradient(120deg, rgba(255,255,255,0.06), rgba(255,255,255,0.12)); }
+    
+    .gradient-bg { background: linear-gradient(120deg, rgba(255,255,255,0.03), rgba(255,255,255,0.08)); }
     .grid-pattern {
       background-image:
-        linear-gradient(to right, rgba(255,255,255,.08) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,.08) 1px, transparent 1px);
-      background-size: 40px 40px; opacity:.06;
+        linear-gradient(to right, rgba(255,255,255,.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.05) 1px, transparent 1px);
+      background-size: 40px 40px; opacity:.04;
     }
+    
     .card-hover { position: relative; overflow: hidden; transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
     .card-hover::before {
       content: ''; position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(600px circle at var(--x,50%) var(--y,50%), rgba(255,255,255,0.08), transparent 40%);
+      background: radial-gradient(600px circle at var(--x,50%) var(--y,50%), rgba(255,255,255,0.05), transparent 40%);
       opacity: 0; transition: opacity .25s ease;
     }
-    .card-hover:hover { transform: translateY(-4px); border-color: rgba(255,255,255,.2); box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.15); }
+    .card-hover:hover { transform: translateY(-4px); border-color: rgba(255,255,255,.3); box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.1); }
     .card-hover:hover::before { opacity: 1; }
-    .pulse-dot { animation: pulse 2.2s cubic-bezier(0.4,0,0.6,1) infinite; }
-    @keyframes pulse { 0%,100%{opacity:1; transform:scale(1)} 50%{opacity:.55; transform:scale(1.2)} }
-    .text-gradient {
-      background: linear-gradient(90deg, #fff, #f0f0f0 60%, rgba(255,255,255,.85));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
+    
     .spa-view { display: none; }
     .spa-view.active { display: block; }
     
-    /* --- NAVIGATION CENTRÉE ET ARRONDIE --- */
+    /* --- NAVIGATION (SANS LIGNE, ESPACEMENT AJUSTÉ) --- */
     .nav-btn {
-      color: #9CA3AF; background: transparent; border-radius: 9999px; /* Arrondi complet */
+      color: #d1d5db; 
+      background: rgba(255, 255, 255, 0.1); 
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 9999px; 
       padding: .6rem 1.2rem;
       transition: all .2s ease; position: relative; outline: none;
     }
-    .nav-btn:hover, .nav-btn:focus-visible { color:#fff; background: #111827; }
+    .nav-btn:hover, .nav-btn:focus-visible { 
+      color:#fff; 
+      background: rgba(255, 255, 255, 0.2); 
+      transform: translateY(-1px); /* Petit effet de levée */
+    }
     .nav-btn.active {
-      color:#000; background: #ffffff; /* Blanc quand actif */
+      color:#000; background: #ffffff; /* Blanc pur quand actif */
       box-shadow: 0 0 20px rgba(255,255,255,0.3);
       font-weight: 700;
+      border: none;
     }
 
     .input {
       width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
-      border-radius: .9rem; padding: .75rem 1rem; color:#fff; outline: none; transition: border-color .2s ease, background .2s ease;
+      border-radius: 9999px; padding: .75rem 1.5rem; color:#fff; outline: none; transition: border-color .2s ease, background .2s ease;
     }
     .input::placeholder { color: rgba(255,255,255,0.45); }
     .input:focus { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.07); }
     
     /* Boutons Blancs */
     .btn-gradient {
-      display:inline-flex; align-items:center; gap:.5rem; padding:.8rem 1.2rem; border-radius: 9999px; /* Arrondi complet */
+      display:inline-flex; align-items:center; gap:.5rem; padding:.8rem 1.5rem; border-radius: 9999px; 
       color:#111; font-weight:800; background: #ffffff; transition: transform .2s ease, opacity .2s ease;
       box-shadow: 0 4px 15px rgba(255,255,255,0.1);
     }
@@ -101,28 +106,24 @@
     .rotate-y-180 { transform: rotateY(180deg); }
     
     .card-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      text-align: center;
+      position: relative; width: 100%; height: 100%; text-align: center;
       transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
-      transform-style: preserve-3d;
-      background-color: #000000; 
+      transform-style: preserve-3d; background-color: #000000; 
     }
     
     .card-face {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      -webkit-backface-visibility: hidden; 
-      backface-visibility: hidden;
-      border-radius: 1rem;
-      background-color: #000000; 
+      position: absolute; width: 100%; height: 100%;
+      -webkit-backface-visibility: hidden; backface-visibility: hidden;
+      border-radius: 1rem; background-color: #000000; 
       border: 1px solid rgba(255,255,255,0.15); 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
     }
+
+    /* Bouton Edit Pseudo */
+    .edit-pseudo-btn {
+      font-size: 0.75rem; color: rgba(255,255,255,0.4); text-decoration: underline; cursor: pointer; margin-top: 4px; display: inline-block;
+    }
+    .edit-pseudo-btn:hover { color: white; }
 
   </style>
 </head>
@@ -136,12 +137,11 @@
   <!-- Accès par mot de passe site -->
   <div id="passwordModal" class="password-modal" aria-modal="true" role="dialog">
     <div class="max-w-md w-full mx-4">
-      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl p-8 shadow-2xl card-hover">
+      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-[2rem] p-8 shadow-2xl card-hover">
         <div class="text-center mb-8">
-          <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl mb-4 shadow-lg shadow-purple-500/30">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-            </svg>
+          <!-- Logo Blanc -->
+          <div class="inline-flex items-center justify-center w-16 h-16 bg-white rounded-[1.5rem] mb-4 shadow-lg shadow-white/10">
+            <span class="text-black font-black text-2xl">RY</span>
           </div>
           <h2 class="text-3xl font-bold text-white mb-2">RYNACITY RP</h2>
           <p class="text-white/60">Zone sécurisée. Entrez le code.</p>
@@ -157,39 +157,39 @@
 
   <!-- Contenu principal -->
   <div id="mainContent" class="hidden">
-    <!-- Navbar (Structure modifiée pour centrer les boutons) -->
-    <header class="sticky top-0 backdrop-blur-lg bg-black/90 z-50 border-b border-gray-800">
-      <div class="max-w-screen-xl w-full mx-auto px-6 relative h-16"> <!-- Added relative and h-16 -->
+    <!-- Navbar (MT-4, SANS LIGNE, LOGO GAUCHE SUPPRIMÉ, GAP RÉDUIT) -->
+    <header class="sticky top-0 backdrop-blur-lg bg-black/90 z-50 mt-4 rounded-b-2xl"> <!-- border-b REMOVED -->
+      <div class="max-w-screen-xl w-full mx-auto px-6 relative h-20">
         
-        <!-- Logo (Positionné à gauche en absolu) -->
-        <div class="absolute left-6 top-1/2 -translate-y-1/2 flex items-center cursor-pointer" onclick="openView('homeView')">
-          <div class="h-8 w-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg grid place-items-center">
-            <span class="text-white font-bold text-sm">RY</span>
-          </div>
-          <h1 class="ml-3 text-white text-lg font-bold tracking-tight leading-7 hidden md:block">RYNACITY RP</h1>
-        </div>
+        <!-- Logo supprimé ici -->
 
-        <!-- Navigation (Centrée) -->
-        <nav class="flex items-center justify-center h-full" aria-label="Navigation principale">
+        <!-- Navigation (Centrée, Gap 2 / 4) -->
+        <nav class="flex items-center justify-center h-full gap-2 md:gap-4" aria-label="Navigation principale">
           <button data-view="homeView" class="nav-btn flex items-center gap-2" aria-current="page">
-            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             <span class="hidden md:block">Accueil</span>
           </button>
           <button data-view="docView" class="nav-btn flex items-center gap-2">
-            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             <span class="hidden md:block">Documentation</span>
           </button>
           <button data-view="mapView" class="nav-btn flex items-center gap-2">
-            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clip-rule="evenodd"/></svg>
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
             <span class="hidden md:block">Carte</span>
           </button>
           <button data-view="updatesView" class="nav-btn flex items-center gap-2">
-            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
             <span class="hidden md:block">Mises à jour</span>
           </button>
           <button data-view="discordView" class="nav-btn flex items-center gap-2">
-            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37 67.703 67.703 0 0 0-1.718 6.645 68.657 68.657 0 0 0 2.588 4.486.076.076 0 0 0 .084.028 19.8 19.8 0 0 0 5.994-2.99.077.077 0 0 0 .083-.028 68.587 68.587 0 0 0 2.594-4.486 67.7 67.7 0 0 0-1.718-6.645zm-10.815 13.588a2.295 2.295 0 1 1 0-4.59 2.295 2.295 0 0 1 0 4.59zm6.815 0a2.295 2.295 0 1 1 0-4.59 2.295 2.295 0 0 1 0 4.59z"/>
+            </svg>
             <span class="hidden md:block">Discord</span>
+          </button>
+          <button data-view="shopView" class="nav-btn flex items-center gap-2">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            <span class="hidden md:block">Boutique</span>
           </button>
         </nav>
       </div>
@@ -197,12 +197,13 @@
 
     <!-- Bottom mobile nav -->
     <div class="fixed md:hidden z-50 left-1/2 -translate-x-1/2 bottom-6">
-      <div class="flex items-center backdrop-blur-lg bg-black/90 shadow-lg border border-gray-800 px-3 py-2 rounded-full">
-        <button data-view="homeView" class="nav-btn h-12 w-12 grid place-items-center"><svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg></button>
-        <button data-view="docView" class="nav-btn h-12 w-12 grid place-items-center"><svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg></button>
-        <button data-view="mapView" class="nav-btn h-12 w-12 grid place-items-center"><svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clip-rule="evenodd"/></svg></button>
-        <button data-view="updatesView" class="nav-btn h-12 w-12 grid place-items-center"><svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg></button>
-        <button data-view="discordView" class="nav-btn h-12 w-12 grid place-items-center"><svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg></button>
+      <div class="flex items-center backdrop-blur-lg bg-black/90 shadow-lg border border-white/10 px-3 py-2 rounded-full gap-2"> <!-- Gap 2 mobile -->
+        <button data-view="homeView" class="nav-btn h-12 w-12 grid place-items-center"><svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></button>
+        <button data-view="docView" class="nav-btn h-12 w-12 grid place-items-center"><svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></button>
+        <button data-view="mapView" class="nav-btn h-12 w-12 grid place-items-center"><svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg></button>
+        <button data-view="updatesView" class="nav-btn h-12 w-12 grid place-items-center"><svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button>
+        <button data-view="discordView" class="nav-btn h-12 w-12 grid place-items-center"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37 67.703 67.703 0 0 0-1.718 6.645 68.657 68.657 0 0 0 2.588 4.486.076.076 0 0 0 .084.028 19.8 19.8 0 0 0 5.994-2.99.077.077 0 0 0 .083-.028 68.587 68.587 0 0 0 2.594-4.486 67.7 67.7 0 0 0-1.718-6.645zm-10.815 13.588a2.295 2.295 0 1 1 0-4.59 2.295 2.295 0 0 1 0 4.59zm6.815 0a2.295 2.295 0 1 1 0-4.59 2.295 2.295 0 0 1 0 4.59z"/></svg></button>
+        <button data-view="shopView" class="nav-btn h-12 w-12 grid place-items-center"><svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg></button>
       </div>
     </div>
 
@@ -212,8 +213,8 @@
       <section id="homeView" class="spa-view active">
         <div class="relative min-h-[92vh]">
           <div class="absolute inset-0 grid-pattern"></div>
-          <div class="absolute gradient-bg blur-3xl h-96 w-96 rounded-full left-[6%] top-[5%]"></div>
-          <div class="absolute gradient-bg blur-3xl h-72 w-72 rounded-full right-[4%] bottom-[8%]"></div>
+          <div class="absolute bg-white blur-3xl h-96 w-96 rounded-full left-[6%] top-[5%] opacity-5"></div>
+          <div class="absolute bg-white blur-3xl h-72 w-72 rounded-full right-[4%] bottom-[8%] opacity-5"></div>
 
           <div class="relative z-10 px-6 py-20">
             <div class="max-w-screen-xl mx-auto">
@@ -221,8 +222,8 @@
                 <div class="inline-flex items-center backdrop-blur-sm bg-white/10 border border-white/10 mb-6 px-4 py-2 rounded-full">
                   <span class="text-white/80 text-sm font-medium ml-2">Jeu Roblox Roleplay</span>
                 </div>
-                <h2 class="text-6xl md:text-8xl font-black tracking-tight leading-tight mb-6">
-                  <span class="text-gradient">RYNACITY RP</span>
+                <h2 class="text-6xl md:text-8xl font-black tracking-tight leading-tight mb-6 text-white">
+                  RYNACITY RP
                 </h2>
                 <p class="max-w-2xl mx-auto text-white/70 text-xl md:text-2xl leading-relaxed">
                   Votre portail centralisé pour les <span class="text-white">mises à jour</span>, la <span class="text-white">documentation</span> et les <span class="text-white">jeux concours</span>.
@@ -230,52 +231,52 @@
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                <article class="card-hover backdrop-blur-[10px] bg-white/5 shadow-[rgba(0,0,0,0.35)_0px_10px_30px,rgba(255,255,255,0.12)_0px_1px_0px_0px_inset] h-80 border border-white/10 p-8 rounded-3xl cursor-pointer"
+                <article class="card-hover backdrop-blur-[10px] bg-white/5 shadow-[rgba(0,0,0,0.35)_0px_10px_30px,rgba(255,255,255,0.12)_0px_1px_0px_0px_inset] h-80 border border-white/10 p-8 rounded-[2rem] cursor-pointer"
                          onclick="openView('docView')" onmousemove="cardLight(event,this)">
                   <div class="flex flex-col h-full">
                     <div class="flex items-start justify-between mb-6">
-                      <div class="backdrop-blur-sm bg-white/10 p-3 rounded-2xl">
-                        <svg class="text-white h-7 w-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
+                      <div class="backdrop-blur-sm bg-white/10 p-3 rounded-3xl">
+                        <svg class="text-white h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                       </div>
                     </div>
                     <h3 class="text-2xl font-bold mb-3">Documentation</h3>
                     <p class="text-white/70 leading-relaxed">Guides complets, règles RP, FAQ, astuces pour progresser.</p>
                     <div class="mt-auto pt-6 flex items-center justify-between border-t border-white/10">
-                      <span class="text-blue-400 text-sm font-medium">15+ guides</span>
+                      <span class="text-white text-sm font-medium">15+ guides</span>
                       <span class="text-white/70 text-sm">Découvrir →</span>
                     </div>
                   </div>
                 </article>
 
-                <article class="card-hover backdrop-blur-[10px] bg-white/5 shadow-[rgba(0,0,0,0.35)_0px_10px_30px,rgba(255,255,255,0.12)_0px_1px_0px_0px_inset] h-80 border border-white/10 p-8 rounded-3xl cursor-pointer"
+                <article class="card-hover backdrop-blur-[10px] bg-white/5 shadow-[rgba(0,0,0,0.35)_0px_10px_30px,rgba(255,255,255,0.12)_0px_1px_0px_0px_inset] h-80 border border-white/10 p-8 rounded-[2rem] cursor-pointer"
                          onclick="openView('mapView')" onmousemove="cardLight(event,this)">
                   <div class="flex flex-col h-full">
                     <div class="flex items-start justify-between mb-6">
-                      <div class="backdrop-blur-sm bg-white/10 p-3 rounded-2xl">
-                        <svg class="text-white h-7 w-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clip-rule="evenodd"/></svg>
+                      <div class="backdrop-blur-sm bg-white/10 p-3 rounded-3xl">
+                        <svg class="text-white h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
                       </div>
                     </div>
                     <h3 class="text-2xl font-bold mb-3">Carte Interactive</h3>
                     <p class="text-white/70 leading-relaxed">Aperçu, points d’intérêt, jobs, quartiers.</p>
                     <div class="mt-auto pt-6 flex items-center justify-between border-t border-white/10">
-                      <span class="text-green-400 text-sm font-medium">LIVE</span>
+                      <span class="text-white text-sm font-medium">LIVE</span>
                       <span class="text-white/70 text-sm">Voir →</span>
                     </div>
                   </div>
                 </article>
 
-                <article class="card-hover backdrop-blur-[10px] bg-white/5 shadow-[rgba(0,0,0,0.35)_0px_10px_30px,rgba(255,255,255,0.12)_0px_1px_0px_0px_inset] h-80 border border-white/10 p-8 rounded-3xl cursor-pointer"
+                <article class="card-hover backdrop-blur-[10px] bg-white/5 shadow-[rgba(0,0,0,0.35)_0px_10px_30px,rgba(255,255,255,0.12)_0px_1px_0px_0px_inset] h-80 border border-white/10 p-8 rounded-[2rem] cursor-pointer"
                          onclick="openView('discordView')" onmousemove="cardLight(event,this)">
                   <div class="flex flex-col h-full">
                     <div class="flex items-start justify-between mb-6">
-                      <div class="backdrop-blur-sm bg-white/10 p-3 rounded-2xl">
-                        <svg class="text-white h-7 w-7" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
+                      <div class="backdrop-blur-sm bg-white/10 p-3 rounded-3xl">
+                        <svg class="text-white h-7 w-7" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37 67.703 67.703 0 0 0-1.718 6.645 68.657 68.657 0 0 0 2.588 4.486.076.076 0 0 0 .084.028 19.8 19.8 0 0 0 5.994-2.99.077.077 0 0 0 .083-.028 68.587 68.587 0 0 0 2.594-4.486 67.7 67.7 0 0 0-1.718-6.645zm-10.815 13.588a2.295 2.295 0 1 1 0-4.59 2.295 2.295 0 0 1 0 4.59zm6.815 0a2.295 2.295 0 1 1 0-4.59 2.295 2.295 0 0 1 0 4.59z"/></svg>
                       </div>
                     </div>
                     <h3 class="text-2xl font-bold mb-3">Communauté Discord</h3>
                     <p class="text-white/70 leading-relaxed">Rejoins, suis les annonces et ouvre un ticket au besoin.</p>
                     <div class="mt-auto pt-6 flex items-center justify-between border-t border-white/10">
-                      <span class="text-indigo-400 text-sm font-medium">Objectif 1000 membres</span>
+                      <span class="text-white text-sm font-medium">Objectif 1000 membres</span>
                       <span class="text-white/70 text-sm">Rejoindre →</span>
                     </div>
                   </div>
@@ -291,8 +292,8 @@
         <div class="max-w-screen-xl mx-auto px-6 py-16">
           <h2 class="text-4xl font-extrabold mb-6">Documentation</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="card-hover backdrop-blur-[10px] bg-white/5 border border-white/10 p-8 rounded-3xl">
-              <h3 class="text-2xl font-bold mb-4 text-pink-400">Débuter sur RYNACITY RP</h3>
+            <div class="card-hover backdrop-blur-[10px] bg-white/5 border border-white/10 p-8 rounded-[2rem]">
+              <h3 class="text-2xl font-bold mb-4 text-white">Débuter sur RYNACITY RP</h3>
               <p class="text-white/70 mb-4">Bienvenue sur le serveur. Voici les bases pour débuter ton aventure.</p>
               <ul class="list-disc list-inside text-white/80 space-y-2">
                 <li>Télécharger Roblox</li>
@@ -300,8 +301,8 @@
                 <li>Créer ton personnage</li>
               </ul>
             </div>
-            <div class="card-hover backdrop-blur-[10px] bg-white/5 border border-white/10 p-8 rounded-3xl">
-              <h3 class="text-2xl font-bold mb-4 text-purple-400">Règles RP</h3>
+            <div class="card-hover backdrop-blur-[10px] bg-white/5 border border-white/10 p-8 rounded-[2rem]">
+              <h3 class="text-2xl font-bold mb-4 text-white">Règles RP</h3>
               <p class="text-white/70 mb-4">Le respect est la clé d'un bon RP.</p>
               <ul class="list-disc list-inside text-white/80 space-y-2">
                 <li>Pas de PowerGaming</li>
@@ -317,7 +318,7 @@
       <section id="mapView" class="spa-view">
         <div class="max-w-screen-xl mx-auto px-6 py-16">
           <h2 class="text-4xl font-extrabold mb-6">Carte du Serveur</h2>
-          <div class="card-hover backdrop-blur-[10px] bg-white/5 border border-white/10 rounded-3xl overflow-hidden h-[500px] flex items-center justify-center">
+          <div class="card-hover backdrop-blur-[10px] bg-white/5 border border-white/10 rounded-[2rem] overflow-hidden h-[500px] flex items-center justify-center">
             <div class="text-center">
               <svg class="w-20 h-20 text-white/20 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
               <p class="text-white/50">Carte Interactive (Bientôt disponible)</p>
@@ -330,10 +331,10 @@
       <section id="updatesView" class="spa-view">
         <div class="max-w-screen-xl mx-auto px-6 py-16">
           <h2 class="text-4xl font-extrabold mb-6">Mises à jour</h2>
-          <div class="card-hover backdrop-blur-[10px] bg-white/5 border border-white/10 rounded-3xl p-8 mb-6">
+          <div class="card-hover backdrop-blur-[10px] bg-white/5 border border-white/10 rounded-[2rem] p-8 mb-6">
             <div class="flex justify-between items-start mb-4">
-              <h3 class="text-2xl font-bold">v1.0.0 — Aujourd’hui</h3>
-              <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold">STABLE</span>
+              <h3 class="text-2xl font-bold text-white">v1.0.0 — Aujourd’hui</h3>
+              <span class="bg-white/10 text-white px-3 py-1 rounded-full text-xs font-bold border border-white/10">STABLE</span>
             </div>
             <ul class="list-disc list-inside text-white/70 space-y-2">
               <li>Nouveaux métiers + équilibrage économie</li>
@@ -350,51 +351,105 @@
           <h2 class="text-4xl font-extrabold mb-4">Notre Discord</h2>
           <p class="text-white/70 mb-8">Rejoins la communauté pour les annonces, évènements et support.</p>
 
-          <div class="card-hover backdrop-blur-[10px] bg-white/5 border border-white/10 rounded-3xl p-8 mb-8">
+          <div class="card-hover backdrop-blur-[10px] bg-white/5 border border-white/10 rounded-[2rem] p-8 mb-8">
             <div class="flex items-center justify-between mb-3">
               <span class="text-white/80 font-semibold">Objectif: <span class="text-white">1000</span> membres</span>
               <span class="text-white/60">80 / 1000</span>
             </div>
             <div class="w-full h-3 bg-white/10 rounded-full overflow-hidden">
-              <div class="h-3 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" style="width: 8%; box-shadow: 0 0 16px rgba(168,85,247,0.6);"></div>
+              <div class="h-3 rounded-full bg-white" style="width: 8%; box-shadow: 0 0 16px rgba(255,255,255,0.2);"></div>
             </div>
             <p class="text-white/50 text-sm mt-3">Aidez-nous à atteindre l’objectif ! Invitez vos amis.</p>
           </div>
 
-          <div class="card-hover backdrop-blur-[10px] bg-white/5 border border-white/10 rounded-3xl p-8 text-center">
-            <h3 class="text-2xl font-bold mb-2">Rejoindre le serveur</h3>
+          <div class="card-hover backdrop-blur-[10px] bg-white/5 border border-white/10 rounded-[2rem] p-8 text-center">
+            <h3 class="text-2xl font-bold mb-2 text-white">Rejoindre le serveur</h3>
             <p class="text-white/70 mb-6">Clique ci-dessous pour rejoindre immédiatement.</p>
             <a href="#" class="btn-gradient inline-flex">Rejoindre le Discord</a>
           </div>
         </div>
       </section>
 
-      <!-- JEU DE CARTES (Admin View) -->
+      <!-- SHOP -->
+      <section id="shopView" class="spa-view">
+        <div class="max-w-screen-xl mx-auto px-6 py-16">
+          <h2 class="text-4xl font-extrabold mb-8 text-center">BOUTIQUE</h2>
+          <p class="text-center text-white/50 mb-12">Choisis ton Gamepass pour débloquer des véhicules exclusifs.</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- PASS SPORT -->
+            <article class="card-hover backdrop-blur-[10px] bg-white/5 border border-white/10 rounded-[2rem] p-8 text-center">
+              <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7M9 11V6l3 3 3 3V5m0 8H5v-4l4-4 4 4z"/></svg>
+              </div>
+              <h3 class="text-2xl font-bold mb-2 text-white">Gamepass Sport</h3>
+              <div class="inline-block bg-white/10 px-3 py-1 rounded-full text-xs font-bold text-white mb-4">POPULAIRE</div>
+              <p class="text-white/70 mb-4">Contenu exclusif pour les amateurs de vitesse.</p>
+              <ul class="text-white/60 text-sm space-y-1 mb-6">
+                <li>• 2 Véhicules Sportives</li>
+                <li>• Accessoires spéciaux</li>
+              </ul>
+              <button class="btn-gradient w-full justify-center">Acheter</button>
+            </article>
+
+            <!-- PASS 4X4 -->
+            <article class="card-hover backdrop-blur-[10px] bg-white/5 border border-white/10 rounded-[2rem] p-8 text-center relative overflow-hidden">
+              <div class="absolute top-0 left-0 w-full h-1 bg-white/10"></div>
+              <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20l5.953-5.95a1 1 0 0 0-1.414-1.414l-8.5-8.5a1 1 0 0 0-1.414 1.414l3.536 3.536a1 1 0 0 1 1.414-1.414l-4.95-4.95a1 1 0 0 1 1.414-1.414l8.5 8.5a1 1 0 0 0 1.414 1.414l-3.536-3.536zM13 7l5.953-5.95a1 1 0 0 0-1.414-1.414l-8.5-8.5a1 1 0 0 0-1.414 1.414l3.536 3.536a1 1 0 0 1 1.414-1.414l-4.95-4.95a1 1 0 0 1 1.414-1.414l8.5 8.5a1 1 0 0 0 1.414 1.414l-3.536-3.536z"/></svg>
+              </div>
+              <h3 class="text-2xl font-bold mb-2 text-white">Gamepass 4x4</h3>
+              <p class="text-white/70 mb-4">Domine tout type de terrain.</p>
+              <ul class="text-white/60 text-sm space-y-1 mb-6">
+                <li>• Véhicules Tout-Terrain</li>
+                <li>• Capacité de chargement</li>
+              </ul>
+              <button class="btn-gradient w-full justify-center">Acheter</button>
+            </article>
+
+            <!-- PASS VIP -->
+            <article class="card-hover backdrop-blur-[10px] bg-white/10 border border-white/30 rounded-[2rem] p-8 text-center shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+              <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <svg class="w-10 h-10 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L2 9.27l6.91-1.01L12 2zm0 2.72l5.15 4.07-5.16 4.07-4.92 4.08-4.92 4.08-5.16 4.08 5.16 4.07 4.92 4.08 4.92 4.08L12 4.72zm0 7.75l4.23 2.95-4.23 2.96-4.92 4.08-4.92 4.08-5.16 4.08 5.16 4.08 4.92 4.08 4.92 4.08L12 14.47z"/></svg>
+              </div>
+              <h3 class="text-2xl font-black mb-2">Gamepass VIP</h3>
+              <div class="inline-block bg-black px-3 py-1 rounded-full text-xs font-bold text-white mb-4 border border-white">LE PLUS CONNU</div>
+              <p class="text-white/70 mb-4">Le statut ultime.</p>
+              <ul class="text-white/60 text-sm space-y-1 mb-6">
+                <li>• Accès à tout</li>
+                <li>• Véhicules exclusifs</li>
+                <li>• Priorité totale</li>
+              </ul>
+              <button class="btn-gradient w-full justify-center">Acheter</button>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- JEU DE CARTES -->
       <section id="adminView" class="spa-view">
         <div class="max-w-4xl w-full mx-auto px-4 pt-24 pb-12">
           
-          <!-- Header Game -->
           <div class="text-center mb-8 relative">
             <h2 class="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter">
               Lucky Cards
             </h2>
             <p class="text-gray-500 mt-2">Trouve les 3 cartes identiques.</p>
             
-            <!-- Stats -->
             <div class="flex justify-center gap-6 mt-6">
-              <div class="bg-black border border-white/10 px-5 py-2 rounded-xl backdrop-blur-md">
+              <div class="bg-black border border-white/10 px-5 py-2 rounded-3xl backdrop-blur-md">
                 <span class="block text-xs text-gray-500 uppercase font-bold tracking-widest">Essais</span>
                 <span id="attemptsLeftDisplay" class="text-2xl font-black text-white">5</span>
+                <br><span id="editPseudoBtn" class="edit-pseudo-btn hidden">Modifier Pseudo</span>
               </div>
-              <div class="bg-black border border-white/10 px-5 py-2 rounded-xl backdrop-blur-md">
+              <div class="bg-black border border-white/10 px-5 py-2 rounded-3xl backdrop-blur-md">
                 <span class="block text-xs text-gray-500 uppercase font-bold tracking-widest">Joueur</span>
                 <span id="gameUsernameDisplay" class="text-xl font-bold text-white">---</span>
               </div>
             </div>
           </div>
 
-          <!-- Auth Box -->
-          <div id="cardAuthBox" class="max-w-md mx-auto bg-black border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden mb-8">
+          <div id="cardAuthBox" class="max-w-md mx-auto bg-black border border-white/10 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden mb-8">
             <div class="text-center mb-6">
               <h3 class="text-2xl font-bold text-white">Identification</h3>
               <p class="text-sm text-gray-400">Entre ton pseudo.</p>
@@ -406,32 +461,25 @@
             </button>
           </div>
 
-          <!-- Zone de Jeu -->
           <div id="cardGameArea" class="hidden relative">
-            <!-- Filigrane -->
             <div id="antiScamOverlay" class="absolute inset-0 z-20 pointer-events-none flex flex-col items-center justify-center opacity-5 mix-blend-overlay select-none">
               <div class="transform -rotate-12 scale-[2] text-9xl font-black text-white border-4 border-white/20 p-8 rounded-xl tracking-tighter" id="overlayPseudo">PSEUDO</div>
             </div>
 
-            <!-- Grille de Cartes -->
             <div id="cardsGrid" class="grid grid-cols-3 gap-3 md:gap-6 max-w-[500px] mx-auto perspective-1000">
-              <!-- Les cartes sont générées par JS -->
             </div>
 
-            <!-- Message Resultat -->
             <div id="gameResultMessage" class="hidden text-center mt-8">
               <p class="text-3xl font-black text-white mb-2" id="resultText">RÉSULTAT</p>
-              <!-- Ce message s'affiche seulement si on GAGNE -->
               <p id="gameInstruction" class="text-sm text-gray-400">Preuve requise : capture avec le filigrane.</p>
               <button onclick="resetRound()" class="mt-6 bg-white/10 hover:bg-white/20 text-white px-8 py-3 rounded-full text-sm transition border border-white/10 font-bold">Essai Suivant</button>
             </div>
 
-            <!-- Limite Atteinte -->
             <div id="limitReachedModal" class="hidden fixed inset-0 z-50 bg-black/95 backdrop-blur-lg flex items-center justify-center">
-              <div class="bg-black border border-white/10 p-8 rounded-3xl text-center max-w-sm mx-4 shadow-[0_0_50px_rgba(255,255,255,0.1)]">
+              <div class="bg-black border border-white/10 p-8 rounded-[2rem] text-center max-w-sm mx-4 shadow-[0_0_50px_rgba(255,255,255,0.1)]">
                 <h3 class="text-3xl font-bold text-white mb-2">PLUS D'ESSAIS</h3>
                 <p class="text-gray-400 mb-6">Tu as utilisé tes 5 essais. Reviens demain.</p>
-                <button onclick="closeLimitModal()" class="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-bold transition">Fermer</button>
+                <button onclick="closeLimitModal()" class="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-3xl font-bold transition">Fermer</button>
               </div>
             </div>
           </div>
@@ -475,21 +523,16 @@
       }
     });
 
-    // ----- SPA NAV (AVEC LOADING) -----
-    const views = ['homeView','docView','mapView','updatesView','discordView','adminView'];
+    // ----- SPA NAV -----
+    const views = ['homeView','docView','mapView','updatesView','discordView','shopView','adminView'];
     const navButtons = document.querySelectorAll('.nav-btn');
     const pageLoader = document.getElementById('pageLoader');
 
     function openView(viewId) {
-      // Afficher le loader
       pageLoader.classList.remove('hidden');
 
-      // Simuler un délai pour effet "pro"
       setTimeout(() => {
-        // Cacher le loader
         pageLoader.classList.add('hidden');
-
-        // Changer de vue
         views.forEach(id => {
           const el = document.getElementById(id);
           if (el) el.classList.toggle('active', id === viewId);
@@ -498,9 +541,8 @@
           btn.classList.toggle('active', btn.getAttribute('data-view') === viewId);
           btn.setAttribute('aria-current', btn.getAttribute('data-view') === viewId ? 'page' : 'false');
         });
-        
         window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 400); // 400ms de chargement
+      }, 400); 
     }
 
     navButtons.forEach(btn => {
@@ -521,7 +563,7 @@
     window.cardLight = cardLight;
     window.openView = openView;
 
-    // ----- JEU DE CARTES (FINAL) -----
+    // ----- JEU DE CARTES -----
     const cardAuthBox = document.getElementById('cardAuthBox');
     const cardGameArea = document.getElementById('cardGameArea');
     const startCardBtn = document.getElementById('startCardGameBtn');
@@ -533,6 +575,7 @@
     const resultText = document.getElementById('resultText');
     const resultInstruction = document.getElementById('gameInstruction');
     const limitModal = document.getElementById('limitReachedModal');
+    const editPseudoBtn = document.getElementById('editPseudoBtn');
 
     const STORAGE_KEY = 'rynacity_cards_final';
     let gameState = { date: '', attempts: 5, username: '' };
@@ -567,6 +610,7 @@
       if(gameState.username) {
         document.getElementById('gameUsernameDisplay').innerText = gameState.username;
         overlayPseudo.innerText = gameState.username.toUpperCase();
+        if(editPseudoBtn) editPseudoBtn.classList.remove('hidden');
       }
     }
 
@@ -585,6 +629,15 @@
       cardGameArea.classList.remove('hidden');
       updateUI();
       startNewRound();
+    });
+    
+    editPseudoBtn.addEventListener('click', () => {
+      gameState.username = ''; 
+      saveCardState();
+      cardAuthBox.classList.remove('hidden');
+      cardGameArea.classList.add('hidden');
+      cardUsernameInput.value = '';
+      updateUI();
     });
 
     function closeLimitModal() {
@@ -613,12 +666,9 @@
         
         card.innerHTML = `
           <div class="card-inner" id="card-inner-${index}">
-            <!-- Dos de la carte -->
             <div class="card-face z-20">
               <div class="text-6xl font-black text-white/20 select-none">?</div>
             </div>
-            
-            <!-- Face de la carte -->
             <div class="card-face rotate-y-180 z-10">
               ${getCardContent(val)}
             </div>
@@ -634,7 +684,7 @@
       if(val === 1) {
         return `<div class="text-center"><div class="text-6xl font-black text-yellow-400">1</div><div class="text-xs text-yellow-200 font-bold mt-1">1M€</div></div>`;
       } else if(val === 2) {
-        return `<div class="text-center"><div class="text-6xl font-black text-purple-400">2</div><div class="text-xs text-purple-200 font-bold mt-1">BMW</div></div>`;
+        return `<div class="text-center"><div class="text-6xl font-black text-white">2</div><div class="text-xs text-gray-300 font-bold mt-1">BMW</div></div>`;
       } else {
         return `<div class="text-center"><div class="text-6xl font-black text-red-500">X</div><div class="text-xs text-red-300 font-bold mt-1">PERDU</div></div>`;
       }
@@ -681,7 +731,7 @@
         colorClass = "text-yellow-400";
       } else if (value === 2) {
         msg = "BMW + 100K€ GAGNÉ !";
-        colorClass = "text-purple-400";
+        colorClass = "text-white";
       } else {
         msg = "C'est 3 X...";
         colorClass = "text-red-400";
