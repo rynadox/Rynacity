@@ -29,7 +29,7 @@
     .spa-view { display: none; }
     .spa-view.active { display: block; }
     
-    /* --- NAVIGATION (CENTRÉE PARFAITEMENT) --- */
+    /* --- NAVIGATION --- */
     .nav-btn {
       color: #d1d5db; 
       background: rgba(255, 255, 255, 0.1); 
@@ -50,6 +50,20 @@
       border: none;
     }
 
+    /* BOUTON RETOUR ROUGE (CENTERED IN GAME) */
+    .btn-back {
+      background: #DC2626; color: white;
+      padding: 0.6rem 2rem; border-radius: 9999px;
+      font-weight: 800; border: 2px solid rgba(255,255,255,0.2);
+      box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+      transition: all .2s ease;
+      letter-spacing: 1px;
+    }
+    .btn-back:hover {
+      background: #EF4444; transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(220, 38, 38, 0.8);
+    }
+
     .input {
       width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
       border-radius: 9999px; padding: .75rem 1.5rem; color:#fff; outline: none; transition: border-color .2s ease, background .2s ease;
@@ -65,7 +79,7 @@
     }
     .btn-gradient:hover { transform: translateY(-2px); opacity: 0.9; box-shadow: 0 4px 20px rgba(255,255,255,0.2); }
     
-    /* --- LOADER PRO (HAUTE Z-INDEX) --- */
+    /* --- LOADER PRO --- */
     .page-loader {
       position: fixed; inset: 0; background: #000; z-index: 9999;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -103,16 +117,53 @@
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes fadeOut { to { transform: translateX(100%); opacity: 0; } }
 
-    /* Amélioration Mot de passe */
-    .password-modal { 
+    /* --- BOUTON AIDE (?) (FIXED OUTSIDE MAIN) --- */
+    .help-btn {
+      position: fixed; top: 6; right: 6; z-index: 60;
+      width: 42px; height: 42px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 1.2rem;
+      cursor: pointer;
+      transition: all .2s ease;
+      box-shadow: 0 0 15px rgba(255,255,255,0.1);
+    }
+    .help-btn:hover {
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.1);
+    }
+
+    .help-modal {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none; opacity: 0; transition: opacity .3s ease;
+    }
+    .help-modal.visible {
+      pointer-events: auto; opacity: 1;
+    }
+    .help-content {
+      background: #1a1a1a; border: 1px solid rgba(255,255,255,0.2);
+      padding: 2.5rem; border-radius: 2rem; max-w-sm text-center;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
+      transform: scale(0.95);
+      transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .help-modal.visible .help-content { transform: scale(1); }
+
+    /* --- MODALES --- */
+    .password-modal, .welcome-modal { 
       position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(12px); 
       display: flex; align-items: center; justify-content: center; z-index: 9000; 
     }
-    .password-modal.hidden { display: none; }
+    .password-modal.hidden, .welcome-modal.hidden { display: none; }
     .shake { animation: shake .5s; }
     @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
     
-    /* --- BOUTIQUE (COULEURS ET ICONES) --- */
+    /* --- BOUTIQUE --- */
     .shop-sport { color: #EAB308; border-color: rgba(234, 179, 8, 0.3); background: rgba(234, 179, 8, 0.05); }
     .shop-sport:hover { border-color: rgba(234, 179, 8, 0.6); background: rgba(234, 179, 8, 0.1); }
     .shop-4x4 { color: #10B981; border-color: rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.05); }
@@ -120,35 +171,14 @@
     .shop-vip { color: #A855F7; border-color: rgba(168, 85, 247, 0.4); background: rgba(168, 85, 247, 0.1); }
     .shop-vip:hover { border-color: rgba(168, 85, 247, 0.8); background: rgba(168, 85, 247, 0.15); }
 
-    /* --- STYLES JEU DE CARTES --- */
+    /* --- JEU DE CARTES --- */
     .perspective-1000 { perspective: 1000px; }
-    .transform-style-3d { transform-style: preserve-3d; }
-    .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1); transform-style: preserve-3d; background-color: #000000; }
+    .card-face { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 1rem; background-color: #000000; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; }
     .rotate-y-180 { transform: rotateY(180deg); }
-    
-    .card-inner {
-      position: relative; width: 100%; height: 100%; text-align: center;
-      transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
-      transform-style: preserve-3d; background-color: #000000; 
-    }
-    
-    .card-face {
-      position: absolute; width: 100%; height: 100%;
-      -webkit-backface-visibility: hidden; backface-visibility: hidden;
-      border-radius: 1rem; background-color: #000000; 
-      border: 1px solid rgba(255,255,255,0.15); 
-      display: flex; align-items: center; justify-content: center;
-    }
-
-    /* Bouton Edit Pseudo */
-    .edit-pseudo-btn {
-      font-size: 0.75rem; color: rgba(255,255,255,0.4); text-decoration: underline; cursor: pointer; margin-top: 4px; display: inline-block;
-    }
+    .edit-pseudo-btn { font-size: 0.75rem; color: rgba(255,255,255,0.4); text-decoration: underline; cursor: pointer; margin-top: 4px; display: inline-block; }
     .edit-pseudo-btn:hover { color: white; }
-    
-    .countdown {
-      font-size: 0.7rem; color: #9CA3AF; display: block; margin-top: 2px; font-variant-numeric: tabular-nums;
-    }
+    .countdown { font-size: 0.7rem; color: #9CA3AF; display: block; margin-top: 2px; font-variant-numeric: tabular-nums; }
 
   </style>
 </head>
@@ -157,18 +187,57 @@
   <!-- CONTAINER NOTIFICATIONS -->
   <div id="notificationContainer" class="notification-container"></div>
 
-  <!-- LOADER (Z-INDEX HAUT) -->
+  <!-- BOUTON AIDE (EN DEHORS DE MAIN POUR ÉVITER LES BUGS DE Z-INDEX) -->
+  <button id="helpBtn" class="help-btn" onclick="toggleHelp()">?</button>
+  <div id="helpModal" class="help-modal" onclick="toggleHelp()">
+    <div class="help-content" onclick="event.stopPropagation()">
+      <h3 class="text-2xl font-bold mb-4 text-white">Comment Gagner ?</h3>
+      <p class="text-white/70 mb-6">Retourne 3 cartes identiques.</p>
+      <div class="space-y-4 text-left">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center border border-yellow-500/50 font-bold text-yellow-400">1</div>
+          <div class="text-white font-bold">x 3 = <span class="text-yellow-400">1.000.000€</span></div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/50 font-bold text-white">2</div>
+          <div class="text-white font-bold">x 3 = <span class="text-white">BMW + 100K€</span></div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center border border-red-500/50 font-bold text-red-500">X</div>
+          <div class="text-white font-bold">x 3 = <span class="text-red-500">PERDU</span></div>
+        </div>
+      </div>
+      <button onclick="toggleHelp(event)" class="mt-8 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-full text-sm transition border border-white/10 font-bold">Fermer</button>
+    </div>
+  </div>
+
+  <!-- LOADER -->
   <div id="pageLoader" class="page-loader hidden">
     <div class="spinner"></div>
     <p class="mt-4 text-white font-bold tracking-widest">CHARGEMENT...</p>
   </div>
 
-  <!-- Accès par mot de passe site -->
+  <!-- MODALE BIENVENU -->
+  <div id="welcomeModal" class="welcome-modal" aria-modal="true" role="dialog">
+    <div class="max-w-md w-full mx-4">
+      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-[2rem] p-8 shadow-2xl card-hover">
+        <div class="text-center mb-6">
+          <div class="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-6 shadow-xl shadow-white/10">
+            <span class="text-4xl">🎉</span>
+          </div>
+          <h2 class="text-3xl font-bold text-white mb-2">Bienvenue !</h2>
+          <p class="text-white/70">Tu es connecté au portail RYNACITY RP.</p>
+        </div>
+        <button onclick="acceptWelcome()" class="btn-gradient w-full justify-center text-lg py-4">Entrer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE MOT DE PASSE -->
   <div id="passwordModal" class="password-modal" aria-modal="true" role="dialog">
     <div class="max-w-md w-full mx-4">
       <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-[2rem] p-8 shadow-2xl card-hover">
         <div class="text-center mb-8">
-          <!-- Logo Blanc -->
           <div class="inline-flex items-center justify-center w-16 h-16 bg-white rounded-[1.5rem] mb-4 shadow-lg shadow-white/10">
             <span class="text-black font-black text-2xl">RY</span>
           </div>
@@ -177,13 +246,10 @@
         </div>
         <form id="passwordForm" class="space-y-4">
           <input type="password" id="passwordInput" placeholder="Mot de passe" class="input" autocomplete="off" aria-label="Mot de passe" />
-          
-          <!-- Vérification Bot -->
           <div class="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center justify-between">
             <span class="text-sm text-white/70">Sécurité: <span id="captchaQuestion" class="font-bold text-white">2 + 2 = ?</span></span>
             <input type="number" id="captchaInput" class="w-20 bg-transparent border-b border-white/30 text-center text-white focus:outline-none" placeholder="?">
           </div>
-
           <button type="submit" class="btn-gradient w-full justify-center">Accéder au site</button>
           <p id="errorMessage" class="text-red-400 text-sm text-center hidden" role="alert">Mot de passe incorrect !</p>
         </form>
@@ -193,16 +259,15 @@
 
   <!-- Contenu principal -->
   <div id="mainContent" class="hidden">
-    <!-- Navbar (Centrée, Pas de Bouton Retour, Icones claires) -->
+    <!-- Navbar -->
     <header class="sticky top-0 backdrop-blur-lg bg-black/90 z-50 mt-4 rounded-b-2xl h-20"> 
       <div class="max-w-screen-xl w-full mx-auto px-6 relative h-full">
         
-        <!-- Navigation Centrée (Visible même dans le jeu) -->
+        <!-- Navigation Centrée (Cachée en Jeu) -->
         <nav id="mainNav" class="flex items-center justify-center h-full gap-2 md:gap-4" aria-label="Navigation principale">
           <button data-view="homeView" class="nav-btn flex items-center gap-2" aria-current="page">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-            <!-- RETOUR À ACCUEIL PAR DÉFAUT -->
-            <span class="hidden md:block font-bold">Accueil</span>
+            <span class="hidden md:block">Accueil</span>
           </button>
           <button data-view="docView" class="nav-btn flex items-center gap-2">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -225,6 +290,13 @@
             <span class="hidden md:block">Boutique</span>
           </button>
         </nav>
+
+        <!-- BOUTON RETOUR (ROUGE, CENTRÉ, UNIQUEMENT EN JEU) -->
+        <button id="backNav" onclick="openView('homeView')" class="hidden absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 btn-back flex items-center gap-2">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m11-11v-9m0 9l-1.5-1.5m0 0l-4.95 4.95m-4.95 4.95l-1.5-1.5M17 10h-4"/></svg>
+          <span>RETOUR</span>
+        </button>
+
       </div>
     </header>
 
@@ -403,18 +475,16 @@
         </div>
       </section>
 
-      <!-- SHOP (ICONES ET COULEURS) -->
+      <!-- SHOP -->
       <section id="shopView" class="spa-view">
         <div class="max-w-screen-xl mx-auto px-6 py-16">
           <h2 class="text-4xl font-extrabold mb-8 text-center">BOUTIQUE</h2>
           <p class="text-center text-white/50 mb-12">Choisis ton Gamepass pour débloquer des véhicules exclusifs.</p>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- PASS SPORT (JAUNE - VOITURE) -->
             <article class="card-hover backdrop-blur-[10px] border p-8 rounded-[2rem] text-center shop-sport transition-all duration-300">
               <div class="w-20 h-20 bg-yellow-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-yellow-500/20">
-                <!-- Icone Voiture -->
-                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.7-1.7H5c-.9 0-1.7.8-1.7 1.7v3c0 .6-.4 1-1 1h2m4.6-2.6l2.29-2.29a1 1 0 011.41 1.41l-2.29 2.29a1 1 0 001.41-1.41L14.59 14.41a1 1 0 001.41 1.41l2.29-2.29a1 1 0 011.41-1.41l-2.29-2.29a1 1 0 001.41 1.41l2.29 2.29a1 1 0 011.41 1.41l-2.29 2.29a1 1 0 01-1.41 1.41L19 17z"/></svg>
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7M9 11V6l3 3 3 3V5m0 8H5v-4l4-4 4 4z"/></svg>
               </div>
               <h3 class="text-2xl font-bold mb-2">Gamepass Sport</h3>
               <div class="inline-block bg-yellow-500/10 px-3 py-1 rounded-full text-xs font-bold text-yellow-400 mb-4 border border-yellow-500/30">POPULAIRE</div>
@@ -423,15 +493,13 @@
                 <li>• 2 Véhicules Sportives</li>
                 <li>• Accessoires spéciaux</li>
               </ul>
-              <button class="btn-gradient w-full justify-center bg-yellow-400 text-yellow-900">Acheter</button>
+              <button class="btn-gradient w-full justify-center">Acheter</button>
             </article>
 
-            <!-- PASS 4X4 (VERT - CAMION) -->
             <article class="card-hover backdrop-blur-[10px] border p-8 rounded-[2rem] text-center shop-4x4 transition-all duration-300 relative overflow-hidden">
               <div class="absolute top-0 left-0 w-full h-1 bg-green-500/20"></div>
               <div class="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-500/20">
-                <!-- Icone Camion/Boite -->
-                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16m-2 0V6H6m0 0l-4-4m-4-4V6H4m14 0l-4-4m0 0v14M4 20h16m-2 0V6H6m0 0l-4-4m-4-4V6H4z"/></svg>
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20l5.953-5.95a1 1 0 0 0-1.414-1.414l-8.5-8.5a1 1 0 0 0-1.414 1.414l3.536 3.536a1 1 0 0 1 1.414-1.414l-4.95-4.95a1 1 0 0 1 1.414-1.414l8.5 8.5a1 1 0 0 0 1.414 1.414l-3.536-3.536zM13 7l5.953-5.95a1 1 0 0 0-1.414-1.414l-8.5-8.5a1 1 0 0 0-1.414 1.414l3.536 3.536a1 1 0 0 1 1.414-1.414l-4.95-4.95a1 1 0 0 1 1.414-1.414l8.5 8.5a1 1 0 0 0 1.414 1.414l-3.536-3.536z"/></svg>
               </div>
               <h3 class="text-2xl font-bold mb-2">Gamepass 4x4</h3>
               <p class="text-white/70 mb-4">Domine tout type de terrain.</p>
@@ -439,14 +507,12 @@
                 <li>• Véhicules Tout-Terrain</li>
                 <li>• Capacité de chargement</li>
               </ul>
-              <button class="btn-gradient w-full justify-center bg-green-500 text-green-900">Acheter</button>
+              <button class="btn-gradient w-full justify-center">Acheter</button>
             </article>
 
-            <!-- PASS VIP (VIOLET - ÉTOILE) -->
             <article class="card-hover backdrop-blur-[10px] border p-8 rounded-[2rem] text-center shop-vip transition-all duration-300 shadow-[0_0_30px_rgba(168,85,247,0.2)]">
-              <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-purple-500/40">
-                <!-- Icone Étoile -->
-                <svg class="w-10 h-10 text-purple-900" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.595 1.81l-2.293 2.746a1 1 0 00-.932 1.525l-2.019-4.38a1 1 0 00-.718.097l-2.019 4.38a1 1 0 00.932 1.525l2.293 2.746c.39.533.951.81 1.595.81h3.462c.643 0 1.205.277 1.603.718l1.07-3.292z"/></svg>
+              <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
+                <svg class="w-10 h-10 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L2 9.27l6.91-1.01L12 2zm0 2.72l5.15 4.07-5.16 4.07-4.92 4.08-4.92 4.08-4.92 4.08-4.92-4.08-4.92-4.08-5.16-4.08 5.16 4.07 4.92 4.08 4.92 4.08 4.92 4.08L12 4.72zm0 7.75l4.23 2.95-4.23 2.96-4.92 4.08-4.92 4.08-4.92 4.08-5.16 4.08 5.16 4.08 4.92 4.08 4.92 4.08L12 14.47z"/></svg>
               </div>
               <h3 class="text-2xl font-black mb-2">Gamepass VIP</h3>
               <div class="inline-block bg-black px-3 py-1 rounded-full text-xs font-bold text-white mb-4 border border-white">LE PLUS CONNU</div>
@@ -456,7 +522,7 @@
                 <li>• Véhicules exclusifs</li>
                 <li>• Priorité totale</li>
               </ul>
-              <button class="btn-gradient w-full justify-center bg-purple-500 text-white">Acheter</button>
+              <button class="btn-gradient w-full justify-center">Acheter</button>
             </article>
           </div>
         </div>
@@ -465,7 +531,6 @@
       <!-- JEU DE CARTES -->
       <section id="adminView" class="spa-view">
         <div class="max-w-4xl w-full mx-auto px-4 pt-24 pb-12">
-          
           <div class="text-center mb-8 relative">
             <h2 class="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter">
               Lucky Cards
@@ -520,14 +585,13 @@
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
     </main>
 
-    <!-- Bouton Admin (Jeu) -->
-    <button id="adminFab" class="admin-fab hidden" onclick="openView('adminView')">
+    <!-- Bouton Admin (FAB) -->
+    <button id="adminFab" class="admin-fab fixed right-6 bottom-6 z-60 border border-white/10 bg-white/10 text-white rounded-full p-3 transition-all shadow-lg hover:bg-white/20" onclick="openView('adminView')">
       <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A1 1 0 0112 2v1.051a7.962 7.962 0 013.043 1.26l.744-.744a1 1 0 011.414 1.414l-.744.744A7.962 7.962 0 0118 8h1a1 1 0 110 2h-1a7.962 7.962 0 01-1.26 3.043l.744.744a1 1 0 11-1.414 1.414l-.744-.744A7.962 7.962 0 0112 16.949V18a1 1 0 11-2 0v-1.051a7.962 7.962 0 01-3.043-1.26l-.744.744a1 1 0 01-1.414-1.414l.744-.744A7.962 7.962 0 014 10H3a1 1 0 110-2h1a7.962 7.962 0 011.26-3.043l-.744-.744A1 1 0 015.93 2.8l.744.744A7.962 7.962 0 019 3.051V2a1 1 0 012 0z"/></svg>
       <span>Jeu</span>
     </button>
@@ -539,16 +603,12 @@
       const container = document.getElementById('notificationContainer');
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
-      
       let icon = '';
       if(type === 'error') icon = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10h.01M15 9h.01"/></svg>';
       else if(type === 'success') icon = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
       else icon = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01"/></svg>';
-
       toast.innerHTML = `${icon}<span class="font-semibold text-sm">${message}</span>`;
-      
       container.appendChild(toast);
-      
       setTimeout(() => {
         toast.style.animation = 'fadeOut 0.4s ease forwards';
         setTimeout(() => toast.remove(), 400);
@@ -564,24 +624,24 @@
     // ----- ACCÈS SITE -----
     const SITE_PASSWORD = 'yRy';
     const passwordModal = document.getElementById('passwordModal');
+    const welcomeModal = document.getElementById('welcomeModal');
     const mainContent = document.getElementById('mainContent');
     const passwordForm = document.getElementById('passwordForm');
     const passwordInput = document.getElementById('passwordInput');
     const captchaInput = document.getElementById('captchaInput');
     const errorMessage = document.getElementById('errorMessage');
     const pageLoader = document.getElementById('pageLoader');
-    const navHomeText = document.getElementById('navHomeText'); // Texte Accueil
 
     if (sessionStorage.getItem('authenticated') === 'true') {
       passwordModal.classList.add('hidden');
       mainContent.classList.remove('hidden');
-      navHomeText.innerText = "Accueil"; // Accueil par défaut
+      if(sessionStorage.getItem('welcomeSeen') !== 'true') {
+        welcomeModal.classList.remove('hidden');
+      }
     }
     
     passwordForm?.addEventListener('submit', (e) => {
       e.preventDefault();
-      
-      // Vérification Captcha
       if (parseInt(captchaInput.value) !== captchaResult) {
         showNotification('Erreur de calcul anti-bot !', 'error');
         captchaInput.value = '';
@@ -589,19 +649,18 @@
         setTimeout(() => captchaInput.classList.remove('shake'), 500);
         return;
       }
-
       if (passwordInput.value === SITE_PASSWORD) {
-        // Animation chargement
         pageLoader.classList.remove('hidden');
         setTimeout(() => {
           pageLoader.classList.add('hidden');
           sessionStorage.setItem('authenticated','true');
           passwordModal.classList.add('hidden');
           mainContent.classList.remove('hidden');
-          navHomeText.innerText = "Accueil"; // On force Accueil
           showNotification('Bienvenue sur RYNACITY RP', 'success');
+          if(sessionStorage.getItem('welcomeSeen') !== 'true') {
+            welcomeModal.classList.remove('hidden');
+          }
         }, 1500); 
-
       } else {
         showNotification('Mot de passe incorrect !', 'error');
         passwordInput.value = '';
@@ -610,14 +669,46 @@
       }
     });
 
+    function acceptWelcome() {
+      sessionStorage.setItem('welcomeSeen', 'true');
+      welcomeModal.classList.add('hidden');
+    }
+
+    function toggleHelp(e) {
+      if(e) e.stopPropagation();
+      const modal = document.getElementById('helpModal');
+      modal.classList.toggle('visible');
+    }
+
     // ----- SPA NAV -----
     const views = ['homeView','docView','mapView','updatesView','discordView','shopView','adminView'];
     const navButtons = document.querySelectorAll('.nav-btn');
+    const mainNav = document.getElementById('mainNav');
+    const backNav = document.getElementById('backNav');
+    const mobileNav = document.getElementById('mobileNav');
+    const adminFab = document.getElementById('adminFab');
+    const helpBtn = document.getElementById('helpBtn');
 
     function openView(viewId) {
       pageLoader.classList.remove('hidden');
       setTimeout(() => {
         pageLoader.classList.add('hidden');
+        
+        // GESTION NAVIGATION JEU
+        if (viewId === 'adminView') {
+          mainNav.classList.add('hidden');
+          backNav.classList.remove('hidden'); // RETOUR ROUGE
+          mobileNav.classList.add('hidden');
+          adminFab.classList.add('hidden');
+          helpBtn.classList.remove('hidden'); // AIDE JEU
+        } else {
+          mainNav.classList.remove('hidden');
+          backNav.classList.add('hidden');
+          mobileNav.classList.remove('hidden');
+          adminFab.classList.remove('hidden');
+          helpBtn.classList.add('hidden'); // Cacher AIDE HORS JEU
+        }
+
         views.forEach(id => {
           const el = document.getElementById(id);
           if (el) el.classList.toggle('active', id === viewId);
@@ -654,7 +745,6 @@
     const startCardBtn = document.getElementById('startCardGameBtn');
     const cardUsernameInput = document.getElementById('cardUsernameInput');
     const attemptsDisplay = document.getElementById('attemptsLeftDisplay');
-    const countdownDisplay = document.getElementById('countdownDisplay');
     const overlayPseudo = document.getElementById('overlayPseudo');
     const grid = document.getElementById('cardsGrid');
     const resultMsg = document.getElementById('gameResultMessage');
@@ -676,12 +766,12 @@
       tomorrow.setHours(24,0,0,0);
       const diff = tomorrow - now;
       if (diff <= 0) {
-        countdownDisplay.innerText = "Reset imminent...";
+        document.getElementById('countdownDisplay').innerText = "Reset imminent...";
       } else {
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        countdownDisplay.innerText = `Prochain: ${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+        document.getElementById('countdownDisplay').innerText = `Prochain: ${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
       }
     }
     
@@ -711,18 +801,19 @@
 
     function updateUI() {
       attemptsDisplay.innerText = gameState.attempts;
-      
       if(gameState.attempts <= 0) {
         attemptsDisplay.classList.add('text-red-500');
-        countdownDisplay.classList.remove('hidden');
+        document.getElementById('countdownDisplay').classList.remove('hidden');
       } else {
         attemptsDisplay.classList.remove('text-red-500');
-        countdownDisplay.classList.add('hidden');
+        document.getElementById('countdownDisplay').classList.add('hidden');
       }
-
       if(gameState.username) {
         document.getElementById('gameUsernameDisplay').innerText = gameState.username;
         overlayPseudo.innerText = gameState.username.toUpperCase();
+        cardAuthBox.classList.add('hidden');
+        cardGameArea.classList.remove('hidden');
+        if(editPseudoBtn) editPseudoBtn.classList.remove('hidden');
       }
     }
 
@@ -734,12 +825,11 @@
         showNotification("Tu n'as plus d'essais !", "error");
         return;
       }
-
       gameState.username = pseudo;
       saveCardState();
-      
       cardAuthBox.classList.add('hidden');
       cardGameArea.classList.remove('hidden');
+      editPseudoBtn.classList.remove('hidden');
       showNotification(`Bienvenue ${pseudo} !`, 'success');
       updateUI();
       startNewRound();
@@ -764,58 +854,41 @@
         limitModal.classList.remove('hidden');
         return;
       }
-
       grid.innerHTML = '';
       selectedCards = [];
       resultMsg.classList.add('hidden');
       isProcessing = false;
-
       const deck = [1,1,1, 2,2,2, 'X','X','X'];
       currentCardsData = shuffle(deck);
-
       currentCardsData.forEach((val, index) => {
         const card = document.createElement('div');
         card.className = 'group relative h-40 w-full cursor-pointer perspective-1000';
         card.dataset.value = val;
         card.dataset.index = index;
-        
         card.innerHTML = `
           <div class="card-inner" id="card-inner-${index}">
-            <div class="card-face z-20">
-              <div class="text-6xl font-black text-white/20 select-none">?</div>
-            </div>
-            <div class="card-face rotate-y-180 z-10">
-              ${getCardContent(val)}
-            </div>
+            <div class="card-face z-20"><div class="text-6xl font-black text-white/20 select-none">?</div></div>
+            <div class="card-face rotate-y-180 z-10">${getCardContent(val)}</div>
           </div>
         `;
-
         card.addEventListener('click', () => flipCard(card, index));
         grid.appendChild(card);
       });
     }
 
     function getCardContent(val) {
-      if(val === 1) {
-        return `<div class="text-center"><div class="text-6xl font-black text-yellow-400">1</div><div class="text-xs text-yellow-200 font-bold mt-1">1M€</div></div>`;
-      } else if(val === 2) {
-        return `<div class="text-center"><div class="text-6xl font-black text-white">2</div><div class="text-xs text-gray-300 font-bold mt-1">BMW</div></div>`;
-      } else {
-        return `<div class="text-center"><div class="text-6xl font-black text-red-500">X</div><div class="text-xs text-red-300 font-bold mt-1">PERDU</div></div>`;
-      }
+      if(val === 1) return `<div class="text-center"><div class="text-6xl font-black text-yellow-400">1</div><div class="text-xs text-yellow-200 font-bold mt-1">1M€</div></div>`;
+      else if(val === 2) return `<div class="text-center"><div class="text-6xl font-black text-white">2</div><div class="text-xs text-gray-300 font-bold mt-1">BMW</div></div>`;
+      else return `<div class="text-center"><div class="text-6xl font-black text-red-500">X</div><div class="text-xs text-red-300 font-bold mt-1">PERDU</div></div>`;
     }
 
     function flipCard(card, index) {
       if(isProcessing || selectedCards.includes(index) || card.classList.contains('flipped')) return;
-
       const inner = document.getElementById(`card-inner-${index}`);
       inner.style.transform = 'rotateY(180deg)';
       card.classList.add('flipped');
       selectedCards.push(index);
-
-      if(selectedCards.length === 3) {
-        checkMatch();
-      }
+      if(selectedCards.length === 3) checkMatch();
     }
 
     function checkMatch() {
@@ -823,50 +896,24 @@
       const val1 = currentCardsData[selectedCards[0]];
       const val2 = currentCardsData[selectedCards[1]];
       const val3 = currentCardsData[selectedCards[2]];
-
       gameState.attempts--;
       saveCardState();
       updateUI();
-
       setTimeout(() => {
-        if(val1 === val2 && val2 === val3) {
-          handleWin(val1);
-        } else {
-          handleLoss();
-        }
+        if(val1 === val2 && val2 === val3) { handleWin(val1); } else { handleLoss(); }
       }, 1000);
     }
 
     function handleWin(value) {
-      let msg = "";
-      let colorClass = "";
-      
-      if(value === 1) {
-        msg = "1.000.000€ GAGNÉ !";
-        colorClass = "text-yellow-400";
-        showNotification("Mega Win ! Tu as gagné 1.000.000€", 'success');
-      } else if (value === 2) {
-        msg = "BMW + 100K€ GAGNÉ !";
-        colorClass = "text-white";
-        showNotification("Gagné ! Tu as eu une BMW + 100k", 'success');
-      } else {
-        msg = "C'est 3 X...";
-        colorClass = "text-red-400";
-      }
-
+      let msg = "", colorClass = "";
+      if(value === 1) { msg = "1.000.000€ GAGNÉ !"; colorClass = "text-yellow-400"; showNotification("Mega Win ! Tu as gagné 1.000.000€", 'success'); }
+      else if (value === 2) { msg = "BMW + 100K€ GAGNÉ !"; colorClass = "text-white"; showNotification("Gagné ! Tu as eu une BMW + 100k", 'success'); }
+      else { msg = "C'est 3 X..."; colorClass = "text-red-400"; }
       resultText.innerHTML = msg;
       resultText.className = `text-3xl font-black drop-shadow-md ${colorClass}`;
       resultMsg.classList.remove('hidden');
-      
-      if(value === 1 || value === 2) {
-        resultInstruction.style.display = 'block';
-      } else {
-        resultInstruction.style.display = 'none';
-      }
-
-      selectedCards.forEach(idx => {
-        document.querySelector(`#card-inner-${idx} > .rotate-y-180`).style.boxShadow = "inset 0 0 20px rgba(255,255,255,0.2)";
-      });
+      if(value === 1 || value === 2) { resultInstruction.style.display = 'block'; } else { resultInstruction.style.display = 'none'; }
+      selectedCards.forEach(idx => { document.querySelector(`#card-inner-${idx} > .rotate-y-180`).style.boxShadow = "inset 0 0 20px rgba(255,255,255,0.2)"; });
     }
 
     function handleLoss() {
@@ -876,10 +923,7 @@
       resultInstruction.style.display = 'none';
     }
 
-    function resetRound() {
-      startNewRound();
-    }
-
+    function resetRound() { startNewRound(); }
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -889,6 +933,8 @@
     }
 
     window.resetRound = resetRound;
+    window.toggleHelp = toggleHelp;
+    window.acceptWelcome = acceptWelcome;
     initCardGame();
   </script>
 </body>
