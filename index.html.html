@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>RYNACITY RP - Jeu Roblox</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com?ver=3"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .gradient-bg { background: linear-gradient(120deg, rgba(255,255,255,0.06), rgba(255,255,255,0.12)); }
+    .grid-pattern {
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.08) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity:.06;
+    }
+    .card-hover { position: relative; overflow: hidden; transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+    .card-hover::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(600px circle at var(--x,50%) var(--y,50%), rgba(255,255,255,0.08), transparent 40%);
+      opacity: 0; transition: opacity .25s ease;
+    }
+    .card-hover:hover { transform: translateY(-4px); border-color: rgba(255,255,255,.2); box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.15); }
+    .card-hover:hover::before { opacity: 1; }
+    .pulse-dot { animation: pulse 2.2s cubic-bezier(0.4,0,0.6,1) infinite; }
+    @keyframes pulse { 0%,100%{opacity:1; transform:scale(1)} 50%{opacity:.55; transform:scale(1.2)} }
+    .text-gradient {
+      background: linear-gradient(90deg, #fff, #f0f0f0 60%, rgba(255,255,255,.85));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .spa-view { display: none; }
+    .spa-view.active { display: block; }
+    .nav-btn {
+      color: #9CA3AF; background: transparent; border-radius: .65rem; padding: .55rem 1rem;
+      transition: all .2s ease; position: relative; outline: none;
+    }
+    .nav-btn:hover, .nav-btn:focus-visible { color:#fff; background: #111827; }
+    .nav-btn.active {
+      color:#fff; background: linear-gradient(90deg,#6d28d9,#db2777);
+      box-shadow: 0 0 20px rgba(219,39,119,0.35), inset 0 0 6px rgba(255,255,255,0.18);
+    }
+    .input {
+      width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: .9rem; padding: .75rem 1rem; color:#fff; outline: none; transition: border-color .2s ease, background .2s ease;
+    }
+    .input::placeholder { color: rgba(255,255,255,0.45); }
+    .input:focus { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.07); }
+    .btn-gradient {
+      display:inline-flex; align-items:center; gap:.5rem; padding:.8rem 1.2rem; border-radius:.9rem; color:#fff; font-weight:700;
+      background: linear-gradient(90deg,#6366f1,#ec4899); transition: filter .2s ease, transform .2s ease;
+    }
+    .btn-gradient:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    .password-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 60; }
+    .password-modal.hidden { display: none; }
+    .shake { animation: shake .5s; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
+    .admin-fab {
+      position: fixed; right: 1rem; bottom: 1rem; z-index: 60;
+      border-radius: 9999px; padding: 0.6rem 0.9rem; background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12); color:#fff; backdrop-filter: blur(8px);
+      transition: all .2s ease; display:flex; align-items:center; gap:8px;
+    }
+    .admin-fab:hover { background: rgba(255,255,255,0.14); }
+  </style>
+</head>
+<body class="bg-black text-white antialiased">
+  <!-- Accès par mot de passe site -->
+  <div id="passwordModal" class="password-modal" aria-modal="true" role="dialog">
+    <div class="max-w-md w-full mx-4">
+      <div class="backdrop-blur-lg bg-white/10 border border-white/20 rounded-3xl p-8 shadow-2xl">
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl mb-4">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+          </div>
+          <h2 class="text-3xl font-bold text-white mb-2">RYNACITY RP</h2>
+          <p class="text-white/60">Entrez le mot de passe pour accéder au site</p>
+        </div>
+        <form id="passwordForm" class="space-y-4">
+          <input type="password" id="passwordInput" placeholder="Mot de passe" class="input" autocomplete="off" aria-label="Mot de passe" />
+          <button type="submit" class="btn-gradient w-full justify-center">Accéder au site</button>
+          <p id="errorMessage" class="text-red-400 text-sm text-center hidden" role="alert">Mot de passe incorrect !</p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenu principal -->
+  <div id="mainContent" class="hidden">
+    <!-- Navbar -->
+    <header class="sticky top-0 backdrop-blur-lg bg-black/90 z-50 border-b border-gray-800">
+      <div class="max-w-screen-xl w-full mx-auto px-6">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center">
+            <div class="h-8 w-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg grid place-items-center">
+              <span class="text-white font-bold text-sm">RY</span>
+            </div>
+            <h1 class="ml-3 text-white text-lg font-bold tracking-tight leading-7">RYNACITY RP</h1>
+          </div>
+          <nav class="hidden md:flex items-center" aria-label="Navigation principale">
+            <button data-view="homeView" class="nav-btn flex items-center" aria-current="page">
+              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+              <span class="ml-2">Accueil</span>
+            </button>
+            <button data-view="docView" class="nav-btn flex items-center ml-1">
+              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
+              <span class="ml-2">Documentation</span>
+            </button>
+            <button data-view="mapView" class="nav-btn flex items-center ml-1">
+              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clip-rule="evenodd"/></svg>
+              <span class="ml-2">Carte</span>
+            </button>
+            <button data-view="updatesView" class="nav-btn flex items-center ml-1">
+              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+              <span class="ml-2">Mises à jour</span>
+            </button>
+            <button data-view="discordView" class="nav-btn flex items-center ml-1">
+              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
+              <span class="ml-2">DISCORD</span>
+            </button>
+          </nav>
+          <div class="flex items-center">
+            <button onclick="openView('reportView')" title="Signaler un problème" class="nav-btn flex items-center" aria-controls="reportView">
+              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+              <span class="hidden md:block text-sm font-medium ml-2">Rapport</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Bottom mobile nav -->
+    <div class="fixed md:hidden z-50 left-1/2 -translate-x-1/2 bottom-6">
+      <div class="flex items-center backdrop-blur-lg bg-black/90 shadow-lg border border-gray-800 px-3 py-2 rounded-full">
+        <button data-view="homeView" class="nav-btn h-12 w-12 grid place-items-center" aria-label="Accueil">
+          <svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+        </button>
+        <button data-view="docView" class="nav-btn h-12 w-12 grid place-items-center" aria-label="Documentation">
+          <svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
+        </button>
+        <button data-view="mapView" class="nav-btn h-12 w-12 grid place-items-center" aria-label="Carte">
+          <svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clip-rule="evenodd"/></svg>
+        </button>
+        <button data-view="updatesView" class="nav-btn h-12 w-12 grid place-items-center" aria-label="Mises à jour">
+          <svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+        </button>
+        <button data-view="discordView" class="nav-btn h-12 w-12 grid place-items-center" aria-label="Discord">
+          <svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Vues -->
+    <main class="relative overflow-hidden">
+      <!-- HOME -->
+      <section id="homeView" class="spa-view active">
+        <div class="relative min-h-[92vh]">
+          <div class="absolute inset-0 grid-pattern"></div>
+          <div class="absolute gradient-bg blur-3xl h-96 w-96 rounded-full left-[6%] top-[5%]"></div>
+          <div class="absolute gradient-bg blur-3xl h-72 w-72 rounded-full right-[4%] bottom-[8%]"></div>
+
+          <div class="relative z-10 px-6 py-20">
+            <div class="max-w-screen-xl mx-auto">
+              <div class="text-center mb-16">
+                <div class="inline-flex items-center backdrop-blur-sm bg-white/10 border border-white/10 mb-6 px-4 py-2 rounded-full">
+                  <svg class="text-white/70 h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>
+                  <span class="text-white/80 text-sm font-medium ml-2">Jeu Roblox Roleplay</span>
+                </div>
+                <h2 class="text-6xl md:text-8xl font-black tracking-tight leading-tight mb-6">
+                  <span class="text-gradient" id="heroTitleDisplay">RYNACITY RP</span>
+                </h2>
+                <p id="heroSubtitleDisplay" class="max-w-2xl mx-auto text-white/70 text-xl md:text-2xl leading-relaxed">
+                  Votre portail centralisé pour les <span class="text-white">mises à jour</span>, la <span class="text-white">documentation</span> et la <span class="text-white">communauté</span>.
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                <article class="card-hover backdrop-blur-[10px] bg-white/5 shadow-[rgba(0,0,0,0.35)_0px_10px_30px,rgba(255,255,255,0.12)_0px_1px_0px_0px_inset] h-80 border border-white/10 p-8 rounded-3xl cursor-pointer"
+                         onclick="openView('docView')" onmousemove="cardLight(event,this)" aria-label="Ouvrir Documentation">
+                  <div class="flex flex-col h-full">
+                    <div class="flex items-start justify-between mb-6">
+                      <div class="backdrop-blur-sm bg-white/10 p-3 rounded-2xl">
+                        <svg class="text-white h-7 w-7" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
+                      </div>
+                      <svg class="text-white/40 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Documentation</h3>
+                    <p class="text-white/70 leading-relaxed">Guides complets, règles RP, FAQ, astuces pour progresser.</p>
+                    <div class="mt-auto pt-6 flex items-center justify-between border-t border-white/10">
+                      <span class="text-blue-400 text-sm font-medium">15+ guides</span>
+                      <span class="text-white/70 text-sm">Découvrir →</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="card-hover backdrop-blur-[10px] bg-white/5 shadow-[rgba(0,0,0,0.35)_0px_10px_30px,rgba(255,255,255,0.12)_0px_1px_0px_0px_inset] h-80 border border-white/10 p-8 rounded-3xl cursor-pointer"
+                         onclick="openView('updatesView')" onmousemove="cardLight(event,this)" aria-label="Ouvrir Mises à jour">
+                  <div class="flex flex-col h-full">
+                    <div class="flex items-start justify-between mb-6">
+                      <div class="backdrop-blur-sm bg-white/10 p-3 rounded-2xl">
+                        <svg class="text-white h-7 w-7" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+                      </div>
+                      <svg class="text-white/40 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+                    </div>
+                    <h3 id="updatesVersionDisplay" class="text-2xl font-bold mb-3">v1.0.0 — Aujourd’hui</h3>
+                    <p class="text-white/70 leading-relaxed">Notes de patch, corrections, nouvelles fonctionnalités.</p>
+                    <div class="mt-auto pt-6 flex items-center justify-between border-t border-white/10">
+                      <span class="text-green-400 text-sm font-medium">Dernière MAJ: Aujourd’hui</span>
+                      <span class="text-white/70 text-sm">Lire →</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="card-hover backdrop-blur-[10px] bg-white/5 shadow-[rgba(0,0,0,0.35)_0px_10px_30px,rgba(255,255,255,0.12)_0px_1px_0px_0px_inset] h-80 border border-white/10 p-8 rounded-3xl cursor-pointer"
+                         onclick="openView('discordView')" onmousemove="cardLight(event,this)" aria-label="Ouvrir Discord">
+                  <div class="flex flex-col h-full">
+                    <div class="flex items-start justify-between mb-6">
+                      <div class="backdrop-blur-sm bg-white/10 p-3 rounded-2xl">
+                        <svg class="text-white h-7 w-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
+                      </div>
+                      <svg class="text-white/40 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Communauté Discord</h3>
+                    <p class="text-white/70 leading-relaxed">Rejoins, suis les annonces et ouvre un ticket au besoin.</p>
+                    <div class="mt-auto pt-6 flex items-center justify-between border-t border-white/10">
+                      <span class="text-indigo-400 text-sm font-medium">Objectif 1000 membres</span>
+                      <span class="text-white/70 text-sm">Rejoindre →</span>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <div class="flex flex-wrap justify-center gap-6">
+                <div class="flex items-center bg-white/5 border border-white/10 px-6 py-3 rounded-full">
+                  <div class="relative">
+                    <div class="bg-green-400 h-2 w-2 rounded-full"></div>
+                    <div class="absolute bg-green-400 h-2 w-2 rounded-full inset-0 pulse-dot"></div>
+                  </div>
+                  <span class="text-white/80 text-sm font-medium ml-3">Serveurs en ligne</span>
+                </div>
+                <div class="flex items-center bg-white/5 border border-white/10 px-6 py-3 rounded-full">
+                  <svg class="text-white/70 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"/></svg>
+                  <span class="text-white/80 text-sm font-medium ml-3">Version 1.0.0</span>
+                </div>
+                <div class="flex items-center bg-white/5 border border-white/10 px-6 py-3 rounded-full">
+                  <svg class="text-white/70 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07z"/></svg>
+                  <span class="text-white/80 text-sm font-medium ml-3">500+ joueurs</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DOC -->
+      <section id="docView" class="spa-view">
+        <div class="max-w-screen-xl mx-auto px-6 py-16">
+          <h2 class="text-4xl font-extrabold mb-6">Documentation</h2>
+          <p class="text-white/70 mb-10">Guides, tutoriels, règles, FAQ — tout pour bien commencer.</p>
+          <div class="space-y-8">
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+              <h3 class="text-2xl font-bold mb-2">Débuter sur RYNACITY RP</h3>
+              <p class="text-white/70">Prérequis, installation, création de personnage, bases du RP...</p>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+              <h3 class="text-2xl font-bold mb-2">Règles RP essentielles</h3>
+              <ul class="list-disc list-inside text-white/70 space-y-1">
+                <li>Respect, fair-play, pas de powergaming</li>
+                <li>Communication claire en /ooc</li>
+                <li>Sanctions et appels</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MAP -->
+      <section id="mapView" class="spa-view">
+        <div class="max-w-screen-xl mx-auto px-6 py-16">
+          <h2 class="text-4xl font-extrabold mb-6">Carte</h2>
+          <p class="text-white/70 mb-10">Aperçu, points d’intérêt, jobs, quartiers.</p>
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+            <div class="aspect-video bg-black/40 border border-white/10 rounded-xl grid place-items-center text-white/50">
+              Carte interactive (image/iframe/widget)
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- UPDATES -->
+      <section id="updatesView" class="spa-view">
+        <div class="max-w-screen-xl mx-auto px-6 py-16">
+          <h2 class="text-4xl font-extrabold mb-6">Mises à jour</h2>
+          <div class="space-y-6">
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+              <h3 id="updatesVersionItem" class="text-xl font-bold">v1.0.0 — Aujourd’hui</h3>
+              <ul id="updateNotesList" class="list-disc list-inside text-white/70 space-y-1 mt-2">
+                <li>Nouveaux métiers + équilibrage économie</li>
+                <li>Optimisations de performance</li>
+                <li>Corrections de bugs de spawn</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DISCORD -->
+      <section id="discordView" class="spa-view">
+        <div class="max-w-screen-xl mx-auto px-6 py-16">
+          <h2 class="text-4xl font-extrabold mb-4">Notre Discord</h2>
+          <p class="text-white/70 mb-8">Rejoins la communauté pour les annonces, évènements et support.</p>
+
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-white/80 font-semibold">Objectif: <span id="discordGoalText">1000</span> membres</span>
+              <span class="text-white/60" id="discordProgressText">80 / 1000</span>
+            </div>
+            <div class="w-full h-3 bg-white/10 rounded-full overflow-hidden">
+              <div id="discordProgressBar" class="h-3 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" style="width: 8%; box-shadow: 0 0 16px rgba(168,85,247,0.6);"></div>
+            </div>
+            <p class="text-white/50 text-sm mt-3">Aidez-nous à atteindre l’objectif ! Invitez vos amis.</p>
+          </div>
+
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+            <h3 class="text-2xl font-bold mb-2">Rejoindre le serveur</h3>
+            <p class="text-white/70 mb-4">Clique ci-dessous pour rejoindre immédiatement.</p>
+            <a id="discordInviteLink" href="#" target="_blank" class="btn-gradient" rel="noopener">Rejoindre le Discord</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- REPORT -->
+      <section id="reportView" class="spa-view">
+        <div class="max-w-screen-xl mx-auto px-6 py-16">
+          <h2 class="text-4xl font-extrabold mb-4">Support & Signalements</h2>
+          <p class="text-white/70 mb-8">Utilise le bon canal pour une prise en charge rapide.</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+              <h3 class="text-2xl font-bold mb-3">Procédure recommandée</h3>
+              <ol class="list-decimal list-inside text-white/80 space-y-2">
+                <li>Rejoindre le Discord RYNACITY RP.</li>
+                <li>Être connecté sur le serveur RYNACITY RP en jeu si nécessaire.</li>
+                <li>Ouvrir un ticket dans le canal support/🎫-tickets.</li>
+                <li>Expliquer la situation clairement (date/heure, joueurs impliqués, captures, logs).</li>
+                <li>Attendre la réponse d’un membre du staff.</li>
+              </ol>
+            </div>
+
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+              <h3 class="text-2xl font-bold mb-3">Contacts</h3>
+              <ul class="text-white/80 space-y-2">
+                <li>Email: <a href="mailto:druvo.officiel@gmail.com" class="underline hover:opacity-80">druvo.officiel@gmail.com</a></li>
+                <li>Discord: bouton ci-dessous pour rejoindre</li>
+                <li>En jeu: contacter un Staff RYNACITY RP</li>
+              </ul>
+              <div class="mt-4 flex flex-wrap gap-3">
+                <a id="discordInviteLink2" href="#" target="_blank" class="inline-flex items-center px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">Rejoindre le Discord</a>
+                <a href="mailto:druvo.officiel@gmail.com" class="inline-flex items-center px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">Envoyer un email</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 bg-white/5 border border-white/10 rounded-2xl p-6">
+            <h3 class="text-xl font-bold mb-2">Important</h3>
+            <p class="text-white/70">Les faux signalements, le harcèlement ou les menaces entraînent des sanctions. Restez respectueux et factuel.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ADMIN -->
+      <section id="adminView" class="spa-view">
+        <div class="max-w-screen-xl w-full mx-auto px-6 py-16">
+          <h2 class="text-4xl font-extrabold mb-2">Admin Panel</h2>
+          <p class="text-white/60 mb-8">Modifie le contenu (sauvegarde locale automatique). Mot de passe: NoNo</p>
+
+          <div id="adminAuthBox" class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
+            <h3 class="text-2xl font-bold mb-3">Authentification</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+              <div class="md:col-span-2">
+                <label class="text-white/70 text-sm block mb-2">Mot de passe admin</label>
+                <input id="adminPasswordInput" type="password" class="input" placeholder="••••••••" />
+              </div>
+              <button id="adminLoginBtn" class="btn-gradient">Se connecter</button>
+            </div>
+            <p id="adminAuthMsg" class="text-sm text-red-400 mt-3 hidden">Mot de passe incorrect.</p>
+          </div>
+
+          <form id="adminForm" class="space-y-8 hidden">
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+              <h3 class="text-xl font-bold mb-4">Section Hero</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-white/70 text-sm block mb-2">Titre</label>
+                  <input id="heroTitle" class="input" placeholder="RYNACITY RP" />
+                </div>
+                <div>
+                  <label class="text-white/70 text-sm block mb-2">Description</label>
+                  <input id="heroSubtitle" class="input" placeholder="Votre portail centralisé..." />
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+              <h3 class="text-xl font-bold mb-4">Discord</h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="text-white/70 text-sm block mb-2">Lien d’invitation</label>
+                  <input id="discordInvite" class="input" placeholder="https://discord.gg/..." />
+                </div>
+                <div>
+                  <label class="text-white/70 text-sm block mb-2">Objectif total</label>
+                  <input id="discordGoalInput" type="number" class="input" placeholder="1000" />
+                </div>
+                <div>
+                  <label class="text-white/70 text-sm block mb-2">Membres actuels</label>
+                  <input id="discordCurrentInput" type="number" class="input" placeholder="80" />
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+              <h3 class="text-xl font-bold mb-4">Dernière mise à jour</h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="text-white/70 text-sm block mb-2">Version</label>
+                  <input id="updateVersion" class="input" placeholder="v1.0.0" />
+                </div>
+                <div class="md:col-span-2">
+                  <label class="text-white/70 text-sm block mb-2">Notes (séparées par ;)</label>
+                  <input id="updateNotes" class="input" placeholder="Optimisations; Corrections; Nouveaux métiers" />
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <button type="button" id="saveAdminBtn" class="btn-gradient">Enregistrer</button>
+              <span id="saveMsg" class="text-white/60 text-sm"></span>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <button class="admin-fab" onclick="openView('adminView')" aria-label="Ouvrir le panel admin">
+      <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A1 1 0 0112 2v1.051a7.962 7.962 0 013.043 1.26l.744-.744a1 1 0 011.414 1.414l-.744.744A7.962 7.962 0 0118 8h1a1 1 0 110 2h-1a7.962 7.962 0 01-1.26 3.043l.744.744a1 1 0 11-1.414 1.414l-.744-.744A7.962 7.962 0 0112 16.949V18a1 1 0 11-2 0v-1.051a7.962 7.962 0 01-3.043-1.26l-.744.744a1 1 0 01-1.414-1.414l.744-.744A7.962 7.962 0 014 10H3a1 1 0 110-2h1a7.962 7.962 0 011.26-3.043l-.744-.744A1 1 0 015.93 2.8l.744.744A7.962 7.962 0 019 3.051V2a1 1 0 012 0z"/></svg>
+      <span>Admin</span>
+    </button>
+  </div>
+
+  <script>
+    // ----- Accès site -----
+    const SITE_PASSWORD = 'RyRy';
+    const passwordModal = document.getElementById('passwordModal');
+    const mainContent = document.getElementById('mainContent');
+    const passwordForm = document.getElementById('passwordForm');
+    const passwordInput = document.getElementById('passwordInput');
+    const errorMessage = document.getElementById('errorMessage');
+
+    if (sessionStorage.getItem('authenticated') === 'true') {
+      passwordModal.classList.add('hidden');
+      mainContent.classList.remove('hidden');
+    }
+    passwordForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (passwordInput.value === SITE_PASSWORD) {
+        sessionStorage.setItem('authenticated','true');
+        passwordModal.classList.add('hidden');
+        mainContent.classList.remove('hidden');
+      } else {
+        errorMessage.classList.remove('hidden');
+        passwordInput.value = '';
+        passwordInput.classList.add('shake');
+        setTimeout(() => passwordInput.classList.remove('shake'), 500);
+      }
+    });
+
+    // ----- SPA nav -----
+    const views = ['homeView','docView','mapView','updatesView','discordView','reportView','adminView'];
+    const navButtons = document.querySelectorAll('.nav-btn');
+    function openView(viewId) {
+      views.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('active', id === viewId);
+      });
+      navButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-view') === viewId);
+        btn.setAttribute('aria-current', btn.getAttribute('data-view') === viewId ? 'page' : 'false');
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const viewId = btn.getAttribute('data-view');
+        if (viewId) openView(viewId);
+      });
+    });
+    document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+    function cardLight(e, el) {
+      const rect = el.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      el.style.setProperty('--x', x + '%');
+      el.style.setProperty('--y', y + '%');
+    }
+    window.cardLight = cardLight;
+
+    // ----- Sauvegarde locale (localStorage) -----
+    const STORAGE_KEY = 'rynacity_config_v1';
+
+    function loadConfigFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch { return null; }
+    }
+    function saveConfigToStorage(cfg) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
+    }
+
+    // Config par défaut
+    let CONFIG = loadConfigFromStorage() || {
+      heroTitle: 'RYNACITY RP',
+      heroSubtitle: 'Votre portail centralisé pour les <span class="text-white">mises à jour</span>, la <span class="text-white">documentation</span> et la <span class="text-white">communauté</span>.',
+      discordInvite: '#',
+      discordGoal: 1000,
+      discordCurrent: 80,
+      updateVersion: 'v1.0.0',
+      updateNotes: ['Nouveaux métiers + équilibrage économie','Optimisations de performance','Corrections de bugs de spawn']
+    };
+
+    // Liens UI
+    const heroTitleDisplay = document.getElementById('heroTitleDisplay');
+    const heroSubtitleDisplay = document.getElementById('heroSubtitleDisplay');
+    const discordProgressBar = document.getElementById('discordProgressBar');
+    const discordProgressText = document.getElementById('discordProgressText');
+    const discordGoalText = document.getElementById('discordGoalText');
+    const discordInviteLink = document.getElementById('discordInviteLink');
+    const discordInviteLink2 = document.getElementById('discordInviteLink2');
+    const updatesVersionDisplay = document.getElementById('updatesVersionDisplay');
+    const updatesVersionItem = document.getElementById('updatesVersionItem');
+    const updateNotesList = document.getElementById('updateNotesList');
+
+    function applyConfigToUI(cfg) {
+      if (heroTitleDisplay) heroTitleDisplay.textContent = cfg.heroTitle || 'RYNACITY RP';
+      if (heroSubtitleDisplay) heroSubtitleDisplay.innerHTML = cfg.heroSubtitle || '';
+
+      const goal = Number(cfg.discordGoal || 1000);
+      const current = Math.max(0, Math.min(Number(cfg.discordCurrent || 0), goal));
+      const pct = goal > 0 ? Math.round((current/goal)*100) : 0;
+      if (discordGoalText) discordGoalText.textContent = goal;
+      if (discordProgressText) discordProgressText.textContent = `${current} / ${goal}`;
+      if (discordProgressBar) discordProgressBar.style.width = pct + '%';
+      if (cfg.discordInvite) {
+        if (discordInviteLink) discordInviteLink.href = cfg.discordInvite;
+        if (discordInviteLink2) discordInviteLink2.href = cfg.discordInvite;
+      }
+
+      if (updatesVersionDisplay) updatesVersionDisplay.textContent = `${cfg.updateVersion || 'v1.0.0'} — Aujourd’hui`;
+      if (updatesVersionItem) updatesVersionItem.textContent = `${cfg.updateVersion || 'v1.0.0'} — Aujourd’hui`;
+      if (updateNotesList && Array.isArray(cfg.updateNotes)) {
+        updateNotesList.innerHTML = '';
+        cfg.updateNotes.forEach(n => {
+          const li = document.createElement('li');
+          li.textContent = n;
+          updateNotesList.appendChild(li);
+        });
+      }
+    }
+    applyConfigToUI(CONFIG);
+
+    // ----- Admin Panel (NoNo) -----
+    const ADMIN_PASSWORD = 'NoNo';
+    let adminToken = sessionStorage.getItem('adminToken') || null;
+    const adminAuthBox = document.getElementById('adminAuthBox');
+    const adminForm = document.getElementById('adminForm');
+    const adminAuthMsg = document.getElementById('adminAuthMsg');
+
+    const heroTitle = document.getElementById('heroTitle');
+    const heroSubtitle = document.getElementById('heroSubtitle');
+    const discordInvite = document.getElementById('discordInvite');
+    const discordGoalInput = document.getElementById('discordGoalInput');
+    const discordCurrentInput = document.getElementById('discordCurrentInput');
+    const updateVersion = document.getElementById('updateVersion');
+    const updateNotes = document.getElementById('updateNotes');
+    const saveMsg = document.getElementById('saveMsg');
+
+    function fillAdminFormFromConfig() {
+      if (!CONFIG) return;
+      heroTitle.value = CONFIG.heroTitle || '';
+      heroSubtitle.value = CONFIG.heroSubtitle || '';
+      discordInvite.value = CONFIG.discordInvite || '';
+      discordGoalInput.value = CONFIG.discordGoal || 1000;
+      discordCurrentInput.value = CONFIG.discordCurrent || 0;
+      updateVersion.value = CONFIG.updateVersion || 'v1.0.0';
+      updateNotes.value = (CONFIG.updateNotes || []).join('; ');
+    }
+
+    document.getElementById('adminLoginBtn')?.addEventListener('click', () => {
+      const pwd = document.getElementById('adminPasswordInput').value;
+      if (pwd !== ADMIN_PASSWORD) {
+        adminAuthMsg.classList.remove('hidden');
+        return;
+      }
+      adminAuthMsg.classList.add('hidden');
+      adminToken = btoa(`${Date.now()}:${pwd}`).slice(0, 32);
+      sessionStorage.setItem('adminToken', adminToken);
+      adminAuthBox.classList.add('hidden');
+      adminForm.classList.remove('hidden');
+      fillAdminFormFromConfig();
+    });
+
+    if (adminToken) {
+      adminAuthBox.classList.add('hidden');
+      adminForm.classList.remove('hidden');
+      fillAdminFormFromConfig();
+    }
+
+    document.getElementById('saveAdminBtn')?.addEventListener('click', () => {
+      CONFIG.heroTitle = (heroTitle.value || 'RYNACITY RP').trim();
+      CONFIG.heroSubtitle = (heroSubtitle.value || '').trim();
+      CONFIG.discordInvite = (discordInvite.value || '#').trim();
+      CONFIG.discordGoal = Number(discordGoalInput.value || 1000);
+      CONFIG.discordCurrent = Number(discordCurrentInput.value || 0);
+      CONFIG.updateVersion = (updateVersion.value || 'v1.0.0').trim();
+      CONFIG.updateNotes = (updateNotes.value || '')
+        .split(';')
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      // Sauvegarde locale immédiate
+      saveConfigToStorage(CONFIG);
+      applyConfigToUI(CONFIG);
+
+      saveMsg.textContent = 'Enregistré (local) ✔';
+      setTimeout(() => (saveMsg.textContent = ''), 1600);
+    });
+
+    // Expose
+    window.openView = openView;
+  </script>
+</body>
+</html>
+
