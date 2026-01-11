@@ -46,11 +46,18 @@
     }
     .input::placeholder { color: rgba(255,255,255,0.45); }
     .input:focus { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.07); }
+    
+    /* MODIFICATION DES BOUTONS : BLANC AU LIEU DE VIOLET */
     .btn-gradient {
-      display:inline-flex; align-items:center; gap:.5rem; padding:.8rem 1.2rem; border-radius:.9rem; color:#fff; font-weight:700;
-      background: linear-gradient(90deg,#6366f1,#ec4899); transition: filter .2s ease, transform .2s ease;
+      display:inline-flex; align-items:center; gap:.5rem; padding:.8rem 1.2rem; border-radius:.9rem; color:#111; font-weight:800; /* Texte noir */
+      background: #ffffff; transition: transform .2s ease, opacity .2s ease;
+      box-shadow: 0 4px 15px rgba(255,255,255,0.1); /* Ombre blanche subtile */
     }
-    .btn-gradient:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    .btn-gradient:hover { 
+      transform: translateY(-2px); 
+      opacity: 0.9; 
+      box-shadow: 0 4px 20px rgba(255,255,255,0.2); /* Plus lumineux au survol */
+    }
     
     /* Amélioration Mot de passe */
     .password-modal { 
@@ -345,7 +352,6 @@
           
           <!-- Header Game -->
           <div class="text-center mb-8 relative">
-            <!-- Titre plus petit sur mobile pour pas être caché -->
             <h2 class="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter">
               Lucky Cards
             </h2>
@@ -477,7 +483,7 @@
     window.cardLight = cardLight;
     window.openView = openView;
 
-    // ----- JEU DE CARTES (FIXES) -----
+    // ----- JEU DE CARTES (FINAL) -----
     const cardAuthBox = document.getElementById('cardAuthBox');
     const cardGameArea = document.getElementById('cardGameArea');
     const startCardBtn = document.getElementById('startCardGameBtn');
@@ -487,11 +493,11 @@
     const grid = document.getElementById('cardsGrid');
     const resultMsg = document.getElementById('gameResultMessage');
     const resultText = document.getElementById('resultText');
-    const resultInstruction = document.getElementById('gameInstruction'); // Nouvelle cible
+    const resultInstruction = document.getElementById('gameInstruction');
     const limitModal = document.getElementById('limitReachedModal');
 
     // Configuration
-    const STORAGE_KEY = 'rynacity_cards_v4';
+    const STORAGE_KEY = 'rynacity_cards_final';
     let gameState = {
       date: '',
       attempts: 5,
@@ -659,8 +665,6 @@
       resultText.className = `text-3xl font-black drop-shadow-md ${colorClass}`;
       resultMsg.classList.remove('hidden');
       
-      // Afficher l'instruction SEULEMENT si on gagne (ou 3 X ? Non, user veut pas de message "capture" quand on perd)
-      // On affiche l'instruction de capture seulement si c'est une vraie récompense.
       if(value === 1 || value === 2) {
         resultInstruction.style.display = 'block';
       } else {
@@ -676,8 +680,6 @@
       resultText.innerHTML = "RATÉ !";
       resultText.className = "text-3xl font-black text-white drop-shadow-md";
       resultMsg.classList.remove('hidden');
-      
-      // CACHER le message de capture quand on perd
       resultInstruction.style.display = 'none';
     }
 
