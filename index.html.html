@@ -2,633 +2,984 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <title>RYNACITY RP - Jeu Roblox</title>
+  <title>RYNACITY RP — Roblox Roleplay</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="https://cdn.tailwindcss.com?ver=3"></script>
+  <meta name="theme-color" content="#0ea5e9" />
+  <meta name="description" content="RYNACITY RP — serveur Roblox Roleplay. Mises à jour, documentation, communauté Discord, staff, features, roadmap, téléchargements, et plus." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
-    body { font-family: 'Inter', sans-serif; }
-    .gradient-bg { background: linear-gradient(120deg, rgba(255,255,255,0.06), rgba(255,255,255,0.12)); }
-    .grid-pattern {
-      background-image:
-        linear-gradient(to right, rgba(255,255,255,.08) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,.08) 1px, transparent 1px);
-      background-size: 40px 40px; opacity:.06;
+    :root{
+      --bg:#000000;
+      --bg-2:#0b0e13;
+      --text:#ffffff;
+      --muted:rgba(255,255,255,0.65);
+      --muted-2:rgba(255,255,255,0.45);
+      --line:rgba(255,255,255,0.1);
+      --blue:#0ea5e9; /* Bleu principal */
+      --blue-2:#38bdf8;
+      --blue-3:#7dd3fc;
+      --glass:rgba(255,255,255,0.06);
+      --glass-2:rgba(255,255,255,0.12);
+      --ok:#22c55e;
+      --warn:#f59e0b;
+      --bad:#ef4444;
     }
-    .card-hover { position: relative; overflow: hidden; transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
-    .card-hover::before {
-      content: ''; position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(600px circle at var(--x,50%) var(--y,50%), rgba(255,255,255,0.08), transparent 40%);
-      opacity: 0; transition: opacity .25s ease;
+    *{box-sizing:border-box}
+    html,body{height:100%;}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 800px at 20% -10%, rgba(14,165,233,0.10), transparent),
+                  radial-gradient(800px 600px at 90% 10%, rgba(14,165,233,0.08), transparent),
+                  linear-gradient(180deg, var(--bg), #02040a 60%, #010306);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
+      overflow-x:hidden;
     }
-    .card-hover:hover { transform: translateY(-4px); border-color: rgba(255,255,255,.2); box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.15); }
-    .card-hover:hover::before { opacity: 1; }
-    .pulse-dot { animation: pulse 2.2s cubic-bezier(0.4,0,0.6,1) infinite; }
-    @keyframes pulse { 0%,100%{opacity:1; transform:scale(1)} 50%{opacity:.55; transform:scale(1.2)} }
-    .text-gradient {
-      background: linear-gradient(90deg, #fff, #f0f0f0 60%, rgba(255,255,255,.85));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    a{color:var(--blue)}
+    .container{max-width:1200px;margin:0 auto;padding:0 24px}
+    .container-lg{max-width:1400px;margin:0 auto;padding:0 28px}
+    .grid{display:grid;gap:24px}
+    .row{display:flex;gap:24px;flex-wrap:wrap}
+    .col{flex:1 1 0}
+    .hidden{display:none!important}
+    .btn{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:12px 18px;border-radius:14px;border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      color:var(--text);text-decoration:none;font-weight:700;letter-spacing:.2px;
+      transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease, opacity .2s ease;
+      backdrop-filter: blur(8px);
     }
-    .spa-view { display: none; }
-    .spa-view.active { display: block; }
-    .nav-btn { color: #9CA3AF; background: transparent; border-radius: .65rem; padding: .55rem 1rem; transition: all .2s ease; outline: none; }
-    .nav-btn:hover, .nav-btn:focus-visible { color:#fff; background: #111827; }
-    .nav-btn.active { color:#fff; background: linear-gradient(90deg,#6d28d9,#db2777); box-shadow: 0 0 20px rgba(219,39,119,0.35), inset 0 0 6px rgba(255,255,255,0.18); }
-    .input { width:100%; background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:.9rem; padding:.75rem 1rem; color:#fff; outline:none; transition:.2s; }
-    .input::placeholder { color: rgba(255,255,255,0.45); }
-    .input:focus { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.07); }
-    .btn-gradient { display:inline-flex; align-items:center; gap:.5rem; padding:.8rem 1.2rem; border-radius:.9rem; color:#fff; font-weight:700; background: linear-gradient(90deg,#6366f1,#ec4899); transition:.2s; }
-    .btn-gradient:hover { filter: brightness(1.05); transform: translateY(-1px); }
-    .password-modal { position: fixed; inset:0; background: rgba(0,0,0,0.92); backdrop-filter: blur(10px); display:flex; align-items:center; justify-content:center; z-index:60; }
-    .password-modal.hidden { display:none; }
-    .shake { animation: shake .5s; }
-    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
-    .admin-fab { position: fixed; right:1rem; bottom:1rem; z-index:60; border-radius:9999px; padding:.6rem .9rem; background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); color:#fff; backdrop-filter: blur(8px); transition:.2s; display:flex; align-items:center; gap:8px; }
-    .admin-fab:hover { background: rgba(255,255,255,0.14); }
+    .btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(14,165,233,0.18);border-color:rgba(255,255,255,0.2)}
+    .btn-blue{
+      background:linear-gradient(135deg, rgba(14,165,233,0.2), rgba(14,165,233,0.06));
+      border-color:rgba(14,165,233,0.45);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,0.06);
+    }
+    .btn-outline{background:transparent}
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;border-radius:999px;
+      border:1px solid var(--line); padding:8px 12px; color:var(--muted); font-weight:600;
+      background:rgba(255,255,255,0.03); letter-spacing:.2px
+    }
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;border-radius:12px;border:1px solid var(--line);
+      padding:8px 12px;color:var(--muted);background:rgba(255,255,255,0.03)
+    }
+    .glass{
+      background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border:1px solid var(--line); border-radius:20px; backdrop-filter: blur(10px);
+      box-shadow:0 10px 30px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(255,255,255,0.05)
+    }
+    .glass-2{background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04))}
+    .muted{color:var(--muted)}
+    .muted-2{color:var(--muted-2)}
+    .title-xxl{font-size:64px;line-height:1.05;letter-spacing:-1.2px;font-weight:900}
+    .title-xl{font-size:44px;line-height:1.08;font-weight:900}
+    .title-lg{font-size:32px;line-height:1.12;font-weight:800}
+    .title-md{font-size:22px;font-weight:800}
+    .lead{font-size:19px;color:var(--muted);line-height:1.6}
+    .mono{font-family: "Space Grotesk", Inter, system-ui, sans-serif}
+    .sep{height:1px;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)}
+    .center{text-align:center}
+    .right{text-align:right}
+    .mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}.mt-20{margin-top:20px}
+    .mt-24{margin-top:24px}.mt-28{margin-top:28px}.mt-32{margin-top:32px}.mt-40{margin-top:40px}
+    .mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}.mb-20{margin-bottom:20px}
+    .mb-24{margin-bottom:24px}.mb-28{margin-bottom:28px}.mb-32{margin-bottom:32px}.mb-40{margin-bottom:40px}
+    .pt-24{padding-top:24px}.pt-40{padding-top:40px}.pt-64{padding-top:64px}.pt-80{padding-top:80px}
+    .pb-24{padding-bottom:24px}.pb-40{padding-bottom:40px}.pb-64{padding-bottom:64px}.pb-80{padding-bottom:80px}
+    .px-0{padding-left:0;padding-right:0}.px-12{padding-left:12px;padding-right:12px}.px-24{padding-left:24px;padding-right:24px}
+    .mx-auto{margin-left:auto;margin-right:auto}
+    .nowrap{white-space:nowrap}
+    .relative{position:relative}
+    .pointer{cursor:pointer}
+    .round-12{border-radius:12px}.round-16{border-radius:16px}.round-20{border-radius:20px}
+    .shadow-blue{box-shadow:0 10px 30px rgba(14,165,233,0.18)}
+    .ring{box-shadow:inset 0 0 0 1px rgba(255,255,255,0.08)}
+    .neon{
+      position:relative;
+      background:linear-gradient(135deg, rgba(14,165,233,0.22), rgba(14,165,233,0.08));
+      border:1px solid rgba(14,165,233,0.45);
+      box-shadow:0 0 0 1px rgba(14,165,233,0.2), 0 12px 34px rgba(14,165,233,0.18), inset 0 0 0 1px rgba(255,255,255,0.07);
+    }
+    .neon:after{
+      content:'';position:absolute;inset:-2px;border-radius:inherit;
+      background: radial-gradient(600px 200px at var(--mx,50%) 120%, rgba(14,165,233,0.25), transparent 35%);
+      opacity:.45;pointer-events:none;transition:opacity .25s ease
+    }
+    .neon:hover:after{opacity:.75}
+
+    /* Header */
+    .nav{position:sticky;top:0;z-index:50;border-bottom:1px solid var(--line);background:rgba(0,0,0,0.6);backdrop-filter:blur(10px)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+    .logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text)}
+    .logo-mark{width:36px;height:36px;border-radius:10px;background:
+      radial-gradient(120% 120% at 0% 0%, rgba(14,165,233,0.5), transparent 60%),
+      linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      border:1px solid var(--line);display:grid;place-items:center;font-weight:900}
+    .nav-links{display:flex;gap:6px;align-items:center}
+    .nav-btn{border:none;background:transparent;color:var(--muted);font-weight:700;padding:10px 14px;border-radius:12px;cursor:pointer}
+    .nav-btn:hover{background:rgba(255,255,255,0.06);color:var(--text)}
+    .nav-btn.active{color:var(--text);background:rgba(255,255,255,0.10);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.1)}
+    .nav-cta{margin-left:8px}
+
+    /* Sections wrapper (SPA) */
+    main{min-height:100vh}
+    .view{display:none}
+    .view.active{display:block}
+
+    /* Hero */
+    .hero{
+      position:relative;overflow:hidden;
+      background:
+        radial-gradient(1000px 600px at 20% 0%, rgba(14,165,233,0.12), transparent),
+        radial-gradient(800px 500px at 90% 0%, rgba(14,165,233,0.08), transparent)
+    }
+    .hero-canvas{position:absolute;inset:0;z-index:0;opacity:.7}
+    .hero-inner{position:relative;z-index:1}
+    .hero-kpis{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+    .kpi{display:flex;align-items:center;gap:10px;border:1px solid var(--line);padding:10px 12px;border-radius:999px;background:rgba(255,255,255,0.04)}
+    .kpi svg{opacity:.7}
+
+    /* Cards */
+    .card{border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,0.04);backdrop-filter:blur(8px);padding:20px;transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease}
+    .card:hover{transform:translateY(-4px);box-shadow:0 16px 44px rgba(14,165,233,0.16);border-color:rgba(255,255,255,0.18)}
+    .card-hero{min-height:220px;display:flex;flex-direction:column}
+    .card-line{height:1px;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)}
+    .card-row{display:flex;gap:14px;align-items:center}
+
+    /* Feature grid */
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    @media (max-width:1000px){.features{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:720px){.features{grid-template-columns:1fr}}
+
+    /* Timeline */
+    .timeline{position:relative;padding-left:24px}
+    .timeline:before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:linear-gradient(180deg, rgba(14,165,233,0.6), transparent)}
+    .tl-item{position:relative;margin-bottom:22px;padding-left:14px}
+    .tl-item:before{content:'';position:absolute;left:-4px;top:6px;width:12px;height:12px;border-radius:999px;background:var(--blue);box-shadow:0 0 0 3px rgba(14,165,233,0.25)}
+
+    /* Gallery */
+    .gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    @media (max-width:1100px){.gallery{grid-template-columns:repeat(3,1fr)}}
+    @media (max-width:700px){.gallery{grid-template-columns:repeat(2,1fr)}}
+    .shot{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#0a0d12}
+    .shot img{width:100%;display:block;opacity:.92;transition:transform .3s ease, opacity .3s ease}
+    .shot:hover img{transform:scale(1.04);opacity:1}
+    .shot .cap{position:absolute;left:10px;bottom:10px;background:rgba(0,0,0,0.5);backdrop-filter: blur(6px);border:1px solid var(--line);padding:6px 10px;border-radius:10px;font-size:13px;color:var(--muted)}
+
+    /* Staff grid */
+    .staff{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+    @media (max-width:1100px){.staff{grid-template-columns:repeat(3,1fr)}}
+    @media (max-width:820px){.staff{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:560px){.staff{grid-template-columns:1fr}}
+    .person{padding:16px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,0.04)}
+    .person .row{align-items:center}
+    .avatar{width:56px;height:56px;border-radius:12px;background:
+      linear-gradient(135deg, rgba(14,165,233,0.4), rgba(14,165,233,0.1));border:1px solid rgba(255,255,255,0.1);
+      display:grid;place-items:center;font-weight:900}
+    .role{font-size:12px;color:var(--blue-3);font-weight:800;letter-spacing:.3px}
+    .tag{font-size:12px;color:var(--muted-2);border:1px dashed var(--line);padding:4px 8px;border-radius:999px;display:inline-flex;gap:8px;align-items:center}
+    .tag::before{content:'';width:6px;height:6px;border-radius:999px;background:var(--blue);box-shadow:0 0 8px rgba(14,165,233,0.8)}
+
+    /* Accordion */
+    .accordion{border:1px solid var(--line);border-radius:16px;overflow:hidden}
+    .acc-item + .acc-item{border-top:1px solid var(--line)}
+    .acc-head{display:flex;justify-content:space-between;gap:12px;padding:16px 18px;cursor:pointer;background:rgba(255,255,255,0.03)}
+    .acc-title{font-weight:800}
+    .acc-body{padding:16px 18px;background:rgba(255,255,255,0.04);display:none}
+    .acc-item.open .acc-body{display:block}
+
+    /* Footer */
+    footer{border-top:1px solid var(--line);background:rgba(255,255,255,0.02)}
+
+    /* Floating widgets */
+    .floating{
+      position:fixed;right:18px;bottom:18px;display:flex;flex-direction:column;gap:10px;z-index:60
+    }
+    .toast{
+      position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:60;
+      background:rgba(14,165,233,0.15);border:1px solid rgba(14,165,233,0.45);color:#e6f7ff;
+      padding:12px 16px;border-radius:12px;backdrop-filter: blur(8px);display:none
+    }
+
+    /* Mobile menu */
+    .mobile-nav{display:none}
+    @media (max-width:860px){
+      .nav-links{display:none}
+      .mobile-nav{display:flex;gap:10px}
+      .title-xxl{font-size:40px}
+      .title-xl{font-size:32px}
+    }
+
+    /* Parallax layers */
+    .layer{position:absolute;inset:0;pointer-events:none}
+    .grid-matrix{
+      position:absolute;inset:0;opacity:.06;background-image:
+        linear-gradient(to right, rgba(255,255,255,0.8) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.8) 1px, transparent 1px);
+      background-size: 60px 60px, 60px 60px;
+      mask-image: radial-gradient(900px 600px at 20% 0%, rgba(0,0,0,1), transparent 70%);
+    }
+
+    /* Buttons group */
+    .seg{
+      display:inline-flex;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:rgba(255,255,255,0.04)
+    }
+    .seg button{border:0;background:transparent;color:var(--muted);padding:10px 14px;font-weight:800;letter-spacing:.2px;cursor:pointer}
+    .seg button.active{color:var(--text);background:rgba(255,255,255,0.08)}
+
+    /* Code Block */
+    pre{background:rgba(255,255,255,0.04);border:1px solid var(--line);padding:16px;border-radius:14px;overflow:auto}
+    code{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace}
   </style>
 </head>
-<body class="bg-black text-white antialiased">
-  <!-- Accès par mot de passe site -->
-  <div id="passwordModal" class="password-modal" aria-modal="true" role="dialog">
-    <div class="max-w-md w-full mx-4">
-      <div class="backdrop-blur-lg bg-white/10 border border-white/20 rounded-3xl p-8 shadow-2xl">
-        <div class="text-center mb-8">
-          <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl mb-4">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-            </svg>
-          </div>
-          <h2 class="text-3xl font-bold text-white mb-2">RYNACITY RP</h2>
-          <p class="text-white/60">Entrez le mot de passe pour accéder au site</p>
+<body>
+
+  <!-- NAV -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="#" class="logo" onclick="openView('home')">
+        <div class="logo-mark">RY</div>
+        <div>
+          <div style="font-weight:900;letter-spacing:.4px">RYNACITY RP</div>
+          <div class="muted-2" style="font-size:12px">Roblox Roleplay</div>
         </div>
-        <form id="passwordForm" class="space-y-4">
-          <input type="password" id="passwordInput" placeholder="Mot de passe" class="input" autocomplete="off" aria-label="Mot de passe" />
-          <button type="submit" class="btn-gradient w-full justify-center">Accéder au site</button>
-          <p id="errorMessage" class="text-red-400 text-sm text-center hidden" role="alert">Mot de passe incorrect !</p>
-        </form>
+      </a>
+      <nav class="nav-links">
+        <button class="nav-btn active" data-view="home" onclick="openView('home')">Accueil</button>
+        <button class="nav-btn" data-view="features" onclick="openView('features')">Fonctionnalités</button>
+        <button class="nav-btn" data-view="docs" onclick="openView('docs')">Documentation</button>
+        <button class="nav-btn" data-view="updates" onclick="openView('updates')">Mises à jour</button>
+        <button class="nav-btn" data-view="map" onclick="openView('map')">Carte</button>
+        <button class="nav-btn" data-view="gallery" onclick="openView('gallery')">Galerie</button>
+        <button class="nav-btn" data-view="community" onclick="openView('community')">Communauté</button>
+        <button class="nav-btn" data-view="staff" onclick="openView('staff')">Staff</button>
+        <button class="nav-btn" data-view="faq" onclick="openView('faq')">FAQ</button>
+        <a class="btn btn-blue nav-cta" href="https://discord.gg/TgJPajazEP" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369zM9.5 12c-.66 0-1.2-.67-1.2-1.5S8.84 9 9.5 9s1.2.67 1.2 1.5S10.16 12 9.5 12zm5 0c-.66 0-1.2-.67-1.2-1.5S13.84 9 14.5 9s1.2.67 1.2 1.5S15.16 12 14.5 12z"/></svg>
+          Rejoindre
+        </a>
+      </nav>
+      <div class="mobile-nav">
+        <a class="btn btn-blue" href="https://discord.gg/TgJPajazEP" target="_blank" rel="noopener">Discord</a>
       </div>
     </div>
-  </div>
+  </header>
 
-  <!-- Contenu principal -->
-  <div id="mainContent" class="hidden">
-    <!-- Navbar -->
-    <header class="sticky top-0 backdrop-blur-lg bg-black/90 z-50 border-b border-gray-800">
-      <div class="max-w-screen-xl w-full mx-auto px-6">
-        <div class="flex items-center justify-between h-16">
-          <div class="flex items-center">
-            <div class="h-8 w-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg grid place-items-center">
-              <span class="text-white font-bold text-sm">RY</span>
-            </div>
-            <h1 class="ml-3 text-white text-lg font-bold tracking-tight leading-7">RYNACITY RP</h1>
+  <!-- MAIN -->
+  <main id="app">
+
+    <!-- HOME -->
+    <section id="view-home" class="view active hero">
+      <canvas id="heroCanvas" class="hero-canvas" aria-hidden="true"></canvas>
+      <div class="layer grid-matrix"></div>
+      <div class="container hero-inner pt-80 pb-64">
+        <div class="center">
+          <div class="chip mono" style="border-color:rgba(14,165,233,0.45);background:rgba(14,165,233,0.08);color:#e6f7ff">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/></svg>
+            Serveur Roblox Roleplay — Ouvert
           </div>
-          <nav class="hidden md:flex items-center" aria-label="Navigation principale">
-            <button data-view="homeView" class="nav-btn flex items-center" aria-current="page">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
-              <span class="ml-2">Accueil</span>
-            </button>
-            <button data-view="docView" class="nav-btn flex items-center ml-1">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
-              <span class="ml-2">Documentation</span>
-            </button>
-            <button data-view="mapView" class="nav-btn flex items-center ml-1">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clip-rule="evenodd"/></svg>
-              <span class="ml-2">Carte</span>
-            </button>
-            <button data-view="updatesView" class="nav-btn flex items-center ml-1">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
-              <span class="ml-2">Mises à jour</span>
-            </button>
-            <button data-view="discordView" class="nav-btn flex items-center ml-1">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205 .4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
-              <span class="ml-2">DISCORD</span>
-            </button>
-          </nav>
-          <div class="flex items-center">
-            <button onclick="openView('reportView')" title="Signaler un problème" class="nav-btn flex items-center" aria-controls="reportView">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-              <span class="hidden md:block text-sm font-medium ml-2">Rapport</span>
-            </button>
+          <h1 class="title-xxl mt-20" style="font-family:Space Grotesk,Inter,sans-serif">
+            RYNACITY RP
+          </h1>
+          <p class="lead mt-16 mx-auto" style="max-width:860px">
+            Entrez dans une ville vivante: jobs dynamiques, économie équilibrée, événements réguliers, règles claires, et une communauté soudée. Une expérience fluide, moderne, 100% optimisée.
+          </p>
+          <div class="mt-28">
+            <a class="btn btn-blue" href="https://discord.gg/TgJPajazEP" target="_blank" rel="noopener">
+              Rejoindre le Discord
+            </a>
+            <button class="btn btn-outline" onclick="openView('features')">Découvrir les features</button>
+          </div>
+          <div class="hero-kpis mt-32">
+            <div class="kpi"><svg width="16" height="16" viewBox="0 0 20 20" fill="#22c55e"><path d="M10 18a8 8 0 100-16 8 8 0 000 16z"/></svg> <span>Serveurs: <b class="mono">en ligne</b></span></div>
+            <div class="kpi"><svg width="16" height="16" viewBox="0 0 20 20" fill="#38bdf8"><path d="M2 5a2 2 0 012-2h3l2 2h7a2 2 0 012 2v1H2V5zM2 9h16v6a2 2 0 01-2 2H4a2 2 0 01-2-2V9z"/></svg> <span>Version: <b class="mono">1.0.0</b></span></div>
+            <div class="kpi"><svg width="16" height="16" viewBox="0 0 20 20" fill="#7dd3fc"><path d="M13 7a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2 13a6 6 0 1112 0v3H2v-3z"/></svg> <span>Joueurs: <b class="mono">500+</b></span></div>
+          </div>
+        </div>
+
+        <!-- 3 Cards entry -->
+        <div class="grid mt-40" style="grid-template-columns:repeat(3,1fr);gap:18px">
+          <div class="card card-hero pointer" onclick="openView('docs')">
+            <div class="card-row">
+              <div class="badge"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M4 3a2 2 0 012-2h4.586A2 2 0 0112 1.586L16.414 6A2 2 0 0117 7.414V17a2 2 0 01-2 2H6a2 2 0 01-2-2V3z"/></svg> Docs</div>
+            </div>
+            <div class="mt-16 title-md">Documentation complète</div>
+            <div class="muted mt-8">Règles RP, commandes, démarrage rapide, et guides avancés.</div>
+            <div class="card-line mt-16"></div>
+            <div class="muted-2 mt-12">15+ guides • Mise à jour continue →</div>
+          </div>
+          <div class="card card-hero pointer" onclick="openView('updates')">
+            <div class="card-row">
+              <div class="badge"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1z"/></svg> Patch notes</div>
+            </div>
+            <div class="mt-16 title-md">Mises à jour</div>
+            <div class="muted mt-8">Optimisations, corrections, nouvelles mécaniques et équilibrages fréquents.</div>
+            <div class="card-line mt-16"></div>
+            <div class="muted-2 mt-12">Dernière MAJ: aujourd’hui →</div>
+          </div>
+          <div class="card card-hero pointer" onclick="openView('community')">
+            <div class="card-row">
+              <div class="badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.79 19.79 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3 20 20 0 007.5 3.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg> Communauté</div>
+            </div>
+            <div class="mt-16 title-md">Discord officiel</div>
+            <div class="muted mt-8">Rejoins le serveur pour les annonces, évènements, et support ticket.</div>
+            <div class="card-line mt-16"></div>
+            <div class="muted-2 mt-12">Objectif: 1000 membres →</div>
           </div>
         </div>
       </div>
-    </header>
+    </section>
 
-    <!-- Bottom mobile nav -->
-    <div class="fixed md:hidden z-50 left-1/2 -translate-x-1/2 bottom-6">
-      <div class="flex items-center backdrop-blur-lg bg-black/90 shadow-lg border border-gray-800 px-3 py-2 rounded-full">
-        <button data-view="homeView" class="nav-btn h-12 w-12 grid place-items-center" aria-label="Accueil">
-          <svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
-        </button>
-        <button data-view="docView" class="nav-btn h-12 w-12 grid place-items-center" aria-label="Documentation">
-          <svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
-        </button>
-        <button data-view="mapView" class="nav-btn h-12 w-12 grid place-items-center" aria-label="Carte">
-          <svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clip-rule="evenodd"/></svg>
-        </button>
-        <button data-view="updatesView" class="nav-btn h-12 w-12 grid place-items-center" aria-label="Mises à jour">
-          <svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
-        </button>
-        <button data-view="discordView" class="nav-btn h-12 w-12 grid place-items-center" aria-label="Discord">
-          <svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
-        </button>
+    <!-- FEATURES -->
+    <section id="view-features" class="view">
+      <div class="container pt-64 pb-64">
+        <div class="center">
+          <div class="chip mono">Fonctionnalités clés</div>
+          <h2 class="title-xl mt-16">Un écosystème pensé pour le rôleplay moderne</h2>
+          <p class="lead mt-12">Des systèmes profonds mais accessibles, faits pour la fluidité et la rejouabilité.</p>
+        </div>
+
+        <div class="features mt-32">
+          <div class="card">
+            <div class="title-md">Jobs & Carrières</div>
+            <p class="muted mt-8">Policier, Pompier, Médecin, Entrepreneur, Chauffeur, Journaliste, et plus. Progression, salaires équilibrés, missions uniques, et équipements dédiés.</p>
+            <div class="seg mt-16">
+              <button class="active" onclick="setFeatureTab(this, 'jobs', 0)">Policier</button>
+              <button onclick="setFeatureTab(this, 'jobs', 1)">EMS</button>
+              <button onclick="setFeatureTab(this, 'jobs', 2)">Business</button>
+            </div>
+            <div class="mt-16">
+              <div id="jobs-0">
+                <ul class="muted">
+                  <li>• Système d’amendes et permis</li>
+                  <li>• Armurerie contrôlée</li>
+                  <li>• Hiérarchie et grades</li>
+                </ul>
+              </div>
+              <div id="jobs-1" class="hidden">
+                <ul class="muted">
+                  <li>• Secours avancés (blessures, soins)</li>
+                  <li>• Ambulances et hôpitaux</li>
+                  <li>• Radio et dispatch</li>
+                </ul>
+              </div>
+              <div id="jobs-2" class="hidden">
+                <ul class="muted">
+                  <li>• Création d’entreprises</li>
+                  <li>• Stocks, tarifs, marketing</li>
+                  <li>• Recrutement et gestion</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="title-md">Économie équilibrée</div>
+            <p class="muted mt-8">Prix dynamiques, revenus progressifs, taxes, loyers, et coûts logiques. L’objectif: un gameplay durable, sans grind excessif.</p>
+            <pre class="mt-16"><code>// Pseudo-config
+salary.base = 100
+salary.multiplier = level * 1.15
+tax.city = 0.08
+rent.apartment = 120/week
+market.dynamic = true</code></pre>
+          </div>
+
+          <div class="card">
+            <div class="title-md">Systèmes sociaux</div>
+            <p class="muted mt-8">Inventaires réalistes, licences, casiers, messages privés, radio, organisations, et événements RP scénarisés.</p>
+            <div class="row mt-12">
+              <div class="tag">Licences</div>
+              <div class="tag">Radio</div>
+              <div class="tag">Organisations</div>
+              <div class="tag">Évènements</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="title-md">Habitation & Véhicules</div>
+            <p class="muted mt-8">Appartements, maisons, garages privés, véhicules personnels, immatriculations, et personnalisations visuelles.</p>
+            <div class="row mt-16">
+              <div class="badge">Maisons</div>
+              <div class="badge">Appartements</div>
+              <div class="badge">Garages</div>
+              <div class="badge">Tuning</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="title-md">Sécurité & Modération</div>
+            <p class="muted mt-8">Anticheat, logs d’actions, ticket support, sanctions graduées et appels, staff réactif et transparent.</p>
+            <ul class="muted mt-12">
+              <li>• Anticheat discret</li>
+              <li>• Journalisation (inventaire, finance, PV)</li>
+              <li>• Tickets / preuves / appels</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="title-md">Performances</div>
+            <p class="muted mt-8">Optimisations serveur/clients, assets compressés, scripts asynchrones, et pré-rendus intelligents.</p>
+            <div class="row mt-16">
+              <div class="chip">60+ FPS visés</div>
+              <div class="chip">Low-latency</div>
+              <div class="chip">Optim textures</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOCS -->
+    <section id="view-docs" class="view">
+      <div class="container pt-64 pb-64">
+        <div class="center">
+          <div class="chip mono">Documentation</div>
+          <h2 class="title-xl mt-16">Règles, guides et démarrage</h2>
+          <p class="lead mt-12">Tout pour commencer et évoluer dans RYNACITY RP.</p>
+        </div>
+
+        <div class="grid mt-32" style="grid-template-columns:2fr 1fr;gap:22px">
+          <div class="card">
+            <div class="title-md">Démarrer vite</div>
+            <p class="muted mt-8">Créer un personnage cohérent, lire les règles, choisir un job, et rejoindre le Discord pour les annonces et support.</p>
+            <div class="accordion mt-16">
+              <div class="acc-item open">
+                <div class="acc-head" onclick="toggleAcc(this)">
+                  <div class="acc-title">Règles RP essentielles</div>
+                  <div>+</div>
+                </div>
+                <div class="acc-body">
+                  <ul class="muted">
+                    <li>• Respect, fair-play, pas de powergaming/metagaming</li>
+                    <li>• Rester cohérent avec son personnage et le contexte</li>
+                    <li>• Accepter les conséquences RP</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="acc-item">
+                <div class="acc-head" onclick="toggleAcc(this)">
+                  <div class="acc-title">Commandes utiles</div>
+                  <div>+</div>
+                </div>
+                <div class="acc-body">
+                  <pre><code>/report &lt;message&gt; - alerte le staff
+/help - voir les commandes
+/me &lt;action&gt; - décrire une action RP
+/do &lt;description&gt; - contexte RP
+/radio &lt;canal&gt; - rejoindre un canal</code></pre>
+                </div>
+              </div>
+              <div class="acc-item">
+                <div class="acc-head" onclick="toggleAcc(this)">
+                  <div class="acc-title">Sanctions & appels</div>
+                  <div>+</div>
+                </div>
+                <div class="acc-body">
+                  <p class="muted">Les sanctions sont proportionnelles et motivées. Appels via ticket Discord avec preuves (captures/vidéos).</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="card">
+            <div class="title-md">Liens rapides</div>
+            <div class="row mt-12">
+              <a class="btn btn-blue" href="https://discord.gg/TgJPajazEP" target="_blank" rel="noopener">Discord</a>
+              <button class="btn" onclick="openView('updates')">Patch notes</button>
+            </div>
+            <div class="sep mt-20"></div>
+            <div class="title-md mt-16">Statut</div>
+            <div class="row mt-12">
+              <div class="chip"><span style="width:8px;height:8px;border-radius:999px;background:var(--ok);display:inline-block"></span> En ligne</div>
+              <div class="chip">v1.0.0</div>
+              <div class="chip">500+ joueurs</div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- UPDATES -->
+    <section id="view-updates" class="view">
+      <div class="container pt-64 pb-64">
+        <div class="center">
+          <div class="chip mono">Mises à jour</div>
+          <h2 class="title-xl mt-16">Patch notes et roadmap</h2>
+          <p class="lead mt-12">Suivez le rythme des évolutions, optimisations et nouveautés.</p>
+        </div>
+
+        <div class="grid mt-32" style="grid-template-columns:2fr 1fr;gap:22px">
+          <div class="card">
+            <div class="title-md">Patch notes — v1.0.0</div>
+            <ul class="muted mt-12">
+              <li>• Nouveaux métiers + équilibrage économie</li>
+              <li>• Optimisations de performance (client/serveur)</li>
+              <li>• Corrections de bugs de spawn et UI</li>
+            </ul>
+            <div class="sep mt-20"></div>
+            <div class="title-md mt-16">Changelog</div>
+            <div class="timeline mt-12">
+              <div class="tl-item">
+                <div class="title-md">Gameplay</div>
+                <div class="muted">Ajout de nouveaux scénarios RP et ajustement des salaires.</div>
+              </div>
+              <div class="tl-item">
+                <div class="title-md">QoL</div>
+                <div class="muted">Affinage des menus, tooltips, et raccourcis.</div>
+              </div>
+              <div class="tl-item">
+                <div class="title-md">Fixes</div>
+                <div class="muted">Stabilité radio, duplications inventaires, zones map.</div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="card">
+            <div class="title-md">Roadmap</div>
+            <ul class="muted mt-12">
+              <li>• v1.1 — Housing avancé, tuning véhicules</li>
+              <li>• v1.2 — Missions scénarisées (épisodes)</li>
+              <li>• v1.3 — Compétences et talents</li>
+              <li>• v1.4 — Évènements saisonniers</li>
+            </ul>
+            <div class="sep mt-20"></div>
+            <div class="title-md mt-16">Proposition</div>
+            <p class="muted mt-8">Des idées ? Proposez dans #suggestions sur le Discord.</p>
+            <a class="btn btn-blue mt-12" href="https://discord.gg/TgJPajazEP" target="_blank" rel="noopener">Proposer</a>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAP -->
+    <section id="view-map" class="view">
+      <div class="container pt-64 pb-64">
+        <div class="center">
+          <div class="chip mono">Carte</div>
+          <h2 class="title-xl mt-16">Quartiers, services et points d’intérêt</h2>
+          <p class="lead mt-12">Un monde lisible, logique, et riche en activités.</p>
+        </div>
+
+        <div class="grid mt-32" style="grid-template-columns:1.4fr 1fr;gap:22px">
+          <div class="card">
+            <div class="title-md">Aperçu</div>
+            <div class="mt-12 shot" style="aspect-ratio:16/9;display:grid;place-items:center;color:var(--muted-2)">
+              Carte interactive (image/iframe)
+            </div>
+            <div class="row mt-12">
+              <div class="badge">Commissariat</div>
+              <div class="badge">Hôpital</div>
+              <div class="badge">Centre-ville</div>
+              <div class="badge">Quartier résidentiel</div>
+            </div>
+          </div>
+          <aside class="card">
+            <div class="title-md">Repères</div>
+            <ul class="muted mt-12">
+              <li>• Banques (services financiers)</li>
+              <li>• Concessions (achats véhicules)</li>
+              <li>• Agences (emplois & missions)</li>
+              <li>• Parcs (évènements publics)</li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="view-gallery" class="view">
+      <div class="container pt-64 pb-64">
+        <div class="center">
+          <div class="chip mono">Galerie</div>
+          <h2 class="title-xl mt-16">Captures & Ambiances</h2>
+          <p class="lead mt-12">Un aperçu visuel des scènes de vie à RYNACITY RP.</p>
+        </div>
+
+        <div class="gallery mt-32">
+          <!-- Placeholder images via gradients -->
+          <div class="shot"><img src="https://picsum.photos/seed/ryna1/800/600" alt="scene 1"/><div class="cap">Centre-ville de nuit</div></div>
+          <div class="shot"><img src="https://picsum.photos/seed/ryna2/800/600" alt="scene 2"/><div class="cap">Patrouille en service</div></div>
+          <div class="shot"><img src="https://picsum.photos/seed/ryna3/800/600" alt="scene 3"/><div class="cap">Secours d’urgence</div></div>
+          <div class="shot"><img src="https://picsum.photos/seed/ryna4/800/600" alt="scene 4"/><div class="cap">Business quartier</div></div>
+          <div class="shot"><img src="https://picsum.photos/seed/ryna5/800/600" alt="scene 5"/><div class="cap">Course légale</div></div>
+          <div class="shot"><img src="https://picsum.photos/seed/ryna6/800/600" alt="scene 6"/><div class="cap">Parc & marché</div></div>
+          <div class="shot"><img src="https://picsum.photos/seed/ryna7/800/600" alt="scene 7"/><div class="cap">Briefing police</div></div>
+          <div class="shot"><img src="https://picsum.photos/seed/ryna8/800/600" alt="scene 8"/><div class="cap">Sunset sur la baie</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMUNITY -->
+    <section id="view-community" class="view">
+      <div class="container pt-64 pb-64">
+        <div class="center">
+          <div class="chip mono">Communauté</div>
+          <h2 class="title-xl mt-16">Rejoins le Discord</h2>
+          <p class="lead mt-12">Annonces, tickets, salons RP, et évènements réguliers.</p>
+        </div>
+
+        <div class="grid mt-32" style="grid-template-columns:1.3fr 1fr;gap:22px">
+          <div class="card">
+            <div class="title-md">Objectif membres</div>
+            <div class="muted mt-8">Prochaine étape: atteindre 1000 membres.</div>
+            <div class="mt-16" aria-label="progression Discord">
+              <div class="muted-2" style="display:flex;justify-content:space-between">
+                <span>Membres</span><span><b id="mNow">80</b> / <b id="mGoal">1000</b></span>
+              </div>
+              <div class="round-12 mt-8" style="height:12px;background:rgba(255,255,255,0.06);border:1px solid var(--line);overflow:hidden">
+                <div id="mBar" style="height:100%;width:8%;background:linear-gradient(90deg,var(--blue),var(--blue-2));box-shadow:0 0 14px rgba(14,165,233,0.6)"></div>
+              </div>
+              <div class="row mt-12">
+                <div class="chip">Invitez vos amis</div>
+                <div class="chip">Salons RP</div>
+                <div class="chip">Tickets support</div>
+              </div>
+            </div>
+            <div class="sep mt-20"></div>
+            <div class="row mt-16">
+              <a class="btn btn-blue" href="https://discord.gg/TgJPajazEP" target="_blank" rel="noopener">Rejoindre le Discord</a>
+              <button class="btn" onclick="copyInvite()">Copier l’invitation</button>
+            </div>
+          </div>
+
+          <aside class="card">
+            <div class="title-md">Process support</div>
+            <ol class="muted mt-12">
+              <li>1) Rejoindre le Discord</li>
+              <li>2) Être connecté en jeu (si requis)</li>
+              <li>3) Ouvrir un ticket</li>
+              <li>4) Expliquer clairement la situation</li>
+              <li>5) Attendre la réponse du staff</li>
+            </ol>
+            <div class="sep mt-20"></div>
+            <div class="title-md mt-16">Contacts</div>
+            <p class="muted mt-8">Mail: <a href="mailto:druvo.officiel@gmail.com">druvo.officiel@gmail.com</a></p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAFF -->
+    <section id="view-staff" class="view">
+      <div class="container pt-64 pb-64">
+        <div class="center">
+          <div class="chip mono">Staff</div>
+          <h2 class="title-xl mt-16">Une équipe visible et réactive</h2>
+          <p class="lead mt-12">Modération juste, support rapide, et animation régulière.</p>
+        </div>
+
+        <div class="staff mt-32">
+          <div class="person">
+            <div class="row">
+              <div class="avatar mono">AD</div>
+              <div class="col">
+                <div class="title-md">Admin Dev</div>
+                <div class="role">Administrateur</div>
+              </div>
+              <div class="tag">Contact Discord</div>
+            </div>
+            <p class="muted mt-12">Responsable technique, patch notes, roadmap et stabilité.</p>
+          </div>
+          <div class="person">
+            <div class="row">
+              <div class="avatar mono">CM</div>
+              <div class="col">
+                <div class="title-md">Community</div>
+                <div class="role">Modération</div>
+              </div>
+              <div class="tag">Tickets</div>
+            </div>
+            <p class="muted mt-12">Gestion des tickets, sanctions, appels, et communication.</p>
+          </div>
+          <div class="person">
+            <div class="row">
+              <div class="avatar mono">EV</div>
+              <div class="col">
+                <div class="title-md">Events</div>
+                <div class="role">Animation</div>
+              </div>
+              <div class="tag">Évènements</div>
+            </div>
+            <p class="muted mt-12">Organisation d’activités RP, scénarios et concours.</p>
+          </div>
+          <div class="person">
+            <div class="row">
+              <div class="avatar mono">SUP</div>
+              <div class="col">
+                <div class="title-md">Support</div>
+                <div class="role">Aide</div>
+              </div>
+              <div class="tag">Assistance</div>
+            </div>
+            <p class="muted mt-12">Accompagnement nouveaux joueurs et FAQ évolutive.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="view-faq" class="view">
+      <div class="container pt-64 pb-64">
+        <div class="center">
+          <div class="chip mono">FAQ</div>
+          <h2 class="title-xl mt-16">Questions fréquentes</h2>
+          <p class="lead mt-12">Besoin d’aide rapide ? Consulte ici.</p>
+        </div>
+
+        <div class="grid mt-32" style="grid-template-columns:1fr 1fr;gap:20px">
+          <div class="accordion">
+            <div class="acc-item open">
+              <div class="acc-head" onclick="toggleAcc(this)">
+                <div class="acc-title">Comment rejoindre le serveur ?</div><div>+</div>
+              </div>
+              <div class="acc-body">
+                <p class="muted">Clique sur “Rejoindre le Discord”, suis les annonces et consignes in‑game.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-head" onclick="toggleAcc(this)">
+                <div class="acc-title">Comment signaler un problème ?</div><div>+</div>
+              </div>
+              <div class="acc-body">
+                <p class="muted">Ouvre un ticket sur Discord et fournis des preuves (captures/vidéos).</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-head" onclick="toggleAcc(this)">
+                <div class="acc-title">Y a-t-il une whitelist ?</div><div>+</div>
+              </div>
+              <div class="acc-body">
+                <p class="muted">La whitelist peut être activée ponctuellement selon l’affluence.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion">
+            <div class="acc-item">
+              <div class="acc-head" onclick="toggleAcc(this)">
+                <div class="acc-title">Règles de base RP ?</div><div>+</div>
+              </div>
+              <div class="acc-body">
+                <ul class="muted">
+                  <li>• Pas de powergaming / metagaming</li>
+                  <li>• Reste dans le personnage</li>
+                  <li>• Respect des autres joueurs</li>
+                </ul>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-head" onclick="toggleAcc(this)">
+                <div class="acc-title">Optimisé pour PC faibles ?</div><div>+</div>
+              </div>
+              <div class="acc-body">
+                <p class="muted">Oui. Nous réduisons le poids des assets et optimisons les scripts.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <div class="acc-head" onclick="toggleAcc(this)">
+                <div class="acc-title">Peut-on proposer des idées ?</div><div>+</div>
+              </div>
+              <div class="acc-body">
+                <p class="muted">Oui. Postez vos suggestions dans #suggestions sur Discord.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="pt-32 pb-24">
+    <div class="container">
+      <div class="grid" style="grid-template-columns:2fr 1fr 1fr;gap:24px">
+        <div>
+          <a href="#" class="logo">
+            <div class="logo-mark">RY</div>
+            <div>
+              <div style="font-weight:900">RYNACITY RP</div>
+              <div class="muted-2" style="font-size:12px">Roblox Roleplay</div>
+            </div>
+          </a>
+          <p class="muted mt-16">Serveur RP moderne. Des mises à jour fréquentes, un staff présent, et une communauté accueillante.</p>
+          <div class="row mt-12">
+            <a class="btn btn-blue" href="https://discord.gg/TgJPajazEP" target="_blank" rel="noopener">Discord</a>
+            <button class="btn" onclick="openView('docs')">Docs</button>
+          </div>
+        </div>
+        <div>
+          <div class="title-md">Navigation</div>
+          <div class="row mt-12" style="flex-direction:column">
+            <button class="nav-btn" onclick="openView('home')">Accueil</button>
+            <button class="nav-btn" onclick="openView('features')">Fonctionnalités</button>
+            <button class="nav-btn" onclick="openView('updates')">Mises à jour</button>
+            <button class="nav-btn" onclick="openView('community')">Communauté</button>
+            <button class="nav-btn" onclick="openView('staff')">Staff</button>
+            <button class="nav-btn" onclick="openView('faq')">FAQ</button>
+          </div>
+        </div>
+        <div>
+          <div class="title-md">Légal</div>
+          <div class="row mt-12" style="flex-direction:column">
+            <span class="muted">Règlement</span>
+            <span class="muted">Conditions</span>
+            <span class="muted">Confidentialité</span>
+            <span class="muted">Contact</span>
+          </div>
+        </div>
+      </div>
+      <div class="sep mt-24"></div>
+      <div class="row mt-16" style="justify-content:space-between">
+        <div class="muted-2">© <span id="y"></span> RYNACITY RP. Tous droits réservés.</div>
+        <div class="muted-2">Fait avec passion — Montpellier, FR</div>
       </div>
     </div>
+  </footer>
 
-    <!-- Vues -->
-    <main class="relative overflow-hidden">
-      <!-- HOME -->
-      <section id="homeView" class="spa-view active">
-        <div class="relative min-h-[92vh]">
-          <div class="absolute inset-0 grid-pattern"></div>
-          <div class="absolute gradient-bg blur-3xl h-96 w-96 rounded-full left-[6%] top-[5%]"></div>
-          <div class="absolute gradient-bg blur-3xl h-72 w-72 rounded-full right-[4%] bottom-[8%]"></div>
-
-          <div class="relative z-10 px-6 py-20">
-            <div class="max-w-screen-xl mx-auto">
-              <div class="text-center mb-16">
-                <div class="inline-flex items-center backdrop-blur-sm bg-white/10 border border-white/10 mb-6 px-4 py-2 rounded-full">
-                  <svg class="text-white/70 h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>
-                  <span class="text-white/80 text-sm font-medium ml-2">Jeu Roblox Roleplay</span>
-                </div>
-                <h2 class="text-6xl md:text-8xl font-black tracking-tight leading-tight mb-6">
-                  <span class="text-gradient" id="heroTitleDisplay">RYNACITY RP</span>
-                </h2>
-                <p id="heroSubtitleDisplay" class="max-w-2xl mx-auto text-white/70 text-xl md:text-2xl leading-relaxed">
-                  Votre portail centralisé pour les <span class="text-white">mises à jour</span>, la <span class="text-white">documentation</span> et la <span class="text-white">communauté</span>.
-                </p>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                <article class="card-hover backdrop-blur-[10px] bg-white/5 shadow-[rgba(0,0,0,0.35)_0px_10px_30px,rgba(255,255,255,0.12)_0px_1px_0px_0px_inset] h-80 border border-white/10 p-8 rounded-3xl cursor-pointer"
-                         onclick="openView('docView')" onmousemove="cardLight(event,this)" aria-label="Ouvrir Documentation">
-                  <div class="flex flex-col h-full">
-                    <div class="flex items-start justify-between mb-6">
-                      <div class="backdrop-blur-sm bg-white/10 p-3 rounded-2xl">
-                        <svg class="text-white h-7 w-7" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
-                      </div>
-                      <svg class="text-white/40 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-3">Documentation</h3>
-                    <p class="text-white/70 leading-relaxed">Guides complets, règles RP, FAQ, astuces pour progresser.</p>
-                    <div class="mt-auto pt-6 flex items-center justify-between border-t border-white/10">
-                      <span class="text-blue-400 text-sm font-medium">15+ guides</span>
-                      <span class="text-white/70 text-sm">Découvrir →</span>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="card-hover backdrop-blur-[10px] bg-white/5 shadow-[rgba(0,0,0,0.35)_0px_10px_30px,rgba(255,255,255,0.12)_0px_1px_0px_0px_inset] h-80 border border-white/10 p-8 rounded-3xl cursor-pointer"
-                         onclick="openView('updatesView')" onmousemove="cardLight(event,this)" aria-label="Ouvrir Mises à jour">
-                  <div class="flex flex-col h-full">
-                    <div class="flex items-start justify-between mb-6">
-                      <div class="backdrop-blur-sm bg-white/10 p-3 rounded-2xl">
-                        <svg class="text-white h-7 w-7" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
-                      </div>
-                      <svg class="text-white/40 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
-                    </div>
-                    <h3 id="updatesVersionDisplay" class="text-2xl font-bold mb-3">v1.0.0 — Aujourd’hui</h3>
-                    <p class="text-white/70 leading-relaxed">Notes de patch, corrections, nouvelles fonctionnalités.</p>
-                    <div class="mt-auto pt-6 flex items-center justify-between border-t border-white/10">
-                      <span class="text-green-400 text-sm font-medium">Dernière MAJ: Aujourd’hui</span>
-                      <span class="text-white/70 text-sm">Lire →</span>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="card-hover backdrop-blur-[10px] bg-white/5 shadow-[rgba(0,0,0,0.35)_0px_10px_30px,rgba(255,255,255,0.12)_0px_1px_0px_0px_inset] h-80 border border-white/10 p-8 rounded-3xl cursor-pointer"
-                         onclick="openView('discordView')" onmousemove="cardLight(event,this)" aria-label="Ouvrir Discord">
-                  <div class="flex flex-col h-full">
-                    <div class="flex items-start justify-between mb-6">
-                      <div class="backdrop-blur-sm bg-white/10 p-3 rounded-2xl">
-                        <svg class="text-white h-7 w-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
-                      </div>
-                      <svg class="text-white/40 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-3">Communauté Discord</h3>
-                    <p class="text-white/70 leading-relaxed">Rejoins, suis les annonces et ouvre un ticket au besoin.</p>
-                    <div class="mt-auto pt-6 flex items-center justify-between border-t border-white/10">
-                      <span class="text-indigo-400 text-sm font-medium">Objectif 1000 membres</span>
-                      <span class="text-white/70 text-sm">Rejoindre →</span>
-                    </div>
-                  </div>
-                </article>
-              </div>
-
-              <div class="flex flex-wrap justify-center gap-6">
-                <div class="flex items-center bg-white/5 border border-white/10 px-6 py-3 rounded-full">
-                  <div class="relative">
-                    <div class="bg-green-400 h-2 w-2 rounded-full"></div>
-                    <div class="absolute bg-green-400 h-2 w-2 rounded-full inset-0 pulse-dot"></div>
-                  </div>
-                  <span class="text-white/80 text-sm font-medium ml-3">Serveurs en ligne</span>
-                </div>
-                <div class="flex items-center bg-white/5 border border-white/10 px-6 py-3 rounded-full">
-                  <svg class="text-white/70 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"/></svg>
-                  <span class="text-white/80 text-sm font-medium ml-3">Version 1.0.0</span>
-                </div>
-                <div class="flex items-center bg-white/5 border border-white/10 px-6 py-3 rounded-full">
-                  <svg class="text-white/70 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07z"/></svg>
-                  <span class="text-white/80 text-sm font-medium ml-3">500+ joueurs</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- DOC -->
-      <section id="docView" class="spa-view">
-        <div class="max-w-screen-xl mx-auto px-6 py-16">
-          <h2 class="text-4xl font-extrabold mb-6">Documentation</h2>
-          <p class="text-white/70 mb-10">Guides, tutoriels, règles, FAQ — tout pour bien commencer.</p>
-          <div class="space-y-8">
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 class="text-2xl font-bold mb-2">Débuter sur RYNACITY RP</h3>
-              <p class="text-white/70">Prérequis, installation, création de personnage, bases du RP...</p>
-            </div>
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 class="text-2xl font-bold mb-2">Règles RP essentielles</h3>
-              <ul class="list-disc list-inside text-white/70 space-y-1">
-                <li>Respect, fair-play, pas de powergaming</li>
-                <li>Communication claire en /ooc</li>
-                <li>Sanctions et appels</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- MAP -->
-      <section id="mapView" class="spa-view">
-        <div class="max-w-screen-xl mx-auto px-6 py-16">
-          <h2 class="text-4xl font-extrabold mb-6">Carte</h2>
-          <p class="text-white/70 mb-10">Aperçu, points d’intérêt, jobs, quartiers.</p>
-          <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-            <div class="aspect-video bg-black/40 border border-white/10 rounded-xl grid place-items-center text-white/50">
-              Carte interactive (image/iframe/widget)
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- UPDATES -->
-      <section id="updatesView" class="spa-view">
-        <div class="max-w-screen-xl mx-auto px-6 py-16">
-          <h2 class="text-4xl font-extrabold mb-6">Mises à jour</h2>
-          <div class="space-y-6">
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 id="updatesVersionItem" class="text-xl font-bold">v1.0.0 — Aujourd’hui</h3>
-              <ul id="updateNotesList" class="list-disc list-inside text-white/70 space-y-1 mt-2">
-                <li>Nouveaux métiers + équilibrage économie</li>
-                <li>Optimisations de performance</li>
-                <li>Corrections de bugs de spawn</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- DISCORD -->
-      <section id="discordView" class="spa-view">
-        <div class="max-w-screen-xl mx-auto px-6 py-16">
-          <h2 class="text-4xl font-extrabold mb-4">Notre Discord</h2>
-        <p class="text-white/70 mb-8">Rejoins la communauté pour les annonces, évènements et support.</p>
-
-          <div class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8">
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-white/80 font-semibold">Objectif: <span id="discordGoalText">1000</span> membres</span>
-              <span class="text-white/60" id="discordProgressText">80 / 1000</span>
-            </div>
-            <div class="w-full h-3 bg-white/10 rounded-full overflow-hidden">
-              <div id="discordProgressBar" class="h-3 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" style="width: 8%; box-shadow: 0 0 16px rgba(168,85,247,0.6);"></div>
-            </div>
-            <p class="text-white/50 text-sm mt-3">Aidez-nous à atteindre l’objectif ! Invitez vos amis.</p>
-          </div>
-
-          <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-            <h3 class="text-2xl font-bold mb-2">Rejoindre le serveur</h3>
-            <p class="text-white/70 mb-4">Clique ci-dessous pour rejoindre immédiatement.</p>
-            <a id="discordInviteLink" href="#" target="_blank" class="btn-gradient" rel="noopener">Rejoindre le Discord</a>
-          </div>
-        </div>
-      </section>
-
-      <!-- REPORT -->
-      <section id="reportView" class="spa-view">
-        <div class="max-w-screen-xl mx-auto px-6 py-16">
-          <h2 class="text-4xl font-extrabold mb-4">Support & Signalements</h2>
-          <p class="text-white/70 mb-8">Utilise le bon canal pour une prise en charge rapide.</p>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 class="text-2xl font-bold mb-3">Procédure recommandée</h3>
-              <ol class="list-decimal list-inside text-white/80 space-y-2">
-                <li>Rejoindre le Discord RYNACITY RP.</li>
-                <li>Être connecté sur le serveur RYNACITY RP en jeu si nécessaire.</li>
-                <li>Ouvrir un ticket dans le canal support/🎫-tickets.</li>
-                <li>Expliquer la situation clairement (date/heure, joueurs impliqués, captures, logs).</li>
-                <li>Attendre la réponse d’un membre du staff.</li>
-              </ol>
-            </div>
-
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 class="text-2xl font-bold mb-3">Contacts</h3>
-              <ul class="text-white/80 space-y-2">
-                <li>Email: <a href="mailto:druvo.officiel@gmail.com" class="underline hover:opacity-80">druvo.officiel@gmail.com</a></li>
-                <li>Discord: bouton ci-dessous pour rejoindre</li>
-                <li>En jeu: contacter un Staff RYNACITY RP</li>
-              </ul>
-              <div class="mt-4 flex flex-wrap gap-3">
-                <a id="discordInviteLink2" href="#" target="_blank" class="inline-flex items-center px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">Rejoindre le Discord</a>
-                <a href="mailto:druvo.officiel@gmail.com" class="inline-flex items-center px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">Envoyer un email</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-8 bg-white/5 border border-white/10 rounded-2xl p-6">
-            <h3 class="text-xl font-bold mb-2">Important</h3>
-            <p class="text-white/70">Les faux signalements, le harcèlement ou les menaces entraînent des sanctions. Restez respectueux et factuel.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ADMIN -->
-      <section id="adminView" class="spa-view">
-        <div class="max-w-screen-xl w-full mx-auto px-6 py-16">
-          <h2 class="text-4xl font-extrabold mb-2">Admin Panel</h2>
-          <p class="text-white/60 mb-8">Modifie le contenu. Mot de passe: NoNo</p>
-
-          <div id="adminAuthBox" class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
-            <h3 class="text-2xl font-bold mb-3">Authentification</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-              <div class="md:col-span-2">
-                <label class="text-white/70 text-sm block mb-2">Mot de passe admin</label>
-                <input id="adminPasswordInput" type="password" class="input" placeholder="••••••••" />
-              </div>
-              <button id="adminLoginBtn" class="btn-gradient">Se connecter</button>
-            </div>
-            <p id="adminAuthMsg" class="text-sm text-red-400 mt-3 hidden">Mot de passe incorrect.</p>
-          </div>
-
-          <form id="adminForm" class="space-y-8 hidden">
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 class="text-xl font-bold mb-4">Section Hero</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="text-white/70 text-sm block mb-2">Titre</label>
-                  <input id="heroTitle" class="input" placeholder="RYNACITY RP" />
-                </div>
-                <div>
-                  <label class="text-white/70 text-sm block mb-2">Description</label>
-                  <input id="heroSubtitle" class="input" placeholder="Votre portail centralisé..." />
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 class="text-xl font-bold mb-4">Discord</h3>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label class="text-white/70 text-sm block mb-2">Lien d’invitation</label>
-                  <input id="discordInvite" class="input" placeholder="https://discord.gg/..." />
-                </div>
-                <div>
-                  <label class="text-white/70 text-sm block mb-2">Objectif total</label>
-                  <input id="discordGoalInput" type="number" class="input" placeholder="1000" />
-                </div>
-                <div>
-                  <label class="text-white/70 text-sm block mb-2">Membres actuels</label>
-                  <input id="discordCurrentInput" type="number" class="input" placeholder="80" />
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 class="text-xl font-bold mb-4">Dernière mise à jour</h3>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label class="text-white/70 text-sm block mb-2">Version</label>
-                  <input id="updateVersion" class="input" placeholder="v1.0.0" />
-                </div>
-                <div class="md:col-span-2">
-                  <label class="text-white/70 text-sm block mb-2">Notes (séparées par ;)</label>
-                  <input id="updateNotes" class="input" placeholder="Optimisations; Corrections; Nouveaux métiers" />
-                </div>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3">
-              <button type="button" id="saveAdminBtn" class="btn-gradient">Exporter config.json</button>
-              <span id="saveMsg" class="text-white/60 text-sm"></span>
-            </div>
-          </form>
-        </div>
-      </section>
-    </main>
-
-    <button class="admin-fab" onclick="openView('adminView')" aria-label="Ouvrir le panel admin">
-      <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A1 1 0 0112 2v1.051a7.962 7.962 0 013.043 1.26l.744-.744a1 1 0 011.414 1.414l-.744.744A7.962 7.962 0 0118 8h1a1 1 0 110 2h-1a7.962 7.962 0 01-1.26 3.043l.744.744a1 1 0 11-1.414 1.414l-.744-.744A7.962 7.962 0 0112 16.949V18a1 1 0 11-2 0v-1.051a7.962 7.962 0 01-3.043-1.26l-.744.744a1 1 0 01-1.414-1.414l.744-.744A7.962 7.962 0 014 10H3a1 1 0 110-2h1a7.962 7.962 0 011.26-3.043l-.744-.744A1 1 0 015.93 2.8l.744.744A7.962 7.962 0 019 3.051V2a1 1 0 012 0z"/></svg>
-      <span>Admin</span>
-    </button>
+  <!-- FLOATING -->
+  <div class="floating">
+    <button class="btn neon" onclick="openView('community')">Rejoindre Discord</button>
+    <button class="btn" onclick="toTop()">Haut de page</button>
   </div>
+  <div id="toast" class="toast">Lien Discord copié !</div>
 
+  <!-- SCRIPTS -->
   <script>
-    // Constantes
-    const SITE_PASSWORD = 'RyRy';
-    const ADMIN_PASSWORD = 'NoNo';
-    const CONFIG_URL = '/config.json?v=' + Date.now();
+    // Year
+    document.getElementById('y').textContent = new Date().getFullYear();
 
-    // Accès site
-    const passwordModal = document.getElementById('passwordModal');
-    const mainContent = document.getElementById('mainContent');
-    const passwordForm = document.getElementById('passwordForm');
-    const passwordInput = document.getElementById('passwordInput');
-    const errorMessage = document.getElementById('errorMessage');
-
-    if (sessionStorage.getItem('authenticated') === 'true') {
-      passwordModal.classList.add('hidden');
-      mainContent.classList.remove('hidden');
-    }
-    passwordForm?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (passwordInput.value === SITE_PASSWORD) {
-        sessionStorage.setItem('authenticated','true');
-        passwordModal.classList.add('hidden');
-        mainContent.classList.remove('hidden');
-      } else {
-        errorMessage.classList.remove('hidden');
-        passwordInput.value = '';
-        passwordInput.classList.add('shake');
-        setTimeout(() => passwordInput.classList.remove('shake'), 500);
-      }
-    });
-
-    // SPA nav
-    const views = ['homeView','docView','mapView','updatesView','discordView','reportView','adminView'];
-    const navButtons = document.querySelectorAll('.nav-btn');
-    function openView(viewId) {
-      views.forEach(id => document.getElementById(id)?.classList.toggle('active', id === viewId));
-      navButtons.forEach(btn => {
-        const active = btn.getAttribute('data-view') === viewId;
-        btn.classList.toggle('active', active);
-        btn.setAttribute('aria-current', active ? 'page' : 'false');
+    // SPA switching
+    function openView(key){
+      const views = ['home','features','docs','updates','map','gallery','community','staff','faq'];
+      views.forEach(v=>{
+        const el = document.getElementById('view-'+v);
+        if(!el) return;
+        el.classList.toggle('active', v===key);
       });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.querySelectorAll('.nav-btn[data-view]').forEach(b=>{
+        b.classList.toggle('active', b.dataset.view===key);
+      });
+      window.scrollTo({top:0,behavior:'smooth'});
     }
-    navButtons.forEach(btn => btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const viewId = btn.getAttribute('data-view');
-      if (viewId) openView(viewId);
-    }));
-    document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
-    function cardLight(e, el) {
-      const rect = el.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      el.style.setProperty('--x', x + '%');
-      el.style.setProperty('--y', y + '%');
-    }
-    window.cardLight = cardLight;
-    window.openView = openView;
 
-    // UI refs
-    const heroTitleDisplay = document.getElementById('heroTitleDisplay');
-    const heroSubtitleDisplay = document.getElementById('heroSubtitleDisplay');
-    const discordProgressBar = document.getElementById('discordProgressBar');
-    const discordProgressText = document.getElementById('discordProgressText');
-    const discordGoalText = document.getElementById('discordGoalText');
-    const discordInviteLink = document.getElementById('discordInviteLink');
-    const discordInviteLink2 = document.getElementById('discordInviteLink2');
-    const updatesVersionDisplay = document.getElementById('updatesVersionDisplay');
-    const updatesVersionItem = document.getElementById('updatesVersionItem');
-    const updateNotesList = document.getElementById('updateNotesList');
-
-    // Charger config.json
-    let CONFIG = null;
-    async function loadConfig() {
-      try {
-        const res = await fetch(CONFIG_URL, { cache: 'no-store' });
-        if (!res.ok) throw new Error('config.json introuvable');
-        CONFIG = await res.json();
-      } catch (e) {
-        // Fallback si config.json manquant (site fonctionne quand même)
-        CONFIG = {
-          heroTitle: 'RYNACITY RP',
-          heroSubtitle: 'Votre portail centralisé pour les <span class="text-white">mises à jour</span>, la <span class="text-white">documentation</span> et la <span class="text-white">communauté</span>.',
-          discordInvite: '#',
-          discordGoal: 1000,
-          discordCurrent: 80,
-          updateVersion: 'v1.0.0',
-          updateNotes: ['Nouveaux métiers + équilibrage économie','Optimisations de performance','Corrections de bugs de spawn']
-        };
+    // Feature tabs
+    function setFeatureTab(btn, group, idx){
+      btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const max = 3;
+      for(let i=0;i<max;i++){
+        const el = document.getElementById(group+'-'+i);
+        if(el) el.classList.toggle('hidden', i!==idx);
       }
-      applyConfigToUI(CONFIG);
     }
 
-    function applyConfigToUI(cfg) {
-      heroTitleDisplay.textContent = cfg.heroTitle || 'RYNACITY RP';
-      heroSubtitleDisplay.innerHTML = cfg.heroSubtitle || '';
+    // Accordion
+    function toggleAcc(head){
+      const item = head.parentElement;
+      item.classList.toggle('open');
+    }
 
-      const goal = Number(cfg.discordGoal || 1000);
-      const current = Math.max(0, Math.min(Number(cfg.discordCurrent || 0), goal));
-      const pct = goal > 0 ? Math.round((current/goal)*100) : 0;
-      discordGoalText.textContent = goal;
-      discordProgressText.textContent = `${current} / ${goal}`;
-      discordProgressBar.style.width = pct + '%';
-
-      if (cfg.discordInvite) {
-        if (discordInviteLink) discordInviteLink.href = cfg.discordInvite;
-        if (discordInviteLink2) discordInviteLink2.href = cfg.discordInvite;
-      }
-
-      updatesVersionDisplay.textContent = `${cfg.updateVersion || 'v1.0.0'} — Aujourd’hui`;
-      updatesVersionItem.textContent = `${cfg.updateVersion || 'v1.0.0'} — Aujourd’hui`;
-      updateNotesList.innerHTML = '';
-      (cfg.updateNotes || []).forEach(n => {
-        const li = document.createElement('li');
-        li.textContent = n;
-        updateNotesList.appendChild(li);
+    // Copy invite
+    function copyInvite(){
+      const url = 'https://discord.gg/TgJPajazEP';
+      navigator.clipboard.writeText(url).then(()=>{
+        showToast('Lien Discord copié !');
       });
     }
-
-    // Admin Panel
-    let adminToken = sessionStorage.getItem('adminToken') || null;
-    const adminAuthBox = document.getElementById('adminAuthBox');
-    const adminForm = document.getElementById('adminForm');
-    const adminAuthMsg = document.getElementById('adminAuthMsg');
-    const heroTitle = document.getElementById('heroTitle');
-    const heroSubtitle = document.getElementById('heroSubtitle');
-    const discordInvite = document.getElementById('discordInvite');
-    const discordGoalInput = document.getElementById('discordGoalInput');
-    const discordCurrentInput = document.getElementById('discordCurrentInput');
-    const updateVersion = document.getElementById('updateVersion');
-    const updateNotes = document.getElementById('updateNotes');
-    const saveMsg = document.getElementById('saveMsg');
-
-    function fillAdminFormFromConfig() {
-      if (!CONFIG) return;
-      heroTitle.value = CONFIG.heroTitle || '';
-      heroSubtitle.value = CONFIG.heroSubtitle || '';
-      discordInvite.value = CONFIG.discordInvite || '';
-      discordGoalInput.value = CONFIG.discordGoal || 1000;
-      discordCurrentInput.value = CONFIG.discordCurrent || 0;
-      updateVersion.value = CONFIG.updateVersion || 'v1.0.0';
-      updateNotes.value = (CONFIG.updateNotes || []).join('; ');
+    function showToast(msg){
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(()=>{ t.style.display = 'none'; }, 1600);
     }
 
-    document.getElementById('adminLoginBtn')?.addEventListener('click', () => {
-      const pwd = document.getElementById('adminPasswordInput').value;
-      if (pwd !== ADMIN_PASSWORD) {
-        adminAuthMsg.classList.remove('hidden');
-        return;
-      }
-      adminAuthMsg.classList.add('hidden');
-      adminToken = btoa(`${Date.now()}:${pwd}`).slice(0, 32);
-      sessionStorage.setItem('adminToken', adminToken);
-      adminAuthBox.classList.add('hidden');
-      adminForm.classList.remove('hidden');
-      fillAdminFormFromConfig();
-    });
+    // Back to top
+    function toTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
 
-    if (adminToken && adminAuthBox && adminForm) {
-      adminAuthBox.classList.add('hidden');
-      adminForm.classList.remove('hidden');
-      fillAdminFormFromConfig();
+    // Progress demo (community)
+    (function(){
+      const now=80, goal=1000;
+      const bar = document.getElementById('mBar');
+      const n = document.getElementById('mNow');
+      const g = document.getElementById('mGoal');
+      if(bar && n && g){
+        n.textContent = now; g.textContent = goal;
+        bar.style.width = Math.min(100, Math.round((now/goal)*100)) + '%';
+      }
+    })();
+
+    // Hero particles canvas
+    const cvs = document.getElementById('heroCanvas');
+    const ctx = cvs.getContext('2d',{alpha:true});
+    let W=0,H=0, PR = Math.min(2, window.devicePixelRatio||1);
+    let particles=[];
+    function resize(){
+      W = cvs.clientWidth; H = cvs.clientHeight;
+      cvs.width = W*PR; cvs.height = H*PR; ctx.setTransform(PR,0,0,PR,0,0);
     }
-
-    // Exporter config.json pour GitHub
-    document.getElementById('saveAdminBtn')?.addEventListener('click', () => {
-      CONFIG.heroTitle = (heroTitle.value || 'RYNACITY RP').trim();
-      CONFIG.heroSubtitle = (heroSubtitle.value || '').trim();
-      CONFIG.discordInvite = (discordInvite.value || '#').trim();
-      CONFIG.discordGoal = Number(discordGoalInput.value || 1000);
-      CONFIG.discordCurrent = Number(discordCurrentInput.value || 0);
-      CONFIG.updateVersion = (updateVersion.value || 'v1.0.0').trim();
-      CONFIG.updateNotes = (updateNotes.value || '')
-        .split(';')
-        .map(s => s.trim())
-        .filter(Boolean);
-
-      applyConfigToUI(CONFIG);
-
-      const blob = new Blob([JSON.stringify(CONFIG, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'config.json';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-
-      if (saveMsg) {
-        saveMsg.textContent = 'Config exportée. Remplace config.json dans GitHub, puis redeploie.';
-        setTimeout(() => (saveMsg.textContent = ''), 4000);
+    window.addEventListener('resize', resize, {passive:true});
+    function R(min,max){ return Math.random()*(max-min)+min }
+    function initParticles(n=90){
+      particles=[];
+      for(let i=0;i<n;i++){
+        particles.push({
+          x:R(0,W), y:R(0,H), vx:R(-.35,.35), vy:R(-.35,.35),
+          r:R(1.2,2.6), a:R(.25,.8)
+        });
       }
-    });
+    }
+    function step(){
+      ctx.clearRect(0,0,W,H);
+      // connect lines
+      for(let i=0;i<particles.length;i++){
+        const p=particles[i];
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0||p.x>W) p.vx*=-1;
+        if(p.y<0||p.y>H) p.vy*=-1;
+      }
+      for(let i=0;i<particles.length;i++){
+        const p=particles[i];
+        for(let j=i+1;j<particles.length;j++){
+          const q=particles[j];
+          const dx=p.x-q.x, dy=p.y-q.y;
+          const d2=dx*dx+dy*dy;
+          if(d2<140*140){
+            const a = 1 - (d2/(140*140));
+            ctx.strokeStyle = 'rgba(56,189,248,'+(a*0.25)+')';
+            ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.stroke();
+          }
+        }
+      }
+      for(const p of particles){
+        ctx.fillStyle = 'rgba(125,211,252,'+p.a+')';
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+      }
+      requestAnimationFrame(step);
+    }
+    function start(){
+      resize(); initParticles(110); step();
+    }
+    start();
 
-    // Démarrage
-    loadConfig();
+    // Neon mouse highlight
+    document.addEventListener('mousemove', (e)=>{
+      document.querySelectorAll('.neon').forEach(el=>{
+        const r=el.getBoundingClientRect();
+        const x=(e.clientX - r.left)/r.width*100;
+        el.style.setProperty('--mx', x+'%');
+      });
+    }, {passive:true});
+
+    // Prevent anchor scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', e=>e.preventDefault());
+    });
   </script>
 </body>
 </html>
