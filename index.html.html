@@ -13,8 +13,7 @@
       background-image:
         linear-gradient(to right, rgba(255,255,255,.08) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255,255,255,.08) 1px, transparent 1px);
-      background-size: 40px 40px;
-      opacity:.06;
+      background-size: 40px 40px; opacity:.06;
     }
     .card-hover { position: relative; overflow: hidden; transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
     .card-hover::before {
@@ -32,36 +31,19 @@
     }
     .spa-view { display: none; }
     .spa-view.active { display: block; }
-    .nav-btn {
-      color: #9CA3AF; background: transparent; border-radius: .65rem; padding: .55rem 1rem;
-      transition: all .2s ease; position: relative; outline: none;
-    }
+    .nav-btn { color: #9CA3AF; background: transparent; border-radius: .65rem; padding: .55rem 1rem; transition: all .2s ease; outline: none; }
     .nav-btn:hover, .nav-btn:focus-visible { color:#fff; background: #111827; }
-    .nav-btn.active {
-      color:#fff; background: linear-gradient(90deg,#6d28d9,#db2777);
-      box-shadow: 0 0 20px rgba(219,39,119,0.35), inset 0 0 6px rgba(255,255,255,0.18);
-    }
-    .input {
-      width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
-      border-radius: .9rem; padding: .75rem 1rem; color:#fff; outline: none; transition: border-color .2s ease, background .2s ease;
-    }
+    .nav-btn.active { color:#fff; background: linear-gradient(90deg,#6d28d9,#db2777); box-shadow: 0 0 20px rgba(219,39,119,0.35), inset 0 0 6px rgba(255,255,255,0.18); }
+    .input { width:100%; background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:.9rem; padding:.75rem 1rem; color:#fff; outline:none; transition:.2s; }
     .input::placeholder { color: rgba(255,255,255,0.45); }
     .input:focus { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.07); }
-    .btn-gradient {
-      display:inline-flex; align-items:center; gap:.5rem; padding:.8rem 1.2rem; border-radius:.9rem; color:#fff; font-weight:700;
-      background: linear-gradient(90deg,#6366f1,#ec4899); transition: filter .2s ease, transform .2s ease;
-    }
+    .btn-gradient { display:inline-flex; align-items:center; gap:.5rem; padding:.8rem 1.2rem; border-radius:.9rem; color:#fff; font-weight:700; background: linear-gradient(90deg,#6366f1,#ec4899); transition:.2s; }
     .btn-gradient:hover { filter: brightness(1.05); transform: translateY(-1px); }
-    .password-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 60; }
-    .password-modal.hidden { display: none; }
+    .password-modal { position: fixed; inset:0; background: rgba(0,0,0,0.92); backdrop-filter: blur(10px); display:flex; align-items:center; justify-content:center; z-index:60; }
+    .password-modal.hidden { display:none; }
     .shake { animation: shake .5s; }
     @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
-    .admin-fab {
-      position: fixed; right: 1rem; bottom: 1rem; z-index: 60;
-      border-radius: 9999px; padding: 0.6rem 0.9rem; background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12); color:#fff; backdrop-filter: blur(8px);
-      transition: all .2s ease; display:flex; align-items:center; gap:8px;
-    }
+    .admin-fab { position: fixed; right:1rem; bottom:1rem; z-index:60; border-radius:9999px; padding:.6rem .9rem; background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); color:#fff; backdrop-filter: blur(8px); transition:.2s; display:flex; align-items:center; gap:8px; }
     .admin-fab:hover { background: rgba(255,255,255,0.14); }
   </style>
 </head>
@@ -118,7 +100,7 @@
               <span class="ml-2">Mises à jour</span>
             </button>
             <button data-view="discordView" class="nav-btn flex items-center ml-1">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
+              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205 .4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
               <span class="ml-2">DISCORD</span>
             </button>
           </nav>
@@ -311,7 +293,7 @@
       <section id="discordView" class="spa-view">
         <div class="max-w-screen-xl mx-auto px-6 py-16">
           <h2 class="text-4xl font-extrabold mb-4">Notre Discord</h2>
-          <p class="text-white/70 mb-8">Rejoins la communauté pour les annonces, évènements et support.</p>
+        <p class="text-white/70 mb-8">Rejoins la communauté pour les annonces, évènements et support.</p>
 
           <div class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8">
             <div class="flex items-center justify-between mb-3">
@@ -375,7 +357,7 @@
       <section id="adminView" class="spa-view">
         <div class="max-w-screen-xl w-full mx-auto px-6 py-16">
           <h2 class="text-4xl font-extrabold mb-2">Admin Panel</h2>
-          <p class="text-white/60 mb-8">Modifie le contenu (sauvegarde locale automatique). Mot de passe: NoNo</p>
+          <p class="text-white/60 mb-8">Modifie le contenu. Mot de passe: NoNo</p>
 
           <div id="adminAuthBox" class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
             <h3 class="text-2xl font-bold mb-3">Authentification</h3>
@@ -437,7 +419,7 @@
             </div>
 
             <div class="flex items-center gap-3">
-              <button type="button" id="saveAdminBtn" class="btn-gradient">Enregistrer</button>
+              <button type="button" id="saveAdminBtn" class="btn-gradient">Exporter config.json</button>
               <span id="saveMsg" class="text-white/60 text-sm"></span>
             </div>
           </form>
@@ -452,8 +434,12 @@
   </div>
 
   <script>
-    // ----- Accès site -----
+    // Constantes
     const SITE_PASSWORD = 'RyRy';
+    const ADMIN_PASSWORD = 'NoNo';
+    const CONFIG_URL = '/config.json?v=' + Date.now();
+
+    // Accès site
     const passwordModal = document.getElementById('passwordModal');
     const mainContent = document.getElementById('mainContent');
     const passwordForm = document.getElementById('passwordForm');
@@ -478,27 +464,23 @@
       }
     });
 
-    // ----- SPA nav -----
+    // SPA nav
     const views = ['homeView','docView','mapView','updatesView','discordView','reportView','adminView'];
     const navButtons = document.querySelectorAll('.nav-btn');
     function openView(viewId) {
-      views.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.toggle('active', id === viewId);
-      });
+      views.forEach(id => document.getElementById(id)?.classList.toggle('active', id === viewId));
       navButtons.forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-view') === viewId);
-        btn.setAttribute('aria-current', btn.getAttribute('data-view') === viewId ? 'page' : 'false');
+        const active = btn.getAttribute('data-view') === viewId;
+        btn.classList.toggle('active', active);
+        btn.setAttribute('aria-current', active ? 'page' : 'false');
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    navButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const viewId = btn.getAttribute('data-view');
-        if (viewId) openView(viewId);
-      });
-    });
+    navButtons.forEach(btn => btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const viewId = btn.getAttribute('data-view');
+      if (viewId) openView(viewId);
+    }));
     document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
     function cardLight(e, el) {
       const rect = el.getBoundingClientRect();
@@ -508,33 +490,9 @@
       el.style.setProperty('--y', y + '%');
     }
     window.cardLight = cardLight;
+    window.openView = openView;
 
-    // ----- Sauvegarde locale (localStorage) -----
-    const STORAGE_KEY = 'rynacity_config_v1';
-
-    function loadConfigFromStorage() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return null;
-        return JSON.parse(raw);
-      } catch { return null; }
-    }
-    function saveConfigToStorage(cfg) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
-    }
-
-    // Config par défaut
-    let CONFIG = loadConfigFromStorage() || {
-      heroTitle: 'RYNACITY RP',
-      heroSubtitle: 'Votre portail centralisé pour les <span class="text-white">mises à jour</span>, la <span class="text-white">documentation</span> et la <span class="text-white">communauté</span>.',
-      discordInvite: '#',
-      discordGoal: 1000,
-      discordCurrent: 80,
-      updateVersion: 'v1.0.0',
-      updateNotes: ['Nouveaux métiers + équilibrage économie','Optimisations de performance','Corrections de bugs de spawn']
-    };
-
-    // Liens UI
+    // UI refs
     const heroTitleDisplay = document.getElementById('heroTitleDisplay');
     const heroSubtitleDisplay = document.getElementById('heroSubtitleDisplay');
     const discordProgressBar = document.getElementById('discordProgressBar');
@@ -546,41 +504,59 @@
     const updatesVersionItem = document.getElementById('updatesVersionItem');
     const updateNotesList = document.getElementById('updateNotesList');
 
+    // Charger config.json
+    let CONFIG = null;
+    async function loadConfig() {
+      try {
+        const res = await fetch(CONFIG_URL, { cache: 'no-store' });
+        if (!res.ok) throw new Error('config.json introuvable');
+        CONFIG = await res.json();
+      } catch (e) {
+        // Fallback si config.json manquant (site fonctionne quand même)
+        CONFIG = {
+          heroTitle: 'RYNACITY RP',
+          heroSubtitle: 'Votre portail centralisé pour les <span class="text-white">mises à jour</span>, la <span class="text-white">documentation</span> et la <span class="text-white">communauté</span>.',
+          discordInvite: '#',
+          discordGoal: 1000,
+          discordCurrent: 80,
+          updateVersion: 'v1.0.0',
+          updateNotes: ['Nouveaux métiers + équilibrage économie','Optimisations de performance','Corrections de bugs de spawn']
+        };
+      }
+      applyConfigToUI(CONFIG);
+    }
+
     function applyConfigToUI(cfg) {
-      if (heroTitleDisplay) heroTitleDisplay.textContent = cfg.heroTitle || 'RYNACITY RP';
-      if (heroSubtitleDisplay) heroSubtitleDisplay.innerHTML = cfg.heroSubtitle || '';
+      heroTitleDisplay.textContent = cfg.heroTitle || 'RYNACITY RP';
+      heroSubtitleDisplay.innerHTML = cfg.heroSubtitle || '';
 
       const goal = Number(cfg.discordGoal || 1000);
       const current = Math.max(0, Math.min(Number(cfg.discordCurrent || 0), goal));
       const pct = goal > 0 ? Math.round((current/goal)*100) : 0;
-      if (discordGoalText) discordGoalText.textContent = goal;
-      if (discordProgressText) discordProgressText.textContent = `${current} / ${goal}`;
-      if (discordProgressBar) discordProgressBar.style.width = pct + '%';
+      discordGoalText.textContent = goal;
+      discordProgressText.textContent = `${current} / ${goal}`;
+      discordProgressBar.style.width = pct + '%';
+
       if (cfg.discordInvite) {
         if (discordInviteLink) discordInviteLink.href = cfg.discordInvite;
         if (discordInviteLink2) discordInviteLink2.href = cfg.discordInvite;
       }
 
-      if (updatesVersionDisplay) updatesVersionDisplay.textContent = `${cfg.updateVersion || 'v1.0.0'} — Aujourd’hui`;
-      if (updatesVersionItem) updatesVersionItem.textContent = `${cfg.updateVersion || 'v1.0.0'} — Aujourd’hui`;
-      if (updateNotesList && Array.isArray(cfg.updateNotes)) {
-        updateNotesList.innerHTML = '';
-        cfg.updateNotes.forEach(n => {
-          const li = document.createElement('li');
-          li.textContent = n;
-          updateNotesList.appendChild(li);
-        });
-      }
+      updatesVersionDisplay.textContent = `${cfg.updateVersion || 'v1.0.0'} — Aujourd’hui`;
+      updatesVersionItem.textContent = `${cfg.updateVersion || 'v1.0.0'} — Aujourd’hui`;
+      updateNotesList.innerHTML = '';
+      (cfg.updateNotes || []).forEach(n => {
+        const li = document.createElement('li');
+        li.textContent = n;
+        updateNotesList.appendChild(li);
+      });
     }
-    applyConfigToUI(CONFIG);
 
-    // ----- Admin Panel (NoNo) -----
-    const ADMIN_PASSWORD = 'NoNo';
+    // Admin Panel
     let adminToken = sessionStorage.getItem('adminToken') || null;
     const adminAuthBox = document.getElementById('adminAuthBox');
     const adminForm = document.getElementById('adminForm');
     const adminAuthMsg = document.getElementById('adminAuthMsg');
-
     const heroTitle = document.getElementById('heroTitle');
     const heroSubtitle = document.getElementById('heroSubtitle');
     const discordInvite = document.getElementById('discordInvite');
@@ -615,12 +591,13 @@
       fillAdminFormFromConfig();
     });
 
-    if (adminToken) {
+    if (adminToken && adminAuthBox && adminForm) {
       adminAuthBox.classList.add('hidden');
       adminForm.classList.remove('hidden');
       fillAdminFormFromConfig();
     }
 
+    // Exporter config.json pour GitHub
     document.getElementById('saveAdminBtn')?.addEventListener('click', () => {
       CONFIG.heroTitle = (heroTitle.value || 'RYNACITY RP').trim();
       CONFIG.heroSubtitle = (heroSubtitle.value || '').trim();
@@ -633,17 +610,25 @@
         .map(s => s.trim())
         .filter(Boolean);
 
-      // Sauvegarde locale immédiate
-      saveConfigToStorage(CONFIG);
       applyConfigToUI(CONFIG);
 
-      saveMsg.textContent = 'Enregistré (local) ✔';
-      setTimeout(() => (saveMsg.textContent = ''), 1600);
+      const blob = new Blob([JSON.stringify(CONFIG, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'config.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+
+      if (saveMsg) {
+        saveMsg.textContent = 'Config exportée. Remplace config.json dans GitHub, puis redeploie.';
+        setTimeout(() => (saveMsg.textContent = ''), 4000);
+      }
     });
 
-    // Expose
-    window.openView = openView;
+    // Démarrage
+    loadConfig();
   </script>
 </body>
 </html>
-
