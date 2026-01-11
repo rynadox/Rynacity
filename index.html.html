@@ -2,457 +2,419 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <title>RYNACITY RP - Jeu Roblox</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RYNACITY RP - Portail & Jeu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <script src="https://cdn.tailwindcss.com?ver=3"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
-    body { font-family: 'Inter', sans-serif; }
+    body { font-family: 'Inter', sans-serif; overflow-x: hidden; touch-action: manipulation; }
+    
+    /* --- Effets Visuels --- */
     .gradient-bg { background: linear-gradient(120deg, rgba(255,255,255,0.06), rgba(255,255,255,0.12)); }
     .grid-pattern {
       background-image:
         linear-gradient(to right, rgba(255,255,255,.08) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255,255,255,.08) 1px, transparent 1px);
-      background-size: 40px 40px;
-      opacity:.06;
+      background-size: 40px 40px; opacity:.06;
     }
-    .card-hover { position: relative; overflow: hidden; transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+    .text-gradient {
+      background: linear-gradient(90deg, #fff, #f0f0f0 60%, rgba(255,255,255,.85));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    
+    /* --- Cartes & UI --- */
+    .card-hover { position: relative; overflow: hidden; transition: transform .25s ease, box-shadow .25s ease; }
     .card-hover::before {
       content: ''; position: absolute; inset: 0; pointer-events: none;
       background: radial-gradient(600px circle at var(--x,50%) var(--y,50%), rgba(255,255,255,0.08), transparent 40%);
       opacity: 0; transition: opacity .25s ease;
     }
-    .card-hover:hover { transform: translateY(-4px); border-color: rgba(255,255,255,.2); box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.15); }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.15); border-color: rgba(255,255,255,.3); }
     .card-hover:hover::before { opacity: 1; }
-    .pulse-dot { animation: pulse 2.2s cubic-bezier(0.4,0,0.6,1) infinite; }
-    @keyframes pulse { 0%,100%{opacity:1; transform:scale(1)} 50%{opacity:.55; transform:scale(1.2)} }
-    .text-gradient {
-      background: linear-gradient(90deg, #fff, #f0f0f0 60%, rgba(255,255,255,.85));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .spa-view { display: none; }
-    .spa-view.active { display: block; }
-    .nav-btn {
-      color: #9CA3AF; background: transparent; border-radius: .65rem; padding: .55rem 1rem;
-      transition: all .2s ease; position: relative; outline: none;
-    }
-    .nav-btn:hover, .nav-btn:focus-visible { color:#fff; background: #111827; }
-    .nav-btn.active {
-      color:#fff; background: linear-gradient(90deg,#6d28d9,#db2777);
-      box-shadow: 0 0 20px rgba(219,39,119,0.35), inset 0 0 6px rgba(255,255,255,0.18);
-    }
+
+    /* --- Inputs & Boutons --- */
     .input {
-      width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
-      border-radius: .9rem; padding: .75rem 1rem; color:#fff; outline: none; transition: border-color .2s ease, background .2s ease;
+      width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 1rem; padding: .8rem 1rem; color:#fff; outline: none; transition: all .2s ease;
+      backdrop-filter: blur(5px);
     }
-    .input::placeholder { color: rgba(255,255,255,0.45); }
-    .input:focus { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.07); }
-    .btn-gradient {
-      display:inline-flex; align-items:center; gap:.5rem; padding:.8rem 1.2rem; border-radius:.9rem; color:#fff; font-weight:700;
-      background: linear-gradient(90deg,#6366f1,#ec4899); transition: filter .2s ease, transform .2s ease;
+    .input:focus { border-color: rgba(255,255,255,0.5); background: rgba(0,0,0,0.5); box-shadow: 0 0 15px rgba(139, 92, 246, 0.2); }
+    .input::placeholder { color: rgba(255,255,255,0.4); }
+
+    .btn-primary {
+      display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.8rem 1.5rem; border-radius:1rem; color:#fff; font-weight:800; letter-spacing: 0.5px;
+      background: linear-gradient(135deg,#6366f1,#ec4899); transition: filter .2s ease, transform .2s ease, box-shadow .2s ease; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
     }
-    .btn-gradient:hover { filter: brightness(1.05); transform: translateY(-1px); }
-    .password-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 60; }
-    .password-modal.hidden { display: none; }
-    .shake { animation: shake .5s; }
-    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
-    .admin-fab {
-      position: fixed; right: 1rem; bottom: 1rem; z-index: 60;
-      border-radius: 9999px; padding: 0.6rem 0.9rem; background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12); color:#fff; backdrop-filter: blur(8px);
-      transition: all .2s ease; display:flex; align-items:center; gap:8px;
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5); }
+    .btn-primary:active { transform: translateY(0); }
+
+    /* --- Navigation --- */
+    .spa-view { display: none; opacity: 0; transition: opacity 0.3s ease; }
+    .spa-view.active { display: block; opacity: 1; }
+    .nav-btn {
+      color: #9CA3AF; background: transparent; border-radius: .75rem; padding: .6rem 1rem;
+      transition: all .2s ease;
     }
-    .admin-fab:hover { background: rgba(255,255,255,0.14); }
+    .nav-btn:hover, .nav-btn.active { color:#fff; background: rgba(255,255,255,0.08); }
+    .nav-btn.active {
+      background: linear-gradient(90deg,rgba(99,102,241,0.2),rgba(236,72,153,0.1));
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: inset 0 0 10px rgba(236,72,153,0.1);
+    }
+
+    /* --- Animations --- */
+    .shake { animation: shake .4s cubic-bezier(.36,.07,.19,.97) both; }
+    @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+    
+    .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* --- Modal Password Redesign --- */
+    .password-modal {
+      position: fixed; inset: 0; z-index: 100;
+      background: radial-gradient(circle at center, #1a1a2e 0%, #000000 100%);
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(20px);
+    }
+    .password-card {
+      position: relative; width: 90%; max-width: 400px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 2rem; padding: 2.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      overflow: hidden;
+    }
+    .password-card::after {
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* --- Game Specifics --- */
+    #gameCanvas {
+      background: rgba(0,0,0,0.6);
+      border-radius: 1rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+      display: block; margin: 0 auto; max-width: 100%;
+    }
+    .reward-notification {
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
   </style>
 </head>
-<body class="bg-black text-white antialiased">
-  <!-- Accès par mot de passe site -->
-  <div id="passwordModal" class="password-modal" aria-modal="true" role="dialog">
-    <div class="max-w-md w-full mx-4">
-      <div class="backdrop-blur-lg bg-white/10 border border-white/20 rounded-3xl p-8 shadow-2xl">
-        <div class="text-center mb-8">
-          <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl mb-4">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-            </svg>
-          </div>
-          <h2 class="text-3xl font-bold text-white mb-2">RYNACITY RP</h2>
-          <p class="text-white/60">Entrez le mot de passe pour accéder au site</p>
+<body class="bg-black text-white antialiased selection:bg-pink-500 selection:text-white">
+
+  <!-- 1. MODAL DE MOT DE PASSE (Design Amélioré) -->
+  <div id="passwordModal" class="password-modal">
+    <div class="password-card fade-in-up">
+      <div class="relative z-10">
+        <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-500 to-pink-600 rounded-2xl mb-6 shadow-lg shadow-indigo-500/30">
+          <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
         </div>
+        <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 mb-2">RYNACITY RP</h2>
+        <p class="text-gray-400 mb-8 text-sm">Espace sécurisé. Veuillez identifier.</p>
+        
         <form id="passwordForm" class="space-y-4">
-          <input type="password" id="passwordInput" placeholder="Mot de passe" class="input" autocomplete="off" aria-label="Mot de passe" />
-          <button type="submit" class="btn-gradient w-full justify-center">Accéder au site</button>
-          <p id="errorMessage" class="text-red-400 text-sm text-center hidden" role="alert">Mot de passe incorrect !</p>
+          <div class="relative group">
+            <input type="password" id="passwordInput" placeholder=" " class="input peer pt-5 pb-2" autocomplete="off" />
+            <label class="absolute left-4 top-4 text-gray-500 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400 bg-transparent pointer-events-none">Mot de passe</label>
+          </div>
+          <button type="submit" class="btn-primary w-full">Déverrouiller l'accès</button>
+          <p id="errorMessage" class="text-red-400 text-sm text-center hidden font-medium flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Accès refusé
+          </p>
         </form>
       </div>
     </div>
   </div>
 
-  <!-- Contenu principal -->
+  <!-- CONTENU PRINCIPAL -->
   <div id="mainContent" class="hidden">
+    
     <!-- Navbar -->
-    <header class="sticky top-0 backdrop-blur-lg bg-black/90 z-50 border-b border-gray-800">
-      <div class="max-w-screen-xl w-full mx-auto px-6">
-        <div class="flex items-center justify-between h-16">
-          <div class="flex items-center">
-            <div class="h-8 w-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg grid place-items-center">
-              <span class="text-white font-bold text-sm">RY</span>
+    <header class="sticky top-0 z-40 backdrop-blur-xl bg-black/80 border-b border-white/5">
+      <div class="max-w-7xl w-full mx-auto px-4 sm:px-6">
+        <div class="flex items-center justify-between h-20">
+          <div class="flex items-center cursor-pointer" onclick="openView('homeView')">
+            <div class="h-10 w-10 bg-gradient-to-br from-indigo-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+              <span class="text-white font-black text-lg">RY</span>
             </div>
-            <h1 class="ml-3 text-white text-lg font-bold tracking-tight leading-7">RYNACITY RP</h1>
+            <h1 class="ml-4 text-white text-xl font-bold tracking-tight hidden sm:block">RYNACITY RP</h1>
           </div>
-          <nav class="hidden md:flex items-center" aria-label="Navigation principale">
-            <button data-view="homeView" class="nav-btn flex items-center" aria-current="page">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
-              <span class="ml-2">Accueil</span>
+          
+          <nav class="hidden md:flex items-center space-x-1" aria-label="Navigation principale">
+            <button data-view="homeView" class="nav-btn flex items-center gap-2 px-4 py-2 text-sm font-medium">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+              Accueil
             </button>
-            <button data-view="docView" class="nav-btn flex items-center ml-1">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
-              <span class="ml-2">Documentation</span>
-            </button>
-            <button data-view="mapView" class="nav-btn flex items-center ml-1">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clip-rule="evenodd"/></svg>
-              <span class="ml-2">Carte</span>
-            </button>
-            <button data-view="updatesView" class="nav-btn flex items-center ml-1">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
-              <span class="ml-2">Mises à jour</span>
-            </button>
-            <button data-view="discordView" class="nav-btn flex items-center ml-1">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
-              <span class="ml-2">DISCORD</span>
-            </button>
+            <button data-view="docView" class="nav-btn flex items-center gap-2 px-4 py-2 text-sm font-medium">Règlement</button>
+            <button data-view="mapView" class="nav-btn flex items-center gap-2 px-4 py-2 text-sm font-medium">Carte</button>
+            <button data-view="discordView" class="nav-btn flex items-center gap-2 px-4 py-2 text-sm font-medium text-indigo-400 hover:text-indigo-300">Discord</button>
           </nav>
-          <div class="flex items-center">
-            <button onclick="openView('reportView')" title="Signaler un problème" class="nav-btn flex items-center" aria-controls="reportView">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-              <span class="hidden md:block text-sm font-medium ml-2">Rapport</span>
-            </button>
-          </div>
         </div>
       </div>
     </header>
 
-    <!-- Bottom mobile nav -->
-    <div class="fixed md:hidden z-50 left-1/2 -translate-x-1/2 bottom-6">
-      <div class="flex items-center backdrop-blur-lg bg-black/90 shadow-lg border border-gray-800 px-3 py-2 rounded-full">
-        <button data-view="homeView" class="nav-btn h-12 w-12 grid place-items-center" aria-label="Accueil">
-          <svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+    <!-- Mobile Nav Bottom -->
+    <div class="md:hidden fixed z-40 bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-sm">
+      <div class="flex items-center justify-between backdrop-blur-xl bg-black/80 border border-white/10 px-2 py-2 rounded-2xl shadow-2xl">
+        <button data-view="homeView" class="nav-btn h-12 w-12 flex items-center justify-center rounded-xl">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
         </button>
-        <button data-view="docView" class="nav-btn h-12 w-12 grid place-items-center" aria-label="Documentation">
-          <svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
+        <button data-view="docView" class="nav-btn h-12 w-12 flex items-center justify-center rounded-xl">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         </button>
-        <button data-view="mapView" class="nav-btn h-12 w-12 grid place-items-center" aria-label="Carte">
-          <svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clip-rule="evenodd"/></svg>
+        <button data-view="mapView" class="nav-btn h-12 w-12 flex items-center justify-center rounded-xl">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
         </button>
-        <button data-view="updatesView" class="nav-btn h-12 w-12 grid place-items-center" aria-label="Mises à jour">
-          <svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
-        </button>
-        <button data-view="discordView" class="nav-btn h-12 w-12 grid place-items-center" aria-label="Discord">
-          <svg class="h-[18px] w-[18px]" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
+        <button data-view="discordView" class="nav-btn h-12 w-12 flex items-center justify-center rounded-xl">
+          <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
         </button>
       </div>
     </div>
 
-    <!-- Vues -->
-    <main class="relative overflow-hidden">
-      <!-- HOME -->
+    <main class="relative min-h-screen pb-24 md:pb-12">
+      
+      <!-- HOME VIEW -->
       <section id="homeView" class="spa-view active">
-        <div class="relative min-h-[92vh]">
+        <div class="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+          <!-- Background Elements -->
           <div class="absolute inset-0 grid-pattern"></div>
-          <div class="absolute gradient-bg blur-3xl h-96 w-96 rounded-full left-[6%] top-[5%]"></div>
-          <div class="absolute gradient-bg blur-3xl h-72 w-72 rounded-full right-[4%] bottom-[8%]"></div>
+          <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px]"></div>
+          <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-pink-600/20 rounded-full blur-[120px]"></div>
 
-          <div class="relative z-10 px-6 py-20">
-            <div class="max-w-screen-xl mx-auto">
-              <div class="text-center mb-16">
-                <div class="inline-flex items-center backdrop-blur-sm bg-white/10 border border-white/10 mb-6 px-4 py-2 rounded-full">
-                  <svg class="text-white/70 h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>
-                  <span class="text-white/80 text-sm font-medium ml-2">Jeu Roblox Roleplay</span>
-                </div>
-                <h2 class="text-6xl md:text-8xl font-black tracking-tight leading-tight mb-6">
-                  <span class="text-gradient" id="heroTitleDisplay">RYNACITY RP</span>
-                </h2>
-                <p id="heroSubtitleDisplay" class="max-w-2xl mx-auto text-white/70 text-xl md:text-2xl leading-relaxed">
-                  Votre portail centralisé pour les <span class="text-white">mises à jour</span>, la <span class="text-white">documentation</span> et la <span class="text-white">communauté</span>.
-                </p>
+          <div class="relative z-10 max-w-4xl w-full mx-auto px-6 text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-indigo-300 mb-8 backdrop-blur-md fade-in-up">
+              <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+              SERVEUR EN LIGNE • v1.2.0
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-tight fade-in-up" style="animation-delay: 0.1s;">
+              BIENVENUE SUR <br>
+              <span class="text-gradient">RYNACITY RP</span>
+            </h1>
+            
+            <p class="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed fade-in-up" style="animation-delay: 0.2s;">
+              Plongez dans l'expérience Roleplay ultime sur Roblox. Rejoignez une communauté active, participez aux événements et construisez votre légende.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 fade-in-up" style="animation-delay: 0.3s;">
+              <button onclick="openView('discordView')" class="btn-primary px-8 py-4 text-lg w-full sm:w-auto">
+                Rejoindre le Discord
+              </button>
+              <button onclick="openView('docView')" class="px-8 py-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition font-bold w-full sm:w-auto">
+                Lire le Règlement
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-20 fade-in-up" style="animation-delay: 0.4s;">
+              <div class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-indigo-500/50 transition duration-300">
+                <div class="text-3xl font-black text-white mb-1">500+</div>
+                <div class="text-sm text-gray-400">Joueurs Quotidiens</div>
               </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                <article class="card-hover backdrop-blur-[10px] bg-white/5 shadow-[rgba(0,0,0,0.35)_0px_10px_30px,rgba(255,255,255,0.12)_0px_1px_0px_0px_inset] h-80 border border-white/10 p-8 rounded-3xl cursor-pointer"
-                         onclick="openView('docView')" onmousemove="cardLight(event,this)" aria-label="Ouvrir Documentation">
-                  <div class="flex flex-col h-full">
-                    <div class="flex items-start justify-between mb-6">
-                      <div class="backdrop-blur-sm bg-white/10 p-3 rounded-2xl">
-                        <svg class="text-white h-7 w-7" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
-                      </div>
-                      <svg class="text-white/40 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-3">Documentation</h3>
-                    <p class="text-white/70 leading-relaxed">Guides complets, règles RP, FAQ, astuces pour progresser.</p>
-                    <div class="mt-auto pt-6 flex items-center justify-between border-t border-white/10">
-                      <span class="text-blue-400 text-sm font-medium">15+ guides</span>
-                      <span class="text-white/70 text-sm">Découvrir →</span>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="card-hover backdrop-blur-[10px] bg-white/5 shadow-[rgba(0,0,0,0.35)_0px_10px_30px,rgba(255,255,255,0.12)_0px_1px_0px_0px_inset] h-80 border border-white/10 p-8 rounded-3xl cursor-pointer"
-                         onclick="openView('updatesView')" onmousemove="cardLight(event,this)" aria-label="Ouvrir Mises à jour">
-                  <div class="flex flex-col h-full">
-                    <div class="flex items-start justify-between mb-6">
-                      <div class="backdrop-blur-sm bg-white/10 p-3 rounded-2xl">
-                        <svg class="text-white h-7 w-7" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
-                      </div>
-                      <svg class="text-white/40 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
-                    </div>
-                    <h3 id="updatesVersionDisplay" class="text-2xl font-bold mb-3">v1.0.0 — Aujourd’hui</h3>
-                    <p class="text-white/70 leading-relaxed">Notes de patch, corrections, nouvelles fonctionnalités.</p>
-                    <div class="mt-auto pt-6 flex items-center justify-between border-t border-white/10">
-                      <span class="text-green-400 text-sm font-medium">Dernière MAJ: Aujourd’hui</span>
-                      <span class="text-white/70 text-sm">Lire →</span>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="card-hover backdrop-blur-[10px] bg-white/5 shadow-[rgba(0,0,0,0.35)_0px_10px_30px,rgba(255,255,255,0.12)_0px_1px_0px_0px_inset] h-80 border border-white/10 p-8 rounded-3xl cursor-pointer"
-                         onclick="openView('discordView')" onmousemove="cardLight(event,this)" aria-label="Ouvrir Discord">
-                  <div class="flex flex-col h-full">
-                    <div class="flex items-start justify-between mb-6">
-                      <div class="backdrop-blur-sm bg-white/10 p-3 rounded-2xl">
-                        <svg class="text-white h-7 w-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
-                      </div>
-                      <svg class="text-white/40 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-3">Communauté Discord</h3>
-                    <p class="text-white/70 leading-relaxed">Rejoins, suis les annonces et ouvre un ticket au besoin.</p>
-                    <div class="mt-auto pt-6 flex items-center justify-between border-t border-white/10">
-                      <span class="text-indigo-400 text-sm font-medium">Objectif 1000 membres</span>
-                      <span class="text-white/70 text-sm">Rejoindre →</span>
-                    </div>
-                  </div>
-                </article>
+              <div class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-pink-500/50 transition duration-300">
+                <div class="text-3xl font-black text-white mb-1">24/7</div>
+                <div class="text-sm text-gray-400">Support Staff Actif</div>
               </div>
-
-              <div class="flex flex-wrap justify-center gap-6">
-                <div class="flex items-center bg-white/5 border border-white/10 px-6 py-3 rounded-full">
-                  <div class="relative">
-                    <div class="bg-green-400 h-2 w-2 rounded-full"></div>
-                    <div class="absolute bg-green-400 h-2 w-2 rounded-full inset-0 pulse-dot"></div>
-                  </div>
-                  <span class="text-white/80 text-sm font-medium ml-3">Serveurs en ligne</span>
-                </div>
-                <div class="flex items-center bg-white/5 border border-white/10 px-6 py-3 rounded-full">
-                  <svg class="text-white/70 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"/></svg>
-                  <span class="text-white/80 text-sm font-medium ml-3">Version 1.0.0</span>
-                </div>
-                <div class="flex items-center bg-white/5 border border-white/10 px-6 py-3 rounded-full">
-                  <svg class="text-white/70 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07z"/></svg>
-                  <span class="text-white/80 text-sm font-medium ml-3">500+ joueurs</span>
-                </div>
+              <div class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-500/50 transition duration-300">
+                <div class="text-3xl font-black text-white mb-1">FPS</div>
+                <div class="text-sm text-gray-400">Optimisé & Stable</div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- DOC -->
+      <!-- DOC VIEW -->
       <section id="docView" class="spa-view">
-        <div class="max-w-screen-xl mx-auto px-6 py-16">
-          <h2 class="text-4xl font-extrabold mb-6">Documentation</h2>
-          <p class="text-white/70 mb-10">Guides, tutoriels, règles, FAQ — tout pour bien commencer.</p>
-          <div class="space-y-8">
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 class="text-2xl font-bold mb-2">Débuter sur RYNACITY RP</h3>
-              <p class="text-white/70">Prérequis, installation, création de personnage, bases du RP...</p>
+        <div class="max-w-4xl mx-auto px-6 py-12">
+          <h2 class="text-4xl font-bold mb-8 border-b border-white/10 pb-4">Règlement & Documentation</h2>
+          <div class="space-y-4">
+            <div class="p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition cursor-pointer">
+              <h3 class="text-xl font-bold text-indigo-400 mb-2">1. Respect & Comportement</h3>
+              <p class="text-gray-400">Le respect entre joueurs est obligatoire. Tout propos raciste, homophobe ou haineux sera sanctionné d'un bannissement définitif.</p>
             </div>
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 class="text-2xl font-bold mb-2">Règles RP essentielles</h3>
-              <ul class="list-disc list-inside text-white/70 space-y-1">
-                <li>Respect, fair-play, pas de powergaming</li>
-                <li>Communication claire en /ooc</li>
-                <li>Sanctions et appels</li>
-              </ul>
+            <div class="p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition cursor-pointer">
+              <h3 class="text-xl font-bold text-pink-400 mb-2">2. Roleplay Sérieux (RP)</h3>
+              <p class="text-gray-400">Le PowerGaming et le MetaGaming sont strictement interdits. Vous devez rester dans votre personnage en tout temps.</p>
+            </div>
+            <div class="p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition cursor-pointer">
+              <h3 class="text-xl font-bold text-purple-400 mb-2">3. Interactions Staff</h3>
+              <p class="text-gray-400">En cas de problème, ouvrez un ticket sur Discord. Ne sollicitez pas le staff en jeu pour des questions générales.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- MAP -->
+      <!-- MAP VIEW -->
       <section id="mapView" class="spa-view">
-        <div class="max-w-screen-xl mx-auto px-6 py-16">
-          <h2 class="text-4xl font-extrabold mb-6">Carte</h2>
-          <p class="text-white/70 mb-10">Aperçu, points d’intérêt, jobs, quartiers.</p>
-          <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-            <div class="aspect-video bg-black/40 border border-white/10 rounded-xl grid place-items-center text-white/50">
-              Carte interactive (image/iframe/widget)
+        <div class="max-w-6xl mx-auto px-6 py-12">
+          <h2 class="text-4xl font-bold mb-8">Carte Interactive</h2>
+          <div class="aspect-video w-full bg-gray-900 rounded-3xl border border-white/10 flex items-center justify-center relative overflow-hidden group">
+            <img src="https://picsum.photos/seed/rynacitymap/1200/800" alt="Carte Rynacity" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-70 transition duration-700">
+            <div class="relative z-10 text-center">
+              <p class="text-2xl font-bold text-white shadow-black drop-shadow-lg">Chargement de la carte...</p>
+              <p class="text-indigo-300 mt-2">(Widget bientôt disponible)</p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- UPDATES -->
-      <section id="updatesView" class="spa-view">
-        <div class="max-w-screen-xl mx-auto px-6 py-16">
-          <h2 class="text-4xl font-extrabold mb-6">Mises à jour</h2>
-          <div class="space-y-6">
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 id="updatesVersionItem" class="text-xl font-bold">v1.0.0 — Aujourd’hui</h3>
-              <ul id="updateNotesList" class="list-disc list-inside text-white/70 space-y-1 mt-2">
-                <li>Nouveaux métiers + équilibrage économie</li>
-                <li>Optimisations de performance</li>
-                <li>Corrections de bugs de spawn</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- DISCORD -->
+      <!-- DISCORD VIEW -->
       <section id="discordView" class="spa-view">
-        <div class="max-w-screen-xl mx-auto px-6 py-16">
-          <h2 class="text-4xl font-extrabold mb-4">Notre Discord</h2>
-          <p class="text-white/70 mb-8">Rejoins la communauté pour les annonces, évènements et support.</p>
-
-          <div class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8">
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-white/80 font-semibold">Objectif: <span id="discordGoalText">1000</span> membres</span>
-              <span class="text-white/60" id="discordProgressText">80 / 1000</span>
-            </div>
-            <div class="w-full h-3 bg-white/10 rounded-full overflow-hidden">
-              <div id="discordProgressBar" class="h-3 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" style="width: 8%; box-shadow: 0 0 16px rgba(168,85,247,0.6);"></div>
-            </div>
-            <p class="text-white/50 text-sm mt-3">Aidez-nous à atteindre l’objectif ! Invitez vos amis.</p>
+        <div class="max-w-4xl mx-auto px-6 py-12 text-center">
+          <div class="inline-flex items-center justify-center w-20 h-20 bg-[#5865F2] rounded-3xl mb-6 shadow-xl shadow-indigo-500/30">
+            <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
           </div>
-
-          <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-            <h3 class="text-2xl font-bold mb-2">Rejoindre le serveur</h3>
-            <p class="text-white/70 mb-4">Clique ci-dessous pour rejoindre immédiatement.</p>
-            <a id="discordInviteLink" href="#" target="_blank" class="btn-gradient" rel="noopener">Rejoindre le Discord</a>
+          <h2 class="text-4xl font-bold mb-4">Rejoignez la communauté</h2>
+          <p class="text-gray-400 mb-8 max-w-xl mx-auto">C'est sur le Discord que tout se passe. Annonces, événements, support et giveaways.</p>
+          
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-8 max-w-lg mx-auto">
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-white font-bold">Membres</span>
+              <span class="text-indigo-400">1,245</span>
+            </div>
+            <div class="w-full h-2 bg-white/10 rounded-full mb-6 overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-indigo-500 to-pink-500 w-[80%]"></div>
+            </div>
+            <a href="#" class="btn-primary w-full">Rejoindre le Serveur</a>
           </div>
         </div>
       </section>
 
-      <!-- REPORT -->
-      <section id="reportView" class="spa-view">
-        <div class="max-w-screen-xl mx-auto px-6 py-16">
-          <h2 class="text-4xl font-extrabold mb-4">Support & Signalements</h2>
-          <p class="text-white/70 mb-8">Utilise le bon canal pour une prise en charge rapide.</p>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 class="text-2xl font-bold mb-3">Procédure recommandée</h3>
-              <ol class="list-decimal list-inside text-white/80 space-y-2">
-                <li>Rejoindre le Discord RYNACITY RP.</li>
-                <li>Être connecté sur le serveur RYNACITY RP en jeu si nécessaire.</li>
-                <li>Ouvrir un ticket dans le canal support/🎫-tickets.</li>
-                <li>Expliquer la situation clairement (date/heure, joueurs impliqués, captures, logs).</li>
-                <li>Attendre la réponse d’un membre du staff.</li>
-              </ol>
-            </div>
-
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 class="text-2xl font-bold mb-3">Contacts</h3>
-              <ul class="text-white/80 space-y-2">
-                <li>Email: <a href="mailto:druvo.officiel@gmail.com" class="underline hover:opacity-80">druvo.officiel@gmail.com</a></li>
-                <li>Discord: bouton ci-dessous pour rejoindre</li>
-                <li>En jeu: contacter un Staff RYNACITY RP</li>
-              </ul>
-              <div class="mt-4 flex flex-wrap gap-3">
-                <a id="discordInviteLink2" href="#" target="_blank" class="inline-flex items-center px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">Rejoindre le Discord</a>
-                <a href="mailto:druvo.officiel@gmail.com" class="inline-flex items-center px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">Envoyer un email</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-8 bg-white/5 border border-white/10 rounded-2xl p-6">
-            <h3 class="text-xl font-bold mb-2">Important</h3>
-            <p class="text-white/70">Les faux signalements, le harcèlement ou les menaces entraînent des sanctions. Restez respectueux et factuel.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ADMIN -->
+      <!-- GAME VIEW (ADMIN REPLACEMENT) -->
       <section id="adminView" class="spa-view">
-        <div class="max-w-screen-xl w-full mx-auto px-6 py-16">
-          <h2 class="text-4xl font-extrabold mb-2">Admin Panel</h2>
-          <p class="text-white/60 mb-8">Modifie le contenu (sauvegarde locale automatique). Mot de passe: NoNo</p>
-
-          <div id="adminAuthBox" class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
-            <h3 class="text-2xl font-bold mb-3">Authentification</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-              <div class="md:col-span-2">
-                <label class="text-white/70 text-sm block mb-2">Mot de passe admin</label>
-                <input id="adminPasswordInput" type="password" class="input" placeholder="••••••••" />
-              </div>
-              <button id="adminLoginBtn" class="btn-gradient">Se connecter</button>
+        <div class="max-w-4xl mx-auto px-4 py-8">
+          
+          <!-- Game Container -->
+          <div class="bg-black/40 border border-white/10 rounded-3xl p-1 md:p-8 backdrop-blur-xl relative overflow-hidden">
+            
+            <!-- Header Game -->
+            <div class="text-center mb-6 relative z-10">
+              <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 uppercase tracking-widest">
+                Snake Rynacity
+              </h2>
+              <p class="text-sm text-gray-400 mt-2">Joue pour gagner des Lots en jeu ! 🎁</p>
             </div>
-            <p id="adminAuthMsg" class="text-sm text-red-400 mt-3 hidden">Mot de passe incorrect.</p>
+
+            <!-- Setup Phase: Username -->
+            <div id="gameSetup" class="max-w-sm mx-auto text-center p-6 bg-white/5 rounded-2xl border border-white/5 mb-6">
+              <label class="block text-left text-indigo-300 text-sm font-bold mb-2 ml-1">Pseudo Roblox (Obligatoire)</label>
+              <input type="text" id="robloxUsername" class="input text-center" placeholder="Ex: Player123" maxlength="15">
+              <button id="startGameBtn" class="btn-primary w-full mt-4 py-3 text-lg">
+                🎮 COMMENCER LA PARTIE
+              </button>
+              <p class="text-xs text-gray-500 mt-3">Ton pseudo s'affichera sur l'écran pour preuve.</p>
+            </div>
+
+            <!-- Game Area -->
+            <div id="gameArea" class="hidden relative">
+              <div class="flex justify-between items-center mb-2 px-2 text-sm md:text-base font-mono">
+                <div class="text-white">SCORE: <span id="scoreDisplay" class="text-indigo-400 font-bold">0</span></div>
+                <div class="text-gray-400">OBJECTIF: 50 / 100</div>
+              </div>
+              
+              <!-- Canvas -->
+              <canvas id="gameCanvas" width="600" height="400" class="max-w-full h-auto shadow-2xl shadow-indigo-900/50"></canvas>
+
+              <!-- Overlay Controls (Mobile) -->
+              <div class="mt-6 grid grid-cols-3 gap-2 max-w-[200px] mx-auto md:hidden">
+                <div></div>
+                <button class="control-btn bg-white/10 p-4 rounded-xl active:bg-white/20" data-dir="up">▲</button>
+                <div></div>
+                <button class="control-btn bg-white/10 p-4 rounded-xl active:bg-white/20" data-dir="left">◀</button>
+                <button class="control-btn bg-white/10 p-4 rounded-xl active:bg-white/20" data-dir="down">▼</button>
+                <button class="control-btn bg-white/10 p-4 rounded-xl active:bg-white/20" data-dir="right">▶</button>
+              </div>
+
+              <div class="hidden md:block text-center text-gray-500 text-sm mt-4">
+                Utilisez les flèches du clavier pour diriger le serpent.
+              </div>
+            </div>
+
+            <!-- Game Over / Info Modal -->
+            <div id="gameOverModal" class="hidden absolute inset-0 z-20 bg-black/90 backdrop-blur-md flex-col items-center justify-center text-center p-6 rounded-[1.7rem]">
+              <h3 id="gameOverTitle" class="text-4xl font-black text-white mb-2">PERDU !</h3>
+              <p class="text-indigo-300 text-xl mb-6">Score Final: <span id="finalScore">0</span></p>
+              
+              <div id="rewardClaimInfo" class="bg-white/5 border border-indigo-500/30 p-4 rounded-xl mb-8 w-full max-w-sm hidden">
+                <p class="text-sm text-gray-300">Si tu as atteint 50 ou 100 points, fais une <strong>capture d'écran</strong> ou une <strong>vidéo</strong> avec ton pseudo visible et envoie-la au staff sur le Discord !</p>
+              </div>
+
+              <button onclick="resetGameUI()" class="btn-primary w-full max-w-xs">Rejouer</button>
+            </div>
+            
+            <!-- Notification Toast -->
+            <div id="gameNotification" class="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-gradient-to-r from-yellow-500 to-orange-600 text-black px-6 py-3 rounded-full font-bold shadow-lg transform -translate-y-20 transition-transform duration-500">
+              🎉 RECOMPENSE DEVERROUILLEE !
+            </div>
           </div>
-
-          <form id="adminForm" class="space-y-8 hidden">
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 class="text-xl font-bold mb-4">Section Hero</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="text-white/70 text-sm block mb-2">Titre</label>
-                  <input id="heroTitle" class="input" placeholder="RYNACITY RP" />
-                </div>
-                <div>
-                  <label class="text-white/70 text-sm block mb-2">Description</label>
-                  <input id="heroSubtitle" class="input" placeholder="Votre portail centralisé..." />
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 class="text-xl font-bold mb-4">Discord</h3>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label class="text-white/70 text-sm block mb-2">Lien d’invitation</label>
-                  <input id="discordInvite" class="input" placeholder="https://discord.gg/..." />
-                </div>
-                <div>
-                  <label class="text-white/70 text-sm block mb-2">Objectif total</label>
-                  <input id="discordGoalInput" type="number" class="input" placeholder="1000" />
-                </div>
-                <div>
-                  <label class="text-white/70 text-sm block mb-2">Membres actuels</label>
-                  <input id="discordCurrentInput" type="number" class="input" placeholder="80" />
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 class="text-xl font-bold mb-4">Dernière mise à jour</h3>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label class="text-white/70 text-sm block mb-2">Version</label>
-                  <input id="updateVersion" class="input" placeholder="v1.0.0" />
-                </div>
-                <div class="md:col-span-2">
-                  <label class="text-white/70 text-sm block mb-2">Notes (séparées par ;)</label>
-                  <input id="updateNotes" class="input" placeholder="Optimisations; Corrections; Nouveaux métiers" />
-                </div>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3">
-              <button type="button" id="saveAdminBtn" class="btn-gradient">Enregistrer</button>
-              <span id="saveMsg" class="text-white/60 text-sm"></span>
-            </div>
-          </form>
         </div>
       </section>
+
     </main>
 
-    <button class="admin-fab" onclick="openView('adminView')" aria-label="Ouvrir le panel admin">
-      <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A1 1 0 0112 2v1.051a7.962 7.962 0 013.043 1.26l.744-.744a1 1 0 011.414 1.414l-.744.744A7.962 7.962 0 0118 8h1a1 1 0 110 2h-1a7.962 7.962 0 01-1.26 3.043l.744.744a1 1 0 11-1.414 1.414l-.744-.744A7.962 7.962 0 0112 16.949V18a1 1 0 11-2 0v-1.051a7.962 7.962 0 01-3.043-1.26l-.744.744a1 1 0 01-1.414-1.414l.744-.744A7.962 7.962 0 014 10H3a1 1 0 110-2h1a7.962 7.962 0 011.26-3.043l-.744-.744A1 1 0 015.93 2.8l.744.744A7.962 7.962 0 019 3.051V2a1 1 0 012 0z"/></svg>
-      <span>Admin</span>
+    <!-- Admin FAB (Button) -->
+    <button onclick="openView('adminView')" class="fixed right-6 bottom-6 md:bottom-8 z-50 group">
+      <div class="absolute inset-0 bg-indigo-500 rounded-full blur opacity-40 group-hover:opacity-60 transition duration-500 animate-pulse"></div>
+      <div class="relative flex items-center gap-2 bg-white text-black px-5 py-3 rounded-full font-bold shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 transition duration-300">
+        <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>JOUER AU JEU</span>
+      </div>
     </button>
   </div>
 
   <script>
-    // ----- Accès site -----
+    // --- NAVIGATION & SPA ---
+    const views = ['homeView', 'docView', 'mapView', 'discordView', 'adminView'];
+    const navButtons = document.querySelectorAll('.nav-btn');
+    
+    function openView(viewId) {
+      // Update Tab content
+      views.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) {
+          el.classList.remove('active');
+          if(id === viewId) setTimeout(() => el.classList.add('active'), 50); // Fade in
+        }
+      });
+      document.getElementById(viewId).classList.add('active');
+      
+      // Update Nav Buttons
+      navButtons.forEach(btn => {
+        if(btn.getAttribute('data-view') === viewId) {
+          btn.classList.add('active');
+          btn.setAttribute('aria-current', 'page');
+        } else {
+          btn.classList.remove('active');
+          btn.setAttribute('aria-current', 'false');
+        }
+      });
+
+      // Stop game loop if leaving game view
+      if(viewId !== 'adminView' && gameInterval) {
+        clearInterval(gameInterval);
+        gameRunning = false;
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const viewId = btn.getAttribute('data-view');
+        if(viewId) openView(viewId);
+      });
+    });
+
+    // --- PASSWORD PROTECTION ---
     const SITE_PASSWORD = 'RyRy';
     const passwordModal = document.getElementById('passwordModal');
     const mainContent = document.getElementById('mainContent');
@@ -460,189 +422,272 @@
     const passwordInput = document.getElementById('passwordInput');
     const errorMessage = document.getElementById('errorMessage');
 
-    if (sessionStorage.getItem('authenticated') === 'true') {
+    // Check session
+    if(sessionStorage.getItem('auth') === 'true') {
       passwordModal.classList.add('hidden');
       mainContent.classList.remove('hidden');
     }
-    passwordForm?.addEventListener('submit', (e) => {
+
+    passwordForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      if (passwordInput.value === SITE_PASSWORD) {
-        sessionStorage.setItem('authenticated','true');
+      if(passwordInput.value === SITE_PASSWORD) {
+        sessionStorage.setItem('auth', 'true');
         passwordModal.classList.add('hidden');
         mainContent.classList.remove('hidden');
       } else {
         errorMessage.classList.remove('hidden');
-        passwordInput.value = '';
-        passwordInput.classList.add('shake');
-        setTimeout(() => passwordInput.classList.remove('shake'), 500);
+        passwordInput.classList.add('shake', 'border-red-500', 'text-red-500');
+        setTimeout(() => {
+          passwordInput.classList.remove('shake');
+          setTimeout(() => passwordInput.classList.remove('border-red-500', 'text-red-500'), 500);
+        }, 400);
       }
     });
 
-    // ----- SPA nav -----
-    const views = ['homeView','docView','mapView','updatesView','discordView','reportView','adminView'];
-    const navButtons = document.querySelectorAll('.nav-btn');
-    function openView(viewId) {
-      views.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.toggle('active', id === viewId);
-      });
-      navButtons.forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-view') === viewId);
-        btn.setAttribute('aria-current', btn.getAttribute('data-view') === viewId ? 'page' : 'false');
-      });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    navButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const viewId = btn.getAttribute('data-view');
-        if (viewId) openView(viewId);
-      });
-    });
-    document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
-    function cardLight(e, el) {
-      const rect = el.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      el.style.setProperty('--x', x + '%');
-      el.style.setProperty('--y', y + '%');
-    }
-    window.cardLight = cardLight;
+    // --- SNAKE GAME LOGIC ---
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const startBtn = document.getElementById('startGameBtn');
+    const setupDiv = document.getElementById('gameSetup');
+    const gameAreaDiv = document.getElementById('gameArea');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const finalScoreDisplay = document.getElementById('finalScore');
+    const gameOverModal = document.getElementById('gameGameOverModal');
+    const gameOverTitle = document.getElementById('gameOverTitle');
+    const rewardClaimInfo = document.getElementById('rewardClaimInfo');
+    const robloxInput = document.getElementById('robloxUsername');
+    const notification = document.getElementById('gameNotification');
+    const modalEnd = document.getElementById('gameOverModal');
 
-    // ----- Sauvegarde locale (localStorage) -----
-    const STORAGE_KEY = 'rynacity_config_v1';
-
-    function loadConfigFromStorage() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return null;
-        return JSON.parse(raw);
-      } catch { return null; }
-    }
-    function saveConfigToStorage(cfg) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
-    }
-
-    // Config par défaut
-    let CONFIG = loadConfigFromStorage() || {
-      heroTitle: 'RYNACITY RP',
-      heroSubtitle: 'Votre portail centralisé pour les <span class="text-white">mises à jour</span>, la <span class="text-white">documentation</span> et la <span class="text-white">communauté</span>.',
-      discordInvite: '#',
-      discordGoal: 1000,
-      discordCurrent: 80,
-      updateVersion: 'v1.0.0',
-      updateNotes: ['Nouveaux métiers + équilibrage économie','Optimisations de performance','Corrections de bugs de spawn']
-    };
-
-    // Liens UI
-    const heroTitleDisplay = document.getElementById('heroTitleDisplay');
-    const heroSubtitleDisplay = document.getElementById('heroSubtitleDisplay');
-    const discordProgressBar = document.getElementById('discordProgressBar');
-    const discordProgressText = document.getElementById('discordProgressText');
-    const discordGoalText = document.getElementById('discordGoalText');
-    const discordInviteLink = document.getElementById('discordInviteLink');
-    const discordInviteLink2 = document.getElementById('discordInviteLink2');
-    const updatesVersionDisplay = document.getElementById('updatesVersionDisplay');
-    const updatesVersionItem = document.getElementById('updatesVersionItem');
-    const updateNotesList = document.getElementById('updateNotesList');
-
-    function applyConfigToUI(cfg) {
-      if (heroTitleDisplay) heroTitleDisplay.textContent = cfg.heroTitle || 'RYNACITY RP';
-      if (heroSubtitleDisplay) heroSubtitleDisplay.innerHTML = cfg.heroSubtitle || '';
-
-      const goal = Number(cfg.discordGoal || 1000);
-      const current = Math.max(0, Math.min(Number(cfg.discordCurrent || 0), goal));
-      const pct = goal > 0 ? Math.round((current/goal)*100) : 0;
-      if (discordGoalText) discordGoalText.textContent = goal;
-      if (discordProgressText) discordProgressText.textContent = `${current} / ${goal}`;
-      if (discordProgressBar) discordProgressBar.style.width = pct + '%';
-      if (cfg.discordInvite) {
-        if (discordInviteLink) discordInviteLink.href = cfg.discordInvite;
-        if (discordInviteLink2) discordInviteLink2.href = cfg.discordInvite;
-      }
-
-      if (updatesVersionDisplay) updatesVersionDisplay.textContent = `${cfg.updateVersion || 'v1.0.0'} — Aujourd’hui`;
-      if (updatesVersionItem) updatesVersionItem.textContent = `${cfg.updateVersion || 'v1.0.0'} — Aujourd’hui`;
-      if (updateNotesList && Array.isArray(cfg.updateNotes)) {
-        updateNotesList.innerHTML = '';
-        cfg.updateNotes.forEach(n => {
-          const li = document.createElement('li');
-          li.textContent = n;
-          updateNotesList.appendChild(li);
-        });
+    // Responsive Canvas
+    function resizeCanvas() {
+      const container = gameAreaDiv;
+      const maxWidth = container.clientWidth - 32; // padding
+      const aspectRatio = 600 / 400;
+      
+      if (maxWidth < 600) {
+        canvas.style.width = maxWidth + 'px';
+        canvas.style.height = (maxWidth / aspectRatio) + 'px';
+      } else {
+        canvas.style.width = '600px';
+        canvas.style.height = '400px';
       }
     }
-    applyConfigToUI(CONFIG);
+    
+    // Game Variables
+    const gridSize = 20;
+    let tileCountX = 30; // 600 / 20
+    let tileCountY = 20; // 400 / 20
+    let velocityX = 0;
+    let velocityY = 0;
+    let playerX = 10;
+    let playerY = 10;
+    let trail = [];
+    let tail = 5;
+    let appleX = 15;
+    let appleY = 15;
+    let score = 0;
+    let gameInterval;
+    let gameRunning = false;
+    let username = "JOUEUR";
+    let rewards = { tier1: false, tier2: false };
 
-    // ----- Admin Panel (NoNo) -----
-    const ADMIN_PASSWORD = 'NoNo';
-    let adminToken = sessionStorage.getItem('adminToken') || null;
-    const adminAuthBox = document.getElementById('adminAuthBox');
-    const adminForm = document.getElementById('adminForm');
-    const adminAuthMsg = document.getElementById('adminAuthMsg');
-
-    const heroTitle = document.getElementById('heroTitle');
-    const heroSubtitle = document.getElementById('heroSubtitle');
-    const discordInvite = document.getElementById('discordInvite');
-    const discordGoalInput = document.getElementById('discordGoalInput');
-    const discordCurrentInput = document.getElementById('discordCurrentInput');
-    const updateVersion = document.getElementById('updateVersion');
-    const updateNotes = document.getElementById('updateNotes');
-    const saveMsg = document.getElementById('saveMsg');
-
-    function fillAdminFormFromConfig() {
-      if (!CONFIG) return;
-      heroTitle.value = CONFIG.heroTitle || '';
-      heroSubtitle.value = CONFIG.heroSubtitle || '';
-      discordInvite.value = CONFIG.discordInvite || '';
-      discordGoalInput.value = CONFIG.discordGoal || 1000;
-      discordCurrentInput.value = CONFIG.discordCurrent || 0;
-      updateVersion.value = CONFIG.updateVersion || 'v1.0.0';
-      updateNotes.value = (CONFIG.updateNotes || []).join('; ');
-    }
-
-    document.getElementById('adminLoginBtn')?.addEventListener('click', () => {
-      const pwd = document.getElementById('adminPasswordInput').value;
-      if (pwd !== ADMIN_PASSWORD) {
-        adminAuthMsg.classList.remove('hidden');
+    // Start Game
+    startBtn.addEventListener('click', () => {
+      const inputName = robloxInput.value.trim();
+      if(!inputName) {
+        alert("Merci d'entrer un pseudo Roblox !");
         return;
       }
-      adminAuthMsg.classList.add('hidden');
-      adminToken = btoa(`${Date.now()}:${pwd}`).slice(0, 32);
-      sessionStorage.setItem('adminToken', adminToken);
-      adminAuthBox.classList.add('hidden');
-      adminForm.classList.remove('hidden');
-      fillAdminFormFromConfig();
+      username = inputName;
+      setupDiv.classList.add('hidden');
+      gameAreaDiv.classList.remove('hidden');
+      resetGameLogic();
+      resizeCanvas();
+      gameRunning = true;
+      gameInterval = setInterval(gameLoop, 1000/10); // 10 FPS
+      window.addEventListener('keydown', keyPush);
     });
 
-    if (adminToken) {
-      adminAuthBox.classList.add('hidden');
-      adminForm.classList.remove('hidden');
-      fillAdminFormFromConfig();
+    // Controls (Touch & Keyboard)
+    document.querySelectorAll('.control-btn').forEach(btn => {
+      btn.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // prevent zoom/scroll
+        handleInput(btn.getAttribute('data-dir'));
+      });
+      btn.addEventListener('click', (e) => {
+        handleInput(btn.getAttribute('data-dir'));
+      });
+    });
+
+    function handleInput(dir) {
+      if(!gameRunning) return;
+      switch(dir) {
+        case 'left': if(velocityX!==1) { velocityX=-1; velocityY=0; } break;
+        case 'up': if(velocityY!==1) { velocityX=0; velocityY=-1; } break;
+        case 'right': if(velocityX!==-1) { velocityX=1; velocityY=0; } break;
+        case 'down': if(velocityY!==-1) { velocityX=0; velocityY=1; } break;
+      }
     }
 
-    document.getElementById('saveAdminBtn')?.addEventListener('click', () => {
-      CONFIG.heroTitle = (heroTitle.value || 'RYNACITY RP').trim();
-      CONFIG.heroSubtitle = (heroSubtitle.value || '').trim();
-      CONFIG.discordInvite = (discordInvite.value || '#').trim();
-      CONFIG.discordGoal = Number(discordGoalInput.value || 1000);
-      CONFIG.discordCurrent = Number(discordCurrentInput.value || 0);
-      CONFIG.updateVersion = (updateVersion.value || 'v1.0.0').trim();
-      CONFIG.updateNotes = (updateNotes.value || '')
-        .split(';')
-        .map(s => s.trim())
-        .filter(Boolean);
+    function keyPush(evt) {
+      if(!gameRunning) return;
+      switch(evt.keyCode) {
+        case 37: if(velocityX!==1) { velocityX=-1; velocityY=0; } break;
+        case 38: if(velocityY!==1) { velocityX=0; velocityY=-1; } break;
+        case 39: if(velocityX!==-1) { velocityX=1; velocityY=0; } break;
+        case 40: if(velocityY!==-1) { velocityX=0; velocityY=1; } break;
+      }
+    }
 
-      // Sauvegarde locale immédiate
-      saveConfigToStorage(CONFIG);
-      applyConfigToUI(CONFIG);
+    function resetGameLogic() {
+      playerX = 10; playerY = 10;
+      velocityX = 0; velocityY = 0;
+      trail = [];
+      tail = 5;
+      score = 0;
+      rewards = { tier1: false, tier2: false };
+      scoreDisplay.textContent = score;
+      spawnApple();
+      modalEnd.classList.add('hidden');
+      modalEnd.classList.remove('flex');
+    }
 
-      saveMsg.textContent = 'Enregistré (local) ✔';
-      setTimeout(() => (saveMsg.textContent = ''), 1600);
-    });
+    function resetGameUI() {
+      modalEnd.classList.add('hidden');
+      modalEnd.classList.remove('flex');
+      setupDiv.classList.remove('hidden');
+      gameAreaDiv.classList.add('hidden');
+      clearInterval(gameInterval);
+      gameRunning = false;
+    }
 
-    // Expose
+    function spawnApple() {
+      appleX = Math.floor(Math.random() * tileCountX);
+      appleY = Math.floor(Math.random() * tileCountY);
+    }
+
+    function showNotification(msg) {
+      notification.innerHTML = msg;
+      notification.classList.remove('-translate-y-20');
+      notification.classList.add('reward-notification');
+      setTimeout(() => {
+        notification.classList.add('-translate-y-20');
+        notification.classList.remove('reward-notification');
+      }, 3000);
+    }
+
+    function gameLoop() {
+      playerX += velocityX;
+      playerY += velocityY;
+
+      // Wrap walls
+      if(playerX < 0) playerX = tileCountX - 1;
+      if(playerX > tileCountX - 1) playerX = 0;
+      if(playerY < 0) playerY = tileCountY - 1;
+      if(playerY > tileCountY - 1) playerY = 0;
+
+      // Draw Background
+      ctx.fillStyle = "rgba(0,0,0,0.6)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw Grid (Subtle)
+      ctx.strokeStyle = "rgba(255,255,255,0.03)";
+      for(let i=0; i<tileCountX; i++) {
+        ctx.beginPath(); ctx.moveTo(i*gridSize, 0); ctx.lineTo(i*gridSize, canvas.height); ctx.stroke();
+      }
+      for(let j=0; j<tileCountY; j++) {
+        ctx.beginPath(); ctx.moveTo(0, j*gridSize); ctx.lineTo(canvas.width, j*gridSize); ctx.stroke();
+      }
+
+      // Draw Snake
+      ctx.fillStyle = "#6366f1"; // Indigo
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = "#6366f1";
+      for(let i=0; i<trail.length; i++) {
+        // Gradient effect on tail
+        ctx.globalAlpha = 1 - (i / trail.length) * 0.6;
+        ctx.fillRect(trail[i].x * gridSize + 1, trail[i].y * gridSize + 1, gridSize - 2, gridSize - 2);
+        
+        // Check Self Collision
+        if(trail[i].x === playerX && trail[i].y === playerY) {
+          if(velocityX !== 0 || velocityY !== 0) gameOver();
+        }
+      }
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+
+      trail.push({x: playerX, y: playerY});
+      while(trail.length > tail) {
+        trail.shift();
+      }
+
+      // Draw Apple
+      ctx.fillStyle = "#ec4899"; // Pink
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = "#ec4899";
+      ctx.beginPath();
+      ctx.arc(appleX * gridSize + gridSize/2, appleY * gridSize + gridSize/2, gridSize/2 - 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Check Eat Apple
+      if(appleX === playerX && appleY === playerY) {
+        tail++;
+        score++;
+        scoreDisplay.textContent = score;
+        spawnApple();
+
+        // REWARDS SYSTEM
+        if(score === 50 && !rewards.tier1) {
+          rewards.tier1 = true;
+          showNotification("🎉 50 POMMES ! 1.000.000€ GAGNÉ !");
+        }
+        if(score === 100 && !rewards.tier2) {
+          rewards.tier2 = true;
+          showNotification("🏆 100 POMMES ! BMW + 100.000€ GAGNÉ !");
+        }
+      }
+
+      // Overlay Username (Anti-Scam)
+      ctx.font = "bold 20px Inter";
+      ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+      ctx.textAlign = "right";
+      ctx.fillText("@" + username, canvas.width - 10, 25);
+      ctx.font = "12px Inter";
+      ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+      ctx.fillText("RYNACITY RP", canvas.width - 10, 40);
+    }
+
+    function gameOver() {
+      gameRunning = false;
+      clearInterval(gameInterval);
+      
+      finalScoreDisplay.textContent = score;
+      
+      if(score >= 50) {
+        gameOverTitle.textContent = "BRAVO !";
+        gameOverTitle.classList.add('text-green-400');
+        gameOverTitle.classList.remove('text-white');
+        rewardClaimInfo.classList.remove('hidden');
+      } else {
+        gameOverTitle.textContent = "PERDU !";
+        gameOverTitle.classList.add('text-white');
+        gameOverTitle.classList.remove('text-green-400');
+        rewardClaimInfo.classList.add('hidden');
+      }
+
+      modalEnd.classList.remove('hidden');
+      modalEnd.classList.add('flex');
+    }
+
+    // Expose function globally for onclick
     window.openView = openView;
+    window.resetGameUI = resetGameUI;
+    
+    // Init
+    window.addEventListener('resize', resizeCanvas);
+
   </script>
 </body>
 </html>
