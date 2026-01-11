@@ -70,7 +70,7 @@
     }
     .admin-fab:hover { background: rgba(255,255,255,0.14); }
 
-    /* --- STYLES JEU DE CARTES (NOIR ET BUG FIX) --- */
+    /* --- STYLES JEU DE CARTES --- */
     .perspective-1000 { perspective: 1000px; }
     .transform-style-3d { transform-style: preserve-3d; }
     .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
@@ -83,7 +83,7 @@
       text-align: center;
       transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
       transform-style: preserve-3d;
-      background-color: #000000; /* Fond noir pur pour éviter le bug de transparence */
+      background-color: #000000; 
     }
     
     /* Faces des cartes */
@@ -91,11 +91,11 @@
       position: absolute;
       width: 100%;
       height: 100%;
-      -webkit-backface-visibility: hidden; /* Safari */
+      -webkit-backface-visibility: hidden; 
       backface-visibility: hidden;
       border-radius: 1rem;
-      background-color: #000000; /* Noir pur */
-      border: 1px solid rgba(255,255,255,0.15); /* Bordure fine */
+      background-color: #000000; 
+      border: 1px solid rgba(255,255,255,0.15); 
       display: flex;
       align-items: center;
       justify-content: center;
@@ -341,22 +341,23 @@
 
       <!-- JEU DE CARTES (Admin View) -->
       <section id="adminView" class="spa-view">
-        <div class="max-w-4xl w-full mx-auto px-4 py-12">
+        <div class="max-w-4xl w-full mx-auto px-4 pt-24 pb-12">
           
           <!-- Header Game -->
-          <div class="text-center mb-10 relative">
-            <h2 class="text-5xl md:text-6xl font-black text-white uppercase tracking-tighter">
+          <div class="text-center mb-8 relative">
+            <!-- Titre plus petit sur mobile pour pas être caché -->
+            <h2 class="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter">
               Lucky Cards
             </h2>
             <p class="text-gray-500 mt-2">Trouve les 3 cartes identiques.</p>
             
             <!-- Stats -->
-            <div class="flex justify-center gap-6 mt-8">
-              <div class="bg-black border border-white/10 px-6 py-3 rounded-xl backdrop-blur-md shadow-lg">
+            <div class="flex justify-center gap-6 mt-6">
+              <div class="bg-black border border-white/10 px-5 py-2 rounded-xl backdrop-blur-md">
                 <span class="block text-xs text-gray-500 uppercase font-bold tracking-widest">Essais</span>
-                <span id="attemptsLeftDisplay" class="text-3xl font-black text-white">5</span>
+                <span id="attemptsLeftDisplay" class="text-2xl font-black text-white">5</span>
               </div>
-              <div class="bg-black border border-white/10 px-6 py-3 rounded-xl backdrop-blur-md shadow-lg">
+              <div class="bg-black border border-white/10 px-5 py-2 rounded-xl backdrop-blur-md">
                 <span class="block text-xs text-gray-500 uppercase font-bold tracking-widest">Joueur</span>
                 <span id="gameUsernameDisplay" class="text-xl font-bold text-white">---</span>
               </div>
@@ -391,7 +392,8 @@
             <!-- Message Resultat -->
             <div id="gameResultMessage" class="hidden text-center mt-8">
               <p class="text-3xl font-black text-white mb-2" id="resultText">RÉSULTAT</p>
-              <p class="text-sm text-gray-400">Preuve requise : capture avec le filigrane.</p>
+              <!-- Ce message s'affiche seulement si on GAGNE -->
+              <p id="gameInstruction" class="text-sm text-gray-400">Preuve requise : capture avec le filigrane.</p>
               <button onclick="resetRound()" class="mt-6 bg-white/10 hover:bg-white/20 text-white px-8 py-3 rounded-full text-sm transition border border-white/10 font-bold">Essai Suivant</button>
             </div>
 
@@ -475,7 +477,7 @@
     window.cardLight = cardLight;
     window.openView = openView;
 
-    // ----- JEU DE CARTES (CORRIGÉ NOIR) -----
+    // ----- JEU DE CARTES (FIXES) -----
     const cardAuthBox = document.getElementById('cardAuthBox');
     const cardGameArea = document.getElementById('cardGameArea');
     const startCardBtn = document.getElementById('startCardGameBtn');
@@ -485,10 +487,11 @@
     const grid = document.getElementById('cardsGrid');
     const resultMsg = document.getElementById('gameResultMessage');
     const resultText = document.getElementById('resultText');
+    const resultInstruction = document.getElementById('gameInstruction'); // Nouvelle cible
     const limitModal = document.getElementById('limitReachedModal');
 
     // Configuration
-    const STORAGE_KEY = 'rynacity_cards_v3';
+    const STORAGE_KEY = 'rynacity_cards_v4';
     let gameState = {
       date: '',
       attempts: 5,
@@ -507,7 +510,6 @@
       
       if (saved) {
         gameState = JSON.parse(saved);
-        // Reset si changement de jour
         if (gameState.date !== today) {
           gameState.date = today;
           gameState.attempts = 5;
@@ -576,20 +578,18 @@
         card.dataset.value = val;
         card.dataset.index = index;
         
-        // Structure 3D CORRIGÉE (Noir Pur)
+        // Structure 3D
         card.innerHTML = `
           <div class="card-inner" id="card-inner-${index}">
-            
-            <!-- Dos de la carte (Face cachée) -->
+            <!-- Dos de la carte -->
             <div class="card-face z-20">
               <div class="text-6xl font-black text-white/20 select-none">?</div>
             </div>
             
-            <!-- Face de la carte (Récompense) -->
+            <!-- Face de la carte -->
             <div class="card-face rotate-y-180 z-10">
               ${getCardContent(val)}
             </div>
-            
           </div>
         `;
 
@@ -627,17 +627,14 @@
       const val2 = currentCardsData[selectedCards[1]];
       const val3 = currentCardsData[selectedCards[2]];
 
-      // Décrémenter essai
       gameState.attempts--;
       saveCardState();
       updateUI();
 
       setTimeout(() => {
         if(val1 === val2 && val2 === val3) {
-          // GAGNÉ
           handleWin(val1);
         } else {
-          // PERDU
           handleLoss();
         }
       }, 1000);
@@ -662,7 +659,14 @@
       resultText.className = `text-3xl font-black drop-shadow-md ${colorClass}`;
       resultMsg.classList.remove('hidden');
       
-      // Glow effect simple
+      // Afficher l'instruction SEULEMENT si on gagne (ou 3 X ? Non, user veut pas de message "capture" quand on perd)
+      // On affiche l'instruction de capture seulement si c'est une vraie récompense.
+      if(value === 1 || value === 2) {
+        resultInstruction.style.display = 'block';
+      } else {
+        resultInstruction.style.display = 'none';
+      }
+
       selectedCards.forEach(idx => {
         document.querySelector(`#card-inner-${idx} > .rotate-y-180`).style.boxShadow = "inset 0 0 20px rgba(255,255,255,0.2)";
       });
@@ -672,6 +676,9 @@
       resultText.innerHTML = "RATÉ !";
       resultText.className = "text-3xl font-black text-white drop-shadow-md";
       resultMsg.classList.remove('hidden');
+      
+      // CACHER le message de capture quand on perd
+      resultInstruction.style.display = 'none';
     }
 
     function resetRound() {
@@ -686,10 +693,7 @@
       return array;
     }
 
-    // Exposer pour bouton
     window.resetRound = resetRound;
-    
-    // Lancer init
     initCardGame();
   </script>
 </body>
