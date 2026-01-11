@@ -31,15 +31,20 @@
     }
     .spa-view { display: none; }
     .spa-view.active { display: block; }
+    
+    /* --- NAVIGATION CENTRÉE ET ARRONDIE --- */
     .nav-btn {
-      color: #9CA3AF; background: transparent; border-radius: .65rem; padding: .55rem 1rem;
+      color: #9CA3AF; background: transparent; border-radius: 9999px; /* Arrondi complet */
+      padding: .6rem 1.2rem;
       transition: all .2s ease; position: relative; outline: none;
     }
     .nav-btn:hover, .nav-btn:focus-visible { color:#fff; background: #111827; }
     .nav-btn.active {
-      color:#fff; background: linear-gradient(90deg,#6d28d9,#db2777);
-      box-shadow: 0 0 20px rgba(219,39,119,0.35), inset 0 0 6px rgba(255,255,255,0.18);
+      color:#000; background: #ffffff; /* Blanc quand actif */
+      box-shadow: 0 0 20px rgba(255,255,255,0.3);
+      font-weight: 700;
     }
+
     .input {
       width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
       border-radius: .9rem; padding: .75rem 1rem; color:#fff; outline: none; transition: border-color .2s ease, background .2s ease;
@@ -47,22 +52,34 @@
     .input::placeholder { color: rgba(255,255,255,0.45); }
     .input:focus { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.07); }
     
-    /* MODIFICATION DES BOUTONS : BLANC AU LIEU DE VIOLET */
+    /* Boutons Blancs */
     .btn-gradient {
-      display:inline-flex; align-items:center; gap:.5rem; padding:.8rem 1.2rem; border-radius:.9rem; color:#111; font-weight:800; /* Texte noir */
-      background: #ffffff; transition: transform .2s ease, opacity .2s ease;
-      box-shadow: 0 4px 15px rgba(255,255,255,0.1); /* Ombre blanche subtile */
+      display:inline-flex; align-items:center; gap:.5rem; padding:.8rem 1.2rem; border-radius: 9999px; /* Arrondi complet */
+      color:#111; font-weight:800; background: #ffffff; transition: transform .2s ease, opacity .2s ease;
+      box-shadow: 0 4px 15px rgba(255,255,255,0.1);
     }
-    .btn-gradient:hover { 
-      transform: translateY(-2px); 
-      opacity: 0.9; 
-      box-shadow: 0 4px 20px rgba(255,255,255,0.2); /* Plus lumineux au survol */
-    }
+    .btn-gradient:hover { transform: translateY(-2px); opacity: 0.9; box-shadow: 0 4px 20px rgba(255,255,255,0.2); }
     
+    /* --- LOADER PRO --- */
+    .page-loader {
+      position: fixed; inset: 0; background: #000; z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.3s ease;
+    }
+    .page-loader.hidden { opacity: 0; pointer-events: none; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-left-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
     /* Amélioration Mot de passe */
     .password-modal { 
       position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(12px); 
-      display: flex; align-items: center; justify-content: center; z-index: 60; 
+      display: flex; align-items: center; justify-content: center; z-index: 90; 
     }
     .password-modal.hidden { display: none; }
     .shake { animation: shake .5s; }
@@ -93,7 +110,6 @@
       background-color: #000000; 
     }
     
-    /* Faces des cartes */
     .card-face {
       position: absolute;
       width: 100%;
@@ -111,6 +127,11 @@
   </style>
 </head>
 <body class="bg-black text-white antialiased">
+
+  <!-- LOADER -->
+  <div id="pageLoader" class="page-loader hidden">
+    <div class="spinner"></div>
+  </div>
 
   <!-- Accès par mot de passe site -->
   <div id="passwordModal" class="password-modal" aria-modal="true" role="dialog">
@@ -136,39 +157,41 @@
 
   <!-- Contenu principal -->
   <div id="mainContent" class="hidden">
-    <!-- Navbar -->
+    <!-- Navbar (Structure modifiée pour centrer les boutons) -->
     <header class="sticky top-0 backdrop-blur-lg bg-black/90 z-50 border-b border-gray-800">
-      <div class="max-w-screen-xl w-full mx-auto px-6">
-        <div class="flex items-center justify-between h-16">
-          <div class="flex items-center">
-            <div class="h-8 w-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg grid place-items-center">
-              <span class="text-white font-bold text-sm">RY</span>
-            </div>
-            <h1 class="ml-3 text-white text-lg font-bold tracking-tight leading-7">RYNACITY RP</h1>
+      <div class="max-w-screen-xl w-full mx-auto px-6 relative h-16"> <!-- Added relative and h-16 -->
+        
+        <!-- Logo (Positionné à gauche en absolu) -->
+        <div class="absolute left-6 top-1/2 -translate-y-1/2 flex items-center cursor-pointer" onclick="openView('homeView')">
+          <div class="h-8 w-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg grid place-items-center">
+            <span class="text-white font-bold text-sm">RY</span>
           </div>
-          <nav class="hidden md:flex items-center" aria-label="Navigation principale">
-            <button data-view="homeView" class="nav-btn flex items-center" aria-current="page">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
-              <span class="ml-2">Accueil</span>
-            </button>
-            <button data-view="docView" class="nav-btn flex items-center ml-1">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
-              <span class="ml-2">Documentation</span>
-            </button>
-            <button data-view="mapView" class="nav-btn flex items-center ml-1">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clip-rule="evenodd"/></svg>
-              <span class="ml-2">Carte</span>
-            </button>
-            <button data-view="updatesView" class="nav-btn flex items-center ml-1">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
-              <span class="ml-2">Mises à jour</span>
-            </button>
-            <button data-view="discordView" class="nav-btn flex items-center ml-1">
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
-              <span class="ml-2">Discord</span>
-            </button>
-          </nav>
+          <h1 class="ml-3 text-white text-lg font-bold tracking-tight leading-7 hidden md:block">RYNACITY RP</h1>
         </div>
+
+        <!-- Navigation (Centrée) -->
+        <nav class="flex items-center justify-center h-full" aria-label="Navigation principale">
+          <button data-view="homeView" class="nav-btn flex items-center gap-2" aria-current="page">
+            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+            <span class="hidden md:block">Accueil</span>
+          </button>
+          <button data-view="docView" class="nav-btn flex items-center gap-2">
+            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
+            <span class="hidden md:block">Documentation</span>
+          </button>
+          <button data-view="mapView" class="nav-btn flex items-center gap-2">
+            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clip-rule="evenodd"/></svg>
+            <span class="hidden md:block">Carte</span>
+          </button>
+          <button data-view="updatesView" class="nav-btn flex items-center gap-2">
+            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+            <span class="hidden md:block">Mises à jour</span>
+          </button>
+          <button data-view="discordView" class="nav-btn flex items-center gap-2">
+            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.2.355-.43.83-.589 1.205a18.27 18.27 0 00-3.938 0A12.3 12.3 0 0011.442 3c-1.341.154-2.653.436-3.942.869C4.417 6.316 3.554 9.05 3.75 11.738c1.64 1.227 3.228 1.974 4.764 2.461.382-.54.723-1.113 1.02-1.715-.567-.216-1.11-.48-1.627-.786.137-.1.27-.205.4-.314 3.124 1.463 6.5 1.463 9.624 0 .132.109.265.214.4.314-.517.306-1.06.57-1.627.786.297.602.638 1.175 1.02 1.715 1.536-.487 3.124-1.234 4.764-2.461.24-3.098-.657-5.803-2.776-7.369z"/></svg>
+            <span class="hidden md:block">Discord</span>
+          </button>
+        </nav>
       </div>
     </header>
 
@@ -452,20 +475,34 @@
       }
     });
 
-    // ----- SPA NAV -----
+    // ----- SPA NAV (AVEC LOADING) -----
     const views = ['homeView','docView','mapView','updatesView','discordView','adminView'];
     const navButtons = document.querySelectorAll('.nav-btn');
+    const pageLoader = document.getElementById('pageLoader');
+
     function openView(viewId) {
-      views.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.toggle('active', id === viewId);
-      });
-      navButtons.forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-view') === viewId);
-        btn.setAttribute('aria-current', btn.getAttribute('data-view') === viewId ? 'page' : 'false');
-      });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Afficher le loader
+      pageLoader.classList.remove('hidden');
+
+      // Simuler un délai pour effet "pro"
+      setTimeout(() => {
+        // Cacher le loader
+        pageLoader.classList.add('hidden');
+
+        // Changer de vue
+        views.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.toggle('active', id === viewId);
+        });
+        navButtons.forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-view') === viewId);
+          btn.setAttribute('aria-current', btn.getAttribute('data-view') === viewId ? 'page' : 'false');
+        });
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 400); // 400ms de chargement
     }
+
     navButtons.forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -473,6 +510,7 @@
         if (viewId) openView(viewId);
       });
     });
+
     function cardLight(e, el) {
       const rect = el.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -496,20 +534,12 @@
     const resultInstruction = document.getElementById('gameInstruction');
     const limitModal = document.getElementById('limitReachedModal');
 
-    // Configuration
     const STORAGE_KEY = 'rynacity_cards_final';
-    let gameState = {
-      date: '',
-      attempts: 5,
-      username: ''
-    };
-    
-    // Variables de Jeu
+    let gameState = { date: '', attempts: 5, username: '' };
     let selectedCards = [];
     let isProcessing = false;
     let currentCardsData = []; 
     
-    // Initialisation
     function initCardGame() {
       const today = new Date().toLocaleDateString();
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -540,7 +570,6 @@
       }
     }
 
-    // Lancer le jeu
     startCardBtn.addEventListener('click', () => {
       const pseudo = cardUsernameInput.value.trim();
       if(!pseudo) return alert("Entre un pseudo !");
@@ -573,18 +602,15 @@
       resultMsg.classList.add('hidden');
       isProcessing = false;
 
-      // Création du paquet : 3 '1', 3 '2', 3 'X'
       const deck = [1,1,1, 2,2,2, 'X','X','X'];
       currentCardsData = shuffle(deck);
 
-      // Génération HTML
       currentCardsData.forEach((val, index) => {
         const card = document.createElement('div');
         card.className = 'group relative h-40 w-full cursor-pointer perspective-1000';
         card.dataset.value = val;
         card.dataset.index = index;
         
-        // Structure 3D
         card.innerHTML = `
           <div class="card-inner" id="card-inner-${index}">
             <!-- Dos de la carte -->
