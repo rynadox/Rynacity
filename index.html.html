@@ -29,7 +29,7 @@
     .spa-view { display: none; }
     .spa-view.active { display: block; }
     
-    /* --- NAVIGATION (SANS LIGNE, ESPACEMENT AJUSTÉ) --- */
+    /* --- NAVIGATION (CENTRÉE PARFAITEMENT) --- */
     .nav-btn {
       color: #d1d5db; 
       background: rgba(255, 255, 255, 0.1); 
@@ -41,10 +41,10 @@
     .nav-btn:hover, .nav-btn:focus-visible { 
       color:#fff; 
       background: rgba(255, 255, 255, 0.2); 
-      transform: translateY(-1px); /* Petit effet de levée */
+      transform: translateY(-1px);
     }
     .nav-btn.active {
-      color:#000; background: #ffffff; /* Blanc pur quand actif */
+      color:#000; background: #ffffff;
       box-shadow: 0 0 20px rgba(255,255,255,0.3);
       font-weight: 700;
       border: none;
@@ -65,39 +65,60 @@
     }
     .btn-gradient:hover { transform: translateY(-2px); opacity: 0.9; box-shadow: 0 4px 20px rgba(255,255,255,0.2); }
     
-    /* --- LOADER PRO --- */
+    /* --- LOADER PRO (HAUTE Z-INDEX) --- */
     .page-loader {
-      position: fixed; inset: 0; background: #000; z-index: 100;
-      display: flex; align-items: center; justify-content: center;
-      transition: opacity 0.3s ease;
+      position: fixed; inset: 0; background: #000; z-index: 9999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: opacity 0.5s ease;
     }
     .page-loader.hidden { opacity: 0; pointer-events: none; }
     .spinner {
-      width: 40px; height: 40px;
-      border: 3px solid rgba(255,255,255,0.1);
+      width: 50px; height: 50px;
+      border: 4px solid rgba(255,255,255,0.1);
       border-left-color: #ffffff;
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
+    /* --- NOTIFICATIONS --- */
+    .notification-container {
+      position: fixed; top: 20px; right: 20px; z-index: 10000;
+      display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+    }
+    .toast {
+      background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: flex; align-items: center; gap: 10px;
+      animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      min-width: 300px;
+    }
+    .toast.error { border-left: 4px solid #ef4444; }
+    .toast.success { border-left: 4px solid #22c55e; }
+    .toast.info { border-left: 4px solid #3b82f6; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes fadeOut { to { transform: translateX(100%); opacity: 0; } }
+
     /* Amélioration Mot de passe */
     .password-modal { 
       position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(12px); 
-      display: flex; align-items: center; justify-content: center; z-index: 90; 
+      display: flex; align-items: center; justify-content: center; z-index: 9000; 
     }
     .password-modal.hidden { display: none; }
     .shake { animation: shake .5s; }
     @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
     
-    /* Bouton Admin/Game */
-    .admin-fab {
-      position: fixed; right: 1rem; bottom: 1rem; z-index: 60;
-      border-radius: 9999px; padding: 0.6rem 0.9rem; background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12); color:#fff; backdrop-filter: blur(8px);
-      transition: all .2s ease; display:flex; align-items:center; gap:8px;
-    }
-    .admin-fab:hover { background: rgba(255,255,255,0.14); }
+    /* --- BOUTIQUE (COULEURS ET ICONES) --- */
+    .shop-sport { color: #EAB308; border-color: rgba(234, 179, 8, 0.3); background: rgba(234, 179, 8, 0.05); }
+    .shop-sport:hover { border-color: rgba(234, 179, 8, 0.6); background: rgba(234, 179, 8, 0.1); }
+    .shop-4x4 { color: #10B981; border-color: rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.05); }
+    .shop-4x4:hover { border-color: rgba(16, 185, 129, 0.6); background: rgba(16, 185, 129, 0.1); }
+    .shop-vip { color: #A855F7; border-color: rgba(168, 85, 247, 0.4); background: rgba(168, 85, 247, 0.1); }
+    .shop-vip:hover { border-color: rgba(168, 85, 247, 0.8); background: rgba(168, 85, 247, 0.15); }
 
     /* --- STYLES JEU DE CARTES --- */
     .perspective-1000 { perspective: 1000px; }
@@ -124,14 +145,22 @@
       font-size: 0.75rem; color: rgba(255,255,255,0.4); text-decoration: underline; cursor: pointer; margin-top: 4px; display: inline-block;
     }
     .edit-pseudo-btn:hover { color: white; }
+    
+    .countdown {
+      font-size: 0.7rem; color: #9CA3AF; display: block; margin-top: 2px; font-variant-numeric: tabular-nums;
+    }
 
   </style>
 </head>
 <body class="bg-black text-white antialiased">
 
-  <!-- LOADER -->
+  <!-- CONTAINER NOTIFICATIONS -->
+  <div id="notificationContainer" class="notification-container"></div>
+
+  <!-- LOADER (Z-INDEX HAUT) -->
   <div id="pageLoader" class="page-loader hidden">
     <div class="spinner"></div>
+    <p class="mt-4 text-white font-bold tracking-widest">CHARGEMENT...</p>
   </div>
 
   <!-- Accès par mot de passe site -->
@@ -148,6 +177,13 @@
         </div>
         <form id="passwordForm" class="space-y-4">
           <input type="password" id="passwordInput" placeholder="Mot de passe" class="input" autocomplete="off" aria-label="Mot de passe" />
+          
+          <!-- Vérification Bot -->
+          <div class="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center justify-between">
+            <span class="text-sm text-white/70">Sécurité: <span id="captchaQuestion" class="font-bold text-white">2 + 2 = ?</span></span>
+            <input type="number" id="captchaInput" class="w-20 bg-transparent border-b border-white/30 text-center text-white focus:outline-none" placeholder="?">
+          </div>
+
           <button type="submit" class="btn-gradient w-full justify-center">Accéder au site</button>
           <p id="errorMessage" class="text-red-400 text-sm text-center hidden" role="alert">Mot de passe incorrect !</p>
         </form>
@@ -157,17 +193,16 @@
 
   <!-- Contenu principal -->
   <div id="mainContent" class="hidden">
-    <!-- Navbar (MT-4, SANS LIGNE, LOGO GAUCHE SUPPRIMÉ, GAP RÉDUIT) -->
-    <header class="sticky top-0 backdrop-blur-lg bg-black/90 z-50 mt-4 rounded-b-2xl"> <!-- border-b REMOVED -->
-      <div class="max-w-screen-xl w-full mx-auto px-6 relative h-20">
+    <!-- Navbar (Centrée, Pas de Bouton Retour, Icones claires) -->
+    <header class="sticky top-0 backdrop-blur-lg bg-black/90 z-50 mt-4 rounded-b-2xl h-20"> 
+      <div class="max-w-screen-xl w-full mx-auto px-6 relative h-full">
         
-        <!-- Logo supprimé ici -->
-
-        <!-- Navigation (Centrée, Gap 2 / 4) -->
-        <nav class="flex items-center justify-center h-full gap-2 md:gap-4" aria-label="Navigation principale">
+        <!-- Navigation Centrée (Visible même dans le jeu) -->
+        <nav id="mainNav" class="flex items-center justify-center h-full gap-2 md:gap-4" aria-label="Navigation principale">
           <button data-view="homeView" class="nav-btn flex items-center gap-2" aria-current="page">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-            <span class="hidden md:block">Accueil</span>
+            <!-- RETOUR À ACCUEIL PAR DÉFAUT -->
+            <span class="hidden md:block font-bold">Accueil</span>
           </button>
           <button data-view="docView" class="nav-btn flex items-center gap-2">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -182,9 +217,7 @@
             <span class="hidden md:block">Mises à jour</span>
           </button>
           <button data-view="discordView" class="nav-btn flex items-center gap-2">
-            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37 67.703 67.703 0 0 0-1.718 6.645 68.657 68.657 0 0 0 2.588 4.486.076.076 0 0 0 .084.028 19.8 19.8 0 0 0 5.994-2.99.077.077 0 0 0 .083-.028 68.587 68.587 0 0 0 2.594-4.486 67.7 67.7 0 0 0-1.718-6.645zm-10.815 13.588a2.295 2.295 0 1 1 0-4.59 2.295 2.295 0 0 1 0 4.59zm6.815 0a2.295 2.295 0 1 1 0-4.59 2.295 2.295 0 0 1 0 4.59z"/>
-            </svg>
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37 67.703 67.703 0 0 0-1.718 6.645 68.657 68.657 0 0 0 2.588 4.486.076.076 0 0 0 .084.028 19.8 19.8 0 0 0 5.994-2.99.077.077 0 0 0 .083-.028 68.587 68.587 0 0 0 2.594-4.486 67.7 67.7 0 0 0-1.718-6.645zm-10.815 13.588a2.295 2.295 0 1 1 0-4.59 2.295 2.295 0 0 1 0 4.59zm6.815 0a2.295 2.295 0 1 1 0-4.59 2.295 2.295 0 0 1 0 4.59z"/></svg>
             <span class="hidden md:block">Discord</span>
           </button>
           <button data-view="shopView" class="nav-btn flex items-center gap-2">
@@ -196,8 +229,8 @@
     </header>
 
     <!-- Bottom mobile nav -->
-    <div class="fixed md:hidden z-50 left-1/2 -translate-x-1/2 bottom-6">
-      <div class="flex items-center backdrop-blur-lg bg-black/90 shadow-lg border border-white/10 px-3 py-2 rounded-full gap-2"> <!-- Gap 2 mobile -->
+    <div id="mobileNav" class="fixed md:hidden z-50 left-1/2 -translate-x-1/2 bottom-6">
+      <div class="flex items-center backdrop-blur-lg bg-black/90 shadow-lg border border-white/10 px-3 py-3 rounded-full gap-2">
         <button data-view="homeView" class="nav-btn h-12 w-12 grid place-items-center"><svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></button>
         <button data-view="docView" class="nav-btn h-12 w-12 grid place-items-center"><svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></button>
         <button data-view="mapView" class="nav-btn h-12 w-12 grid place-items-center"><svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg></button>
@@ -370,57 +403,60 @@
         </div>
       </section>
 
-      <!-- SHOP -->
+      <!-- SHOP (ICONES ET COULEURS) -->
       <section id="shopView" class="spa-view">
         <div class="max-w-screen-xl mx-auto px-6 py-16">
           <h2 class="text-4xl font-extrabold mb-8 text-center">BOUTIQUE</h2>
           <p class="text-center text-white/50 mb-12">Choisis ton Gamepass pour débloquer des véhicules exclusifs.</p>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- PASS SPORT -->
-            <article class="card-hover backdrop-blur-[10px] bg-white/5 border border-white/10 rounded-[2rem] p-8 text-center">
-              <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7M9 11V6l3 3 3 3V5m0 8H5v-4l4-4 4 4z"/></svg>
+            <!-- PASS SPORT (JAUNE - VOITURE) -->
+            <article class="card-hover backdrop-blur-[10px] border p-8 rounded-[2rem] text-center shop-sport transition-all duration-300">
+              <div class="w-20 h-20 bg-yellow-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-yellow-500/20">
+                <!-- Icone Voiture -->
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.7-1.7H5c-.9 0-1.7.8-1.7 1.7v3c0 .6-.4 1-1 1h2m4.6-2.6l2.29-2.29a1 1 0 011.41 1.41l-2.29 2.29a1 1 0 001.41-1.41L14.59 14.41a1 1 0 001.41 1.41l2.29-2.29a1 1 0 011.41-1.41l-2.29-2.29a1 1 0 001.41 1.41l2.29 2.29a1 1 0 011.41 1.41l-2.29 2.29a1 1 0 01-1.41 1.41L19 17z"/></svg>
               </div>
-              <h3 class="text-2xl font-bold mb-2 text-white">Gamepass Sport</h3>
-              <div class="inline-block bg-white/10 px-3 py-1 rounded-full text-xs font-bold text-white mb-4">POPULAIRE</div>
+              <h3 class="text-2xl font-bold mb-2">Gamepass Sport</h3>
+              <div class="inline-block bg-yellow-500/10 px-3 py-1 rounded-full text-xs font-bold text-yellow-400 mb-4 border border-yellow-500/30">POPULAIRE</div>
               <p class="text-white/70 mb-4">Contenu exclusif pour les amateurs de vitesse.</p>
               <ul class="text-white/60 text-sm space-y-1 mb-6">
                 <li>• 2 Véhicules Sportives</li>
                 <li>• Accessoires spéciaux</li>
               </ul>
-              <button class="btn-gradient w-full justify-center">Acheter</button>
+              <button class="btn-gradient w-full justify-center bg-yellow-400 text-yellow-900">Acheter</button>
             </article>
 
-            <!-- PASS 4X4 -->
-            <article class="card-hover backdrop-blur-[10px] bg-white/5 border border-white/10 rounded-[2rem] p-8 text-center relative overflow-hidden">
-              <div class="absolute top-0 left-0 w-full h-1 bg-white/10"></div>
-              <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20l5.953-5.95a1 1 0 0 0-1.414-1.414l-8.5-8.5a1 1 0 0 0-1.414 1.414l3.536 3.536a1 1 0 0 1 1.414-1.414l-4.95-4.95a1 1 0 0 1 1.414-1.414l8.5 8.5a1 1 0 0 0 1.414 1.414l-3.536-3.536zM13 7l5.953-5.95a1 1 0 0 0-1.414-1.414l-8.5-8.5a1 1 0 0 0-1.414 1.414l3.536 3.536a1 1 0 0 1 1.414-1.414l-4.95-4.95a1 1 0 0 1 1.414-1.414l8.5 8.5a1 1 0 0 0 1.414 1.414l-3.536-3.536z"/></svg>
+            <!-- PASS 4X4 (VERT - CAMION) -->
+            <article class="card-hover backdrop-blur-[10px] border p-8 rounded-[2rem] text-center shop-4x4 transition-all duration-300 relative overflow-hidden">
+              <div class="absolute top-0 left-0 w-full h-1 bg-green-500/20"></div>
+              <div class="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-500/20">
+                <!-- Icone Camion/Boite -->
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16m-2 0V6H6m0 0l-4-4m-4-4V6H4m14 0l-4-4m0 0v14M4 20h16m-2 0V6H6m0 0l-4-4m-4-4V6H4z"/></svg>
               </div>
-              <h3 class="text-2xl font-bold mb-2 text-white">Gamepass 4x4</h3>
+              <h3 class="text-2xl font-bold mb-2">Gamepass 4x4</h3>
               <p class="text-white/70 mb-4">Domine tout type de terrain.</p>
               <ul class="text-white/60 text-sm space-y-1 mb-6">
                 <li>• Véhicules Tout-Terrain</li>
                 <li>• Capacité de chargement</li>
               </ul>
-              <button class="btn-gradient w-full justify-center">Acheter</button>
+              <button class="btn-gradient w-full justify-center bg-green-500 text-green-900">Acheter</button>
             </article>
 
-            <!-- PASS VIP -->
-            <article class="card-hover backdrop-blur-[10px] bg-white/10 border border-white/30 rounded-[2rem] p-8 text-center shadow-[0_0_30px_rgba(255,255,255,0.1)]">
-              <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                <svg class="w-10 h-10 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L2 9.27l6.91-1.01L12 2zm0 2.72l5.15 4.07-5.16 4.07-4.92 4.08-4.92 4.08-5.16 4.08 5.16 4.07 4.92 4.08 4.92 4.08L12 4.72zm0 7.75l4.23 2.95-4.23 2.96-4.92 4.08-4.92 4.08-5.16 4.08 5.16 4.08 4.92 4.08 4.92 4.08L12 14.47z"/></svg>
+            <!-- PASS VIP (VIOLET - ÉTOILE) -->
+            <article class="card-hover backdrop-blur-[10px] border p-8 rounded-[2rem] text-center shop-vip transition-all duration-300 shadow-[0_0_30px_rgba(168,85,247,0.2)]">
+              <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-purple-500/40">
+                <!-- Icone Étoile -->
+                <svg class="w-10 h-10 text-purple-900" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.595 1.81l-2.293 2.746a1 1 0 00-.932 1.525l-2.019-4.38a1 1 0 00-.718.097l-2.019 4.38a1 1 0 00.932 1.525l2.293 2.746c.39.533.951.81 1.595.81h3.462c.643 0 1.205.277 1.603.718l1.07-3.292z"/></svg>
               </div>
               <h3 class="text-2xl font-black mb-2">Gamepass VIP</h3>
               <div class="inline-block bg-black px-3 py-1 rounded-full text-xs font-bold text-white mb-4 border border-white">LE PLUS CONNU</div>
-              <p class="text-white/70 mb-4">Le statut ultime.</p>
-              <ul class="text-white/60 text-sm space-y-1 mb-6">
+              <p class="text-white/90 mb-4 font-bold">Le statut ultime.</p>
+              <ul class="text-white/70 text-sm space-y-1 mb-6">
                 <li>• Accès à tout</li>
                 <li>• Véhicules exclusifs</li>
                 <li>• Priorité totale</li>
               </ul>
-              <button class="btn-gradient w-full justify-center">Acheter</button>
+              <button class="btn-gradient w-full justify-center bg-purple-500 text-white">Acheter</button>
             </article>
           </div>
         </div>
@@ -441,6 +477,7 @@
                 <span class="block text-xs text-gray-500 uppercase font-bold tracking-widest">Essais</span>
                 <span id="attemptsLeftDisplay" class="text-2xl font-black text-white">5</span>
                 <br><span id="editPseudoBtn" class="edit-pseudo-btn hidden">Modifier Pseudo</span>
+                <span id="countdownDisplay" class="countdown hidden">Prochain: --:--:--</span>
               </div>
               <div class="bg-black border border-white/10 px-5 py-2 rounded-3xl backdrop-blur-md">
                 <span class="block text-xs text-gray-500 uppercase font-bold tracking-widest">Joueur</span>
@@ -490,33 +527,83 @@
     </main>
 
     <!-- Bouton Admin (Jeu) -->
-    <button class="admin-fab" onclick="openView('adminView')">
+    <button id="adminFab" class="admin-fab hidden" onclick="openView('adminView')">
       <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A1 1 0 0112 2v1.051a7.962 7.962 0 013.043 1.26l.744-.744a1 1 0 011.414 1.414l-.744.744A7.962 7.962 0 0118 8h1a1 1 0 110 2h-1a7.962 7.962 0 01-1.26 3.043l.744.744a1 1 0 11-1.414 1.414l-.744-.744A7.962 7.962 0 0112 16.949V18a1 1 0 11-2 0v-1.051a7.962 7.962 0 01-3.043-1.26l-.744.744a1 1 0 01-1.414-1.414l.744-.744A7.962 7.962 0 014 10H3a1 1 0 110-2h1a7.962 7.962 0 011.26-3.043l-.744-.744A1 1 0 015.93 2.8l.744.744A7.962 7.962 0 019 3.051V2a1 1 0 012 0z"/></svg>
       <span>Jeu</span>
     </button>
   </div>
 
   <script>
+    // ----- SYSTEME DE NOTIFICATION -----
+    function showNotification(message, type = 'info') {
+      const container = document.getElementById('notificationContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      
+      let icon = '';
+      if(type === 'error') icon = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10h.01M15 9h.01"/></svg>';
+      else if(type === 'success') icon = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
+      else icon = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01"/></svg>';
+
+      toast.innerHTML = `${icon}<span class="font-semibold text-sm">${message}</span>`;
+      
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'fadeOut 0.4s ease forwards';
+        setTimeout(() => toast.remove(), 400);
+      }, 4000);
+    }
+
+    // ----- GENERATION CAPTCHA -----
+    const n1 = Math.floor(Math.random() * 10);
+    const n2 = Math.floor(Math.random() * 10);
+    const captchaResult = n1 + n2;
+    document.getElementById('captchaQuestion').innerText = `Sécurité: ${n1} + ${n2} = ?`;
+
     // ----- ACCÈS SITE -----
-    const SITE_PASSWORD = 'RyRy';
+    const SITE_PASSWORD = 'yRy';
     const passwordModal = document.getElementById('passwordModal');
     const mainContent = document.getElementById('mainContent');
     const passwordForm = document.getElementById('passwordForm');
     const passwordInput = document.getElementById('passwordInput');
+    const captchaInput = document.getElementById('captchaInput');
     const errorMessage = document.getElementById('errorMessage');
+    const pageLoader = document.getElementById('pageLoader');
+    const navHomeText = document.getElementById('navHomeText'); // Texte Accueil
 
     if (sessionStorage.getItem('authenticated') === 'true') {
       passwordModal.classList.add('hidden');
       mainContent.classList.remove('hidden');
+      navHomeText.innerText = "Accueil"; // Accueil par défaut
     }
+    
     passwordForm?.addEventListener('submit', (e) => {
       e.preventDefault();
+      
+      // Vérification Captcha
+      if (parseInt(captchaInput.value) !== captchaResult) {
+        showNotification('Erreur de calcul anti-bot !', 'error');
+        captchaInput.value = '';
+        captchaInput.classList.add('shake');
+        setTimeout(() => captchaInput.classList.remove('shake'), 500);
+        return;
+      }
+
       if (passwordInput.value === SITE_PASSWORD) {
-        sessionStorage.setItem('authenticated','true');
-        passwordModal.classList.add('hidden');
-        mainContent.classList.remove('hidden');
+        // Animation chargement
+        pageLoader.classList.remove('hidden');
+        setTimeout(() => {
+          pageLoader.classList.add('hidden');
+          sessionStorage.setItem('authenticated','true');
+          passwordModal.classList.add('hidden');
+          mainContent.classList.remove('hidden');
+          navHomeText.innerText = "Accueil"; // On force Accueil
+          showNotification('Bienvenue sur RYNACITY RP', 'success');
+        }, 1500); 
+
       } else {
-        errorMessage.classList.remove('hidden');
+        showNotification('Mot de passe incorrect !', 'error');
         passwordInput.value = '';
         passwordInput.classList.add('shake');
         setTimeout(() => passwordInput.classList.remove('shake'), 500);
@@ -526,11 +613,9 @@
     // ----- SPA NAV -----
     const views = ['homeView','docView','mapView','updatesView','discordView','shopView','adminView'];
     const navButtons = document.querySelectorAll('.nav-btn');
-    const pageLoader = document.getElementById('pageLoader');
 
     function openView(viewId) {
       pageLoader.classList.remove('hidden');
-
       setTimeout(() => {
         pageLoader.classList.add('hidden');
         views.forEach(id => {
@@ -569,6 +654,7 @@
     const startCardBtn = document.getElementById('startCardGameBtn');
     const cardUsernameInput = document.getElementById('cardUsernameInput');
     const attemptsDisplay = document.getElementById('attemptsLeftDisplay');
+    const countdownDisplay = document.getElementById('countdownDisplay');
     const overlayPseudo = document.getElementById('overlayPseudo');
     const grid = document.getElementById('cardsGrid');
     const resultMsg = document.getElementById('gameResultMessage');
@@ -582,6 +668,24 @@
     let selectedCards = [];
     let isProcessing = false;
     let currentCardsData = []; 
+    let countdownInterval;
+    
+    function updateCountdown() {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setHours(24,0,0,0);
+      const diff = tomorrow - now;
+      if (diff <= 0) {
+        countdownDisplay.innerText = "Reset imminent...";
+      } else {
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        countdownDisplay.innerText = `Prochain: ${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+      }
+    }
+    
+    setInterval(updateCountdown, 1000);
     
     function initCardGame() {
       const today = new Date().toLocaleDateString();
@@ -607,18 +711,27 @@
 
     function updateUI() {
       attemptsDisplay.innerText = gameState.attempts;
+      
+      if(gameState.attempts <= 0) {
+        attemptsDisplay.classList.add('text-red-500');
+        countdownDisplay.classList.remove('hidden');
+      } else {
+        attemptsDisplay.classList.remove('text-red-500');
+        countdownDisplay.classList.add('hidden');
+      }
+
       if(gameState.username) {
         document.getElementById('gameUsernameDisplay').innerText = gameState.username;
         overlayPseudo.innerText = gameState.username.toUpperCase();
-        if(editPseudoBtn) editPseudoBtn.classList.remove('hidden');
       }
     }
 
     startCardBtn.addEventListener('click', () => {
       const pseudo = cardUsernameInput.value.trim();
-      if(!pseudo) return alert("Entre un pseudo !");
+      if(!pseudo) return showNotification("Entre un pseudo !", "error");
       if(gameState.attempts <= 0) {
         limitModal.classList.remove('hidden');
+        showNotification("Tu n'as plus d'essais !", "error");
         return;
       }
 
@@ -627,6 +740,7 @@
       
       cardAuthBox.classList.add('hidden');
       cardGameArea.classList.remove('hidden');
+      showNotification(`Bienvenue ${pseudo} !`, 'success');
       updateUI();
       startNewRound();
     });
@@ -637,6 +751,7 @@
       cardAuthBox.classList.remove('hidden');
       cardGameArea.classList.add('hidden');
       cardUsernameInput.value = '';
+      editPseudoBtn.classList.add('hidden');
       updateUI();
     });
 
@@ -729,9 +844,11 @@
       if(value === 1) {
         msg = "1.000.000€ GAGNÉ !";
         colorClass = "text-yellow-400";
+        showNotification("Mega Win ! Tu as gagné 1.000.000€", 'success');
       } else if (value === 2) {
         msg = "BMW + 100K€ GAGNÉ !";
         colorClass = "text-white";
+        showNotification("Gagné ! Tu as eu une BMW + 100k", 'success');
       } else {
         msg = "C'est 3 X...";
         colorClass = "text-red-400";
